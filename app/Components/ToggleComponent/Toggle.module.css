@@ -1,0 +1,8 @@
+.navbar-collapsed {
+    width: 80px; 
+  }
+  
+  .navbar-collapsed .flex {
+    flex: none;
+  }
+  

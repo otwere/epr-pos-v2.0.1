@@ -1,0 +1,18 @@
+.top-fast-moving-items-container {
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  margin-top: -20px;
+}
+
+.custom-table {
+  border-radius: 8px;
+}
+
+.column-slim {
+  width: 80px;
+}
+
+.column-wide {
+  width: 200px;
+}
