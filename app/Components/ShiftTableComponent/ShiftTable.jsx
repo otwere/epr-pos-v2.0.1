@@ -58,7 +58,7 @@ const ShiftTable = () => {
   ]);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOepn] = useState(false);
   const [shiftToDelete, setShiftToDelete] = useState(null);
   const [editingShift, setEditingShift] = useState(null);
   const [form] = Form.useForm();
@@ -136,7 +136,7 @@ const ShiftTable = () => {
 
   const promptDelete = useCallback((record) => {
     setShiftToDelete(record);
-    setIsDeleteModalVisible(true);
+    setIsDeleteModalOpen(true);
   }, []);
 
   const handleDelete = useCallback(() => {
@@ -148,7 +148,7 @@ const ShiftTable = () => {
       `Shift for ${shiftToDelete.branch} on ${shiftToDelete.shiftDate} deleted successfully!`
     );
 
-    setIsDeleteModalVisible(false);
+    setIsDeleteModalOpen(false);
     setShiftToDelete(null);
   }, [shiftToDelete]);
 
@@ -369,8 +369,8 @@ const ShiftTable = () => {
 
       {/* Delete Confirmation Modal */}
       <DeleteConfirmationModal
-        isDeleteModalVisible={isDeleteModalVisible}
-        setIsDeleteModalVisible={setIsDeleteModalVisible}
+        isDeleteModalOpen={isDeleteModalOpen}
+        setIsDeleteModalOpen={setIsDeleteModalOpen}
         shiftToDelete={shiftToDelete}
         handleDelete={handleDelete}
       />

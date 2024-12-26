@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { usePOS } from "../POSContextComponent/POSContext";
 import {
   Modal,
   Steps,
@@ -17,6 +16,7 @@ import {
   Tooltip,
   Row,
   Col,
+  Alert,
 } from "antd";
 import {
   CreditCardOutlined,
@@ -27,6 +27,8 @@ import {
   InfoCircleOutlined,
   CloseCircleOutlined,
 } from "@ant-design/icons";
+
+import { usePOS } from "../POSContextComponent/POSContext";
 
 const { Title, Text } = Typography;
 const { Step } = Steps;
@@ -81,6 +83,7 @@ const PaymentModal = ({ open, onClose, isProcessing, setIsProcessing }) => {
   const [paymentMethods, setPaymentMethods] = useState([]);
   const [transactionId, setTransactionId] = useState("");
   const [totalPaid, setTotalPaid] = useState(0);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     if (open) {
@@ -94,6 +97,7 @@ const PaymentModal = ({ open, onClose, isProcessing, setIsProcessing }) => {
     setTotalPaid(0);
     form.resetFields();
     setTransactionId(`TXN-${Date.now()}-${Math.floor(Math.random() * 1000)}`);
+    setError(null);
   };
 
   const formatAmount = (amount) => {
@@ -117,7 +121,19 @@ const PaymentModal = ({ open, onClose, isProcessing, setIsProcessing }) => {
       const updated = prev.map((pm) =>
         pm.method === method ? { ...pm, amount: value || 0 } : pm
       );
-      setTotalPaid(updated.reduce((sum, pm) => sum + pm.amount, 0));
+      const newTotalPaid = updated.reduce((sum, pm) => sum + pm.amount, 0);
+      setTotalPaid(newTotalPaid);
+
+      if (newTotalPaid > totals.grandTotal) {
+        setError(
+          `Total paid amount (${formatAmount(
+            newTotalPaid
+          )}) exceeds the invoice total (${formatAmount(totals.grandTotal)})`
+        );
+      } else {
+        setError(null);
+      }
+
       return updated;
     });
   };
@@ -125,18 +141,31 @@ const PaymentModal = ({ open, onClose, isProcessing, setIsProcessing }) => {
   const handlePaymentMethodRemove = (methodToRemove) => {
     setPaymentMethods((prev) => {
       const updated = prev.filter((pm) => pm.method !== methodToRemove);
-      setTotalPaid(updated.reduce((sum, pm) => sum + pm.amount, 0));
+      const newTotalPaid = updated.reduce((sum, pm) => sum + pm.amount, 0);
+      setTotalPaid(newTotalPaid);
       form.resetFields([`amount_${methodToRemove}`]);
+
+      if (newTotalPaid > totals.grandTotal) {
+        setError(
+          `Total paid amount (${formatAmount(
+            newTotalPaid
+          )}) exceeds the invoice total (${formatAmount(totals.grandTotal)})`
+        );
+      } else {
+        setError(null);
+      }
+
       return updated;
     });
   };
 
   const processPayment = async () => {
-    if (isProcessing) return;
+    if (isProcessing || totalPaid < totals.grandTotal) return;
     setIsProcessing(true);
 
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      // Simulating API call
+      await new Promise((resolve) => setTimeout(resolve, 2000));
       notification.success({
         message: "Payment Successful!",
         description: (
@@ -145,7 +174,9 @@ const PaymentModal = ({ open, onClose, isProcessing, setIsProcessing }) => {
             <p className="text-green-600 font-medium">
               Total Paid : KES {formatAmount(totalPaid)}
             </p>
-            <p className="text-gray-600">Date : {new Date().toLocaleString()}</p>
+            <p className="text-gray-600">
+              Date : {new Date().toLocaleString()}
+            </p>
           </div>
         ),
         duration: 0,
@@ -163,7 +194,7 @@ const PaymentModal = ({ open, onClose, isProcessing, setIsProcessing }) => {
     <Card className="bg-gray-50 rounded-lg shadow-sm">
       <div className="space-y-6">
         <div className="flex justify-between items-center">
-          <Title level={4} className="text-xl font-bold text-orange-600 m-0">
+          <Title level={4} className="text-xl font-bold text-blue-600 m-0">
             Select Payment Method(s)
           </Title>
           <Badge
@@ -228,7 +259,7 @@ const PaymentModal = ({ open, onClose, isProcessing, setIsProcessing }) => {
       <Card className="bg-gray-50 rounded-lg shadow-sm">
         <div className="space-y-6">
           <div className="flex justify-between items-center">
-            <Title level={4} className="text-xl font-bold text-orange-600 m-0">
+            <Title level={4} className="text-xl font-bold text-blue-600 m-0">
               Payment Details
             </Title>
             <Badge
@@ -284,8 +315,8 @@ const PaymentModal = ({ open, onClose, isProcessing, setIsProcessing }) => {
                     type="text"
                     icon={<CloseCircleOutlined />}
                     onClick={() => handlePaymentMethodRemove(method)}
-                    className="self-end mb-6"
-                  />
+                    className="self-end mb-4 px-6 py-2 text-sm rounded-md hover:bg-gray-100 transition-all"
+                  ></Button>
                 </div>
               );
             })}
@@ -342,6 +373,16 @@ const PaymentModal = ({ open, onClose, isProcessing, setIsProcessing }) => {
               />
             </div>
           </div>
+
+          {error && (
+            <Alert
+              message="Payment Error"
+              description={error}
+              type="error"
+              showIcon
+              className="mt-4"
+            />
+          )}
         </div>
       </Card>
     </Form.Provider>
@@ -351,7 +392,7 @@ const PaymentModal = ({ open, onClose, isProcessing, setIsProcessing }) => {
     <Card className="bg-gray-50 rounded-lg shadow-sm">
       <div className="space-y-6">
         <div className="flex justify-between items-center">
-          <Title level={4} className="text-xl font-bold text-orange-600 m-0">
+          <Title level={4} className="text-xl font-bold text-blue-600 m-0">
             Confirm Payment
           </Title>
           <Badge
@@ -383,7 +424,7 @@ const PaymentModal = ({ open, onClose, isProcessing, setIsProcessing }) => {
 
         <div className="bg-blue-50 p-4 rounded-lg">
           <Title level={5} className="text-lg font-semibold text-blue-800 mb-4">
-            Payment Methods
+            Payment Method(s)
           </Title>
           <Space direction="vertical" className="w-full">
             {paymentMethods.map(({ method, amount }) => {
@@ -414,15 +455,15 @@ const PaymentModal = ({ open, onClose, isProcessing, setIsProcessing }) => {
         </div>
 
         <div className="bg-gray-100 p-4 rounded-lg">
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between items-center font-bold">
             <div>
-              <Text className="text-gray-600">Subtotal</Text>
+              <Text className="text-gray-600">Subtotal Amount</Text>
               <Text strong className="block text-lg text-blue-600">
                 KES : {formatAmount(totals.totalAmt)}
               </Text>
             </div>
             <div>
-              <Text className="text-gray-600">Discount</Text>
+              <Text className="text-gray-600">Discount Amount</Text>
               <Text strong className="block text-lg text-orange-600">
                 KES : {formatAmount(discount)}
               </Text>
@@ -430,14 +471,15 @@ const PaymentModal = ({ open, onClose, isProcessing, setIsProcessing }) => {
             <div>
               <div>
                 <Text className="text-gray-600">Amount Paid</Text>
-                <Text strong className="block text-lg text-safaricomGreen">
+                <Text strong className="block text-lg text-green-600">
                   KES : {formatAmount(totalPaid)}
                 </Text>
               </div>
               <div>
                 <Text className="text-gray-600">Amount Due</Text>
                 <Text strong className="block text-lg text-red-600">
-                  KES : {formatAmount(Math.max(0, totals.grandTotal - totalPaid))}
+                  KES :{" "}
+                  {formatAmount(Math.max(0, totals.grandTotal - totalPaid))}
                 </Text>
               </div>
             </div>
@@ -455,7 +497,7 @@ const PaymentModal = ({ open, onClose, isProcessing, setIsProcessing }) => {
       width={1000}
       className="payment-modal"
     >
-      <Steps current={currentStep} className="mb-6">
+      <Steps current={currentStep} className="mb-4 pt-4">
         <Step title="Select Method(s)" />
         <Step title="Enter Details" />
         <Step title="Confirm Payment" />
@@ -463,6 +505,7 @@ const PaymentModal = ({ open, onClose, isProcessing, setIsProcessing }) => {
       {currentStep === 0 && renderPaymentMethodSelection()}
       {currentStep === 1 && renderPaymentDetails()}
       {currentStep === 2 && renderPaymentConfirmation()}
+      {currentStep === 3 && renderPaymentConfirmation()}
 
       <div className="flex justify-between mt-6">
         <Button
@@ -489,9 +532,11 @@ const PaymentModal = ({ open, onClose, isProcessing, setIsProcessing }) => {
           <Button
             type="primary"
             onClick={processPayment}
-            disabled={totalPaid < totals.grandTotal || isProcessing}
+            disabled={
+              totalPaid < totals.grandTotal || isProcessing || error !== null
+            }
           >
-            {isProcessing ? 'Processing...' : 'Complete Payment'}
+            {isProcessing ? "Processing..." : "Complete Payment"}
           </Button>
         )}
       </div>
@@ -500,4 +545,3 @@ const PaymentModal = ({ open, onClose, isProcessing, setIsProcessing }) => {
 };
 
 export default PaymentModal;
-

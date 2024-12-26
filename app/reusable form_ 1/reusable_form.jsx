@@ -93,13 +93,21 @@ const PurchaseForm = () => {
       <div style={{ marginTop: 8 }}>Upload</div>
     </div>
   );
-  
 
   return (
     <div style={{ padding: 24, background: '#f5f5f5' }}>
       {contextHolder}
       <Card
-       
+        title={
+          <Text strong style={{ fontSize: 20 }}>
+            Register New Items
+          </Text>
+        }
+        extra={
+          <Text type="secondary">
+            All fields marked * are required
+          </Text>
+        }
       >
         <Form
           form={form}

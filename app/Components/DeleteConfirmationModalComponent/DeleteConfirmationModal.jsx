@@ -6,8 +6,8 @@ import { ExclamationCircleOutlined } from "@ant-design/icons";
 const { Text } = Typography;
 
 const DeleteConfirmationModal = ({
-  isDeleteModalVisible,
-  setIsDeleteModalVisible,
+  isDeleteModalOpen,
+  setIsDeleteModalOpen,
   shiftToDelete,
   handleDelete,
 }) => {
@@ -22,9 +22,9 @@ const DeleteConfirmationModal = ({
           <span className="text-lg font-semibold">Confirm Deletion</span>
         </div>
       }
-      open={isDeleteModalVisible} // Controls modal visibility
+      open={isDeleteModalOpen} // Controls modal visibility
       onOk={handleDelete} // Handles delete action
-      onCancel={() => setIsDeleteModalVisible(false)} // Closes the modal on cancel
+      onCancel={() => setIsDeleteModalOpen(false)} // Closes the modal on cancel
       okText="Delete"
       okButtonProps={{
         danger: true,
@@ -61,8 +61,8 @@ const DeleteConfirmationModal = ({
 
 // PropTypes validation
 DeleteConfirmationModal.propTypes = {
-  isDeleteModalVisible: PropTypes.bool.isRequired, // Boolean: required
-  setIsDeleteModalVisible: PropTypes.func.isRequired, // Function: required
+  isDeleteModalOpen: PropTypes.bool.isRequired, // Boolean: required
+  setIsDeleteModalOpen: PropTypes.func.isRequired, // Function: required
   shiftToDelete: PropTypes.shape({
     branch: PropTypes.string.isRequired, // Object with branch (string) and shiftDate (string)
     shiftDate: PropTypes.string.isRequired,

@@ -14,7 +14,7 @@ const getCurrentMonth = () => {
 };
 
 // Enhanced CardsDashboard component with improved routing and Antd styling
-const CardsDashboard = ({ data }) => {
+const CardsDashboard = (props) => {
   const cardRefs = useRef([]);
 
   const handleCardClick = (item, index) => {
@@ -31,7 +31,7 @@ const CardsDashboard = ({ data }) => {
     <div className="site-card-wrapper">
       <CustomBreadcrumb />
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {data.map((item, index) => (
+        {props.data.map((item, index) => (
           <Card
             key={index}
             ref={(el) => (cardRefs.current[index] = el)} // Assign ref for each card
@@ -116,7 +116,7 @@ const cardData = [
     color: "bg-lime-600",
     hoverColor: "hover:bg-lime-700",
     icon: "📬",
-    link: "/Purchase_List",
+    link: "/Purchase_Analysis_List",
   },
   {
     title: "EXPENSE AMOUNT",
@@ -154,8 +154,8 @@ const cardData = [
   },
   {
     title: "SALES INVOICE",
-    amount: "Total Invoices - 24",
-    subtitle: `Paid - 18 | ${getCurrentMonth()}`,
+    amount: "Total Invoices - 3",
+    subtitle: `Paid - 1 | ${getCurrentMonth()}`,
     color: "bg-yellow-600",
     hoverColor: "hover:bg-yellow-700",
     icon: "📄",
@@ -169,3 +169,4 @@ const Cards = () => {
 };
 
 export default Cards;
+
