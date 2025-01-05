@@ -13,10 +13,7 @@ import {
   Input,
   InputNumber,
   message,
-  Row,
-  Col,
-  Statistic,
-  div, // Add this line
+  Statistic, 
 } from "antd";
 import {
   HomeOutlined,
@@ -24,7 +21,6 @@ import {
   EyeOutlined,
   EditOutlined,
   DeleteOutlined,
-  PlusCircleOutlined,
   SearchOutlined,
   PlusOutlined // Add this line
 } from "@ant-design/icons";
@@ -37,10 +33,10 @@ import Footer from "../Components/FooterComponent/Footer";
 const { Content } = Layout;
 const { Title, Text } = Typography; // Add Text here
 
-const Supplier_List = () => {
+const Customers_List = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
-  const [currentSupplier, setCurrentSupplier] = useState(null);
+  const [currentCustomers, setCurrentCustomers] = useState(null);
   const [form] = Form.useForm();
   const [pagination, setPagination] = useState({
     current: 1,
@@ -52,23 +48,27 @@ const Supplier_List = () => {
   const [profileModalOpen, setProfileModalOpen] = useState(false);
   const [addModalOpen, setAddModalOpen] = useState(false); // Add this line
 
-  const [supplierData, setSupplierData] = useState([
+  const [CustomersData, setCustomersData] = useState([
     {
       key: "1",
-      supplierName: "Supplier 1",
+      CustomersName: "Customers 1",
       phoneNo: "123456789",
-      email: "supplier1@example.com",
+      altPhone: "987654321", // Add this line
+      email: "Customers1@example.com",
       address: "Address 1",
       curBalance: 5000,
+      creditLimit: 10000, // Add this line
+      creditAmount: 5000, // Add this line
+      estate: "Estate A", // Add this line
       branch: "Branch A",
       lastSupplyDate: "2023-01-20",
       recentSupply: true,
     },
     {
       key: "2",
-      supplierName: "Supplier 2",
+      CustomersName: "Customers 2",
       phoneNo: "987654321",
-      email: "supplier2@example.com",
+      email: "Customers2@example.com",
       address: "Address 2",
       curBalance: 10000,
       branch: "Branch B",
@@ -77,9 +77,9 @@ const Supplier_List = () => {
     },
     {
       key: "3",
-      supplierName: "Supplier 3",
+      CustomersName: "Customers 3",
       phoneNo: "456789123",
-      email: "supplier3@example.com",
+      email: "Customers3@example.com",
       address: "Address 3",
       curBalance: 15000,
       branch: "Branch C",
@@ -97,67 +97,67 @@ const Supplier_List = () => {
     return new Date(lastSupplyDate) < oneYearAgo ? "Dormant" : "Active";
   };
 
-  const handleViewProfile = (supplier) => {
-    setCurrentSupplier(supplier);
+  const handleViewProfile = (Customers) => {
+    setCurrentCustomers(Customers);
     setProfileModalOpen(true);
   };
 
-  const handleEditDetails = (supplier) => {
-    setCurrentSupplier(supplier);
-    form.setFieldsValue(supplier);
+  const handleEditDetails = (Customers) => {
+    setCurrentCustomers(Customers);
+    form.setFieldsValue(Customers);
     setEditModalOpen(true);
   };
 
-  const handleDeleteSupplier = (supplier) => {
+  const handleDeleteCustomers = (Customers) => {
     Modal.confirm({
-      title: `Are you sure you want to delete ${supplier.supplierName}?`,
+      title: `Are you sure you want to delete ${Customers.CustomersName}?`,
       content: "This action cannot be undone.",
       onOk: () => {
-        setSupplierData((prev) =>
-          prev.filter((item) => item.key !== supplier.key)
+        setCustomersData((prev) =>
+          prev.filter((item) => item.key !== Customers.key)
         );
-        message.success("Supplier deleted successfully.");
+        message.success("Customers deleted successfully.");
       },
     });
   };
 
   const handleEditSubmit = (values) => {
-    const updatedData = supplierData.map((item) =>
-      item.key === currentSupplier.key ? { ...item, ...values } : item
+    const updatedData = CustomersData.map((item) =>
+      item.key === currentCustomers.key ? { ...item, ...values } : item
     );
-    setSupplierData(updatedData);
+    setCustomersData(updatedData);
     setEditModalOpen(false);
-    message.success("Supplier details updated successfully.");
+    message.success("Customers details updated successfully.");
   };
 
   const handleAddSubmit = (values) => {
-    const newSupplier = {
-      key: (supplierData.length + 1).toString(),
+    const newCustomers = {
+      key: (CustomersData.length + 1).toString(),
       ...values,
       curBalance: parseFloat(values.curBalance),
       lastSupplyDate: new Date().toISOString().split("T")[0],
       recentSupply: true,
     };
-    setSupplierData([...supplierData, newSupplier]);
+    setCustomersData([...CustomersData, newCustomers]);
     setAddModalOpen(false);
-    message.success("Supplier added successfully.");
+    message.success("Customers added successfully.");
   };
 
-  const filteredData = supplierData.filter((supplier) => {
+  const filteredData = CustomersData.filter((Customers) => {
     if (
       activeFilter !== "all" &&
-      getStatus(supplier.lastSupplyDate, supplier.recentSupply) !== activeFilter
+      getStatus(Customers.lastSupplyDate, Customers.recentSupply) !== activeFilter
     ) {
       return false;
     }
     const searchFields = [
-      supplier.supplierName,
-      supplier.phoneNo,
-      supplier.email,
-      supplier.address,
-      supplier.curBalance.toString(),
-      supplier.branch,
-      getStatus(supplier.lastSupplyDate, supplier.recentSupply),
+      Customers.CustomersName,
+      Customers.phoneNo,
+      Customers.email,
+      Customers.address,
+      Customers.curBalance.toString(),
+      Customers.branch,
+      getStatus(Customers.lastSupplyDate, Customers.recentSupply),
     ];
     return searchFields.some((field) =>
       field.toLowerCase().includes(searchTerm.toLowerCase())
@@ -166,10 +166,10 @@ const Supplier_List = () => {
 
   const columns = [
     {
-      title: "Supplier Name",
-      dataIndex: "supplierName",
-      key: "supplierName",
-      sorter: (a, b) => a.supplierName.localeCompare(b.supplierName),
+      title: "Customer Name",
+      dataIndex: "CustomersName",
+      key: "CustomersName",
+      sorter: (a, b) => a.CustomersName.localeCompare(b.CustomersName),
     },
     {
       title: "Phone No.",
@@ -178,23 +178,36 @@ const Supplier_List = () => {
       sorter: (a, b) => a.phoneNo.localeCompare(b.phoneNo),
     },
     {
-      title: "Email Address",
-      dataIndex: "email",
-      key: "email",
-      sorter: (a, b) => a.email.localeCompare(b.email),
+      title: "Alt. Phone",
+      dataIndex: "altPhone",
+      key: "altPhone",
+      sorter: (a, b) => a.altPhone.localeCompare(b.altPhone),
+    },
+    {
+      title: "Credit Limit",
+      dataIndex: "creditLimit",
+      key: "creditLimit",
+      render: (creditLimit) => creditLimit ? `KES ${creditLimit.toLocaleString()}` : 'N/A',
+      sorter: (a, b) => a.creditLimit - b.creditLimit,
+    },
+    {
+      title: "Credit Amount",
+      dataIndex: "creditAmount",
+      key: "creditAmount",
+      render: (creditAmount) => creditAmount ? `KES ${creditAmount.toLocaleString()}` : 'N/A',
+      sorter: (a, b) => a.creditAmount - b.creditAmount,
+    },
+    {
+      title: "Estate",
+      dataIndex: "estate",
+      key: "estate",
+      sorter: (a, b) => a.estate.localeCompare(b.estate),
     },
     {
       title: "Address",
       dataIndex: "address",
       key: "address",
       sorter: (a, b) => a.address.localeCompare(b.address),
-    },
-    {
-      title: "Current Balance",
-      dataIndex: "curBalance",
-      key: "curBalance",
-      render: (curBalance) => `KES ${curBalance.toLocaleString()}`,
-      sorter: (a, b) => a.curBalance - b.curBalance,
     },
     {
       title: "Branch",
@@ -230,7 +243,7 @@ const Supplier_List = () => {
                     className="mb-2"
                     onClick={() => handleViewProfile(record)}
                   >
-                    Supplier Profile
+                    Customers Profile
                   </Button>
                 ),
               },
@@ -254,7 +267,7 @@ const Supplier_List = () => {
                     icon={<DeleteOutlined />}
                     block
                     danger
-                    onClick={() => handleDeleteSupplier(record)}
+                    onClick={() => handleDeleteCustomers(record)}
                   >
                     Delete
                   </Button>
@@ -293,20 +306,21 @@ const Supplier_List = () => {
                   </Link>
                 ),
               },
-              { title: "Suppliers List" },
+              { title: "Customers List" },
             ]}
             className="mb-3"
           />
           <hr className="mb-4" />
 
           <div className="mb-4 flex justify-between items-center">
-            <Title level={4}>Suppliers List</Title>
+            <Title level={4}>Customers List</Title>
             <Button
               type="primary"
               icon={<PlusOutlined />}
-              onClick={() => setAddModalOpen(true)}
             >
-              Add Supplier
+              <Link href="/Register_New_Customer_Client">
+                Add Customers
+              </Link>
             </Button>
           </div>
           
@@ -319,7 +333,7 @@ const Supplier_List = () => {
               }`}
               onClick={() => setActiveFilter("all")}
             >
-              <Statistic title="All Suppliers" value={supplierData.length} />
+              <Statistic title="All Customers" value={CustomersData.length} />
             </div>
 
             <div
@@ -329,13 +343,13 @@ const Supplier_List = () => {
               onClick={() => setActiveFilter("Active")}
             >
               <Statistic
-                title="Active Suppliers"
+                title="Active Customers"
                 value={
-                  supplierData.filter(
-                    (supplier) =>
+                  CustomersData.filter(
+                    (Customers) =>
                       getStatus(
-                        supplier.lastSupplyDate,
-                        supplier.recentSupply
+                        Customers.lastSupplyDate,
+                        Customers.recentSupply
                       ) === "Active"
                   ).length
                 }
@@ -349,13 +363,13 @@ const Supplier_List = () => {
               onClick={() => setActiveFilter("Dormant")}
             >
               <Statistic
-                title="Dormant Suppliers"
+                title="Dormant Customers"
                 value={
-                  supplierData.filter(
-                    (supplier) =>
+                  CustomersData.filter(
+                    (Customers) =>
                       getStatus(
-                        supplier.lastSupplyDate,
-                        supplier.recentSupply
+                        Customers.lastSupplyDate,
+                        Customers.recentSupply
                       ) === "Dormant"
                   ).length
                 }
@@ -365,7 +379,7 @@ const Supplier_List = () => {
 
           <div className="bg-gray-50 rounded-lg p-6">
             <Input
-              placeholder="Search suppliers..."
+              placeholder="Search Customers..."
               prefix={<SearchOutlined />}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="mb-4"
@@ -381,37 +395,37 @@ const Supplier_List = () => {
           </div>
 
           <Modal
-            title="Supplier Profile"
+            title="Customers Profile"
             open={profileModalOpen}
             onCancel={() => setProfileModalOpen(false)}
             footer={null}
           >
-            {currentSupplier && (
+            {currentCustomers && (
               <div>
                 <p>
-                  <strong>Name:</strong> {currentSupplier.supplierName}
+                  <strong>Name:</strong> {currentCustomers.CustomersName}
                 </p>
                 <p>
-                  <strong>Phone:</strong> {currentSupplier.phoneNo}
+                  <strong>Phone:</strong> {currentCustomers.phoneNo}
                 </p>
                 <p>
-                  <strong>Email:</strong> {currentSupplier.email}
+                  <strong>Email:</strong> {currentCustomers.email}
                 </p>
                 <p>
-                  <strong>Address:</strong> {currentSupplier.address}
+                  <strong>Address:</strong> {currentCustomers.address}
                 </p>
                 <p>
                   <strong>Current Balance:</strong> KES{" "}
-                  {currentSupplier.curBalance.toLocaleString()}
+                  {currentCustomers.curBalance.toLocaleString()}
                 </p>
                 <p>
-                  <strong>Branch:</strong> {currentSupplier.branch}
+                  <strong>Branch:</strong> {currentCustomers.branch}
                 </p>
                 <p>
                   <strong>Status:</strong>{" "}
                   {getStatus(
-                    currentSupplier.lastSupplyDate,
-                    currentSupplier.recentSupply
+                    currentCustomers.lastSupplyDate,
+                    currentCustomers.recentSupply
                   )}
                 </p>
               </div>
@@ -419,13 +433,13 @@ const Supplier_List = () => {
           </Modal>
 
           <Modal
-            title="Edit Supplier"
+            title="Edit Customers"
             open={editModalOpen}
             onCancel={() => setEditModalOpen(false)}
             footer={null}
           >
             <Form form={form} onFinish={handleEditSubmit} layout="vertical">
-              <Form.Item name="supplierName" label="Supplier Name">
+              <Form.Item name="CustomersName" label="Customers Name">
                 <Input />
               </Form.Item>
               <Form.Item name="phoneNo" label="Phone No.">
@@ -450,14 +464,14 @@ const Supplier_List = () => {
               </Form.Item>
               <Form.Item>
                 <Button type="primary" htmlType="submit">
-                  Update Supplier
+                  Update Customers
                 </Button>
               </Form.Item>
             </Form>
           </Modal>
 
           <Modal
-            title="Add Supplier"
+            title="Add Customers"
             open={addModalOpen}
             onCancel={() => setAddModalOpen(false)}
             footer={null}
@@ -472,4 +486,4 @@ const Supplier_List = () => {
   );
 };
 
-export default Supplier_List;
+export default Customers_List;

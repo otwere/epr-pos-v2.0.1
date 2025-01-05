@@ -50,19 +50,29 @@ import {
   ProductOutlined,
   FileProtectOutlined,
 } from "@ant-design/icons";
-import { Menu } from "antd";
+import { Menu, Tooltip } from "antd";
 import Link from "next/link";
 import Logo from "../LogoComponent/Logo";
-import "../SidebarComponent/Siderbar.css";
+import "../SidebarComponent/Sidebar.css";
 
 const Sidebar = ({ collapsed, ref }) => {
   const [hovered, setHovered] = useState(false);
+  const [openKeys, setOpenKeys] = useState([]);
 
   useEffect(() => {
     if (ref && ref.current) {
       ref.current.scrollTop = 0; // Reset scroll on collapse change
     }
   }, [collapsed, ref]);
+
+  const onOpenChange = (keys) => {
+    const latestOpenKey = keys.find(key => openKeys.indexOf(key) === -1);
+    if (menuItems.map(item => item.key).indexOf(latestOpenKey) === -1) {
+      setOpenKeys(keys);
+    } else {
+      setOpenKeys(latestOpenKey ? [latestOpenKey] : []);
+    }
+  };
 
   const menuItems = [
     {
@@ -169,9 +179,9 @@ const Sidebar = ({ collapsed, ref }) => {
           key: "9-2",
           icon: <UnorderedListOutlined />,
           title: "Customers | Client List",
-          link: "/customers",
+          link: "/customers_list",
         },
-        { key: "9-3", icon: <FileZipOutlined />, title: "Archived Customers", link: "Archived_Customers" },
+        { key: "9-3", icon: <FileZipOutlined />, title: "Archived Customers", link: "/customers_list/archive" },
       ],
     },
     {
@@ -194,11 +204,12 @@ const Sidebar = ({ collapsed, ref }) => {
       icon: <DollarOutlined />,
       title: "Expenses",
       subItems: [
-        { key: "11-1", icon: <PlusOutlined />, title: "Add New Expenditure" },
+        { key: "11-1", icon: <PlusOutlined />, title: "Add New Expenditure" , link:"/expense"},
         {
           key: "11-2",
           icon: <CalculatorOutlined />,
           title: "Expenditure Breakdown",
+          link: "/expenditure_breakdown",
         },
       ],
     },
@@ -396,38 +407,75 @@ const Sidebar = ({ collapsed, ref }) => {
     {
       key: "19",
       icon: <UsergroupAddOutlined />,
-      title: "Users Management",
+      title: "Human Resource Management",
       subItems: [
-        { key: "19-1", icon: <UsergroupAddOutlined />, title: "Add New User" },
-        { key: "19-2", icon: <UnorderedListOutlined />, title: "User List" },
-        { key: "19-3", icon: <LinkOutlined />, title: "Users Logs" },
-        { key: "19-4", icon: <UnorderedListOutlined />, title: "Roles List" },
+        { key: "19-1", icon: <UserAddOutlined />, title: "Add New Employee", link: "/add_new_employee" },
+        { key: "19-2", icon: <UnorderedListOutlined />, title: "Employee List", link: "/Employee_List" },
+        { key: "19-3", icon: <FileTextOutlined />, title: "Attendance Report", link: "/Attendance_Report" },
+        { key: "19-4", icon: <DollarOutlined />, title: "Payroll", link: "/Payroll" },
+        { key: "19-5", icon: <FileTextOutlined />, title: "Employee Data Management", link: "/Employee_Data_Management" },
+        { key: "19-6", icon: <FileTextOutlined />, title: "Leave Management", link: "/Leave_Management" },
+        { key: "19-7", icon: <FileTextOutlined />, title: "Time and Attendance Management", link: "/Time_Attendance_Management" },
+        { key: "19-8", icon: <FileTextOutlined />, title: "Bulk SMS", link: "/Bulk_SMS" },
+        { key: "19-9", icon: <FileTextOutlined />, title: "Allowances | Deductions", link: "/Allowances_Deductions_Management" },
+        { key: "19-10", icon: <FileTextOutlined />, title: "Statutory Deductions Management", link: "/Statutory_Deductions_Management" },
+        { key: "19-11", icon: <FileTextOutlined />, title: "Payroll Processing", link: "/Payroll_Processing" },
+        { key: "19-12", icon: <FileTextOutlined />, title: "Documents Management", link: "/Documents_Management" },
+        { key: "19-13", icon: <FileTextOutlined />, title: "Advance Salary Management", link: "/Advance_Salary_Management" },
+        { key: "19-14", icon: <FileTextOutlined />, title: "Warning Letters Management", link: "/Warning_Letters_Management" },
+        { key: "19-15", icon: <FileTextOutlined />, title: "Appointments Management", link: "/Appointments_Management" },
+        {
+          key: "19-16",
+          icon: <ReconciliationOutlined />,
+          title: "Reports Management",
+          subItems: [
+            { key: "19-16-1", icon: <BarChartOutlined />, title: "Employee Performance", link: "/Employee_Performance" },
+            { key: "19-16-2", icon: <AuditOutlined />, title: "Audit Reports", link: "/Audit_Reports" },
+            { key: "19-16-3", icon: <FileTextOutlined />, title: "NSSF Report", link: "/NSSF_Report" },
+            { key: "19-16-4", icon: <FileTextOutlined />, title: "NHIF Report", link: "/NHIF_Report" },
+            { key: "19-16-5", icon: <FileTextOutlined />, title: "PAYE Report", link: "/PAYE_Report" },
+            { key: "19-16-6", icon: <FileTextOutlined />, title: "P9 Report", link: "/P9_Report" },
+            { key: "19-16-7", icon: <FileTextOutlined />, title: "Leave Reports", link: "/Leave_Reports" },
+            { key: "19-16-8", icon: <FileTextOutlined />, title: "Attendance Reports", link: "/Attendance_Reports" },
+          ],
+        },
       ],
     },
     {
       key: "20",
+      icon: <UsergroupAddOutlined />,
+      title: "Users Management",
+      subItems: [
+        { key: "20-1", icon: <UsergroupAddOutlined />, title: "Add New User" },
+        { key: "20-2", icon: <UnorderedListOutlined />, title: "User List" },
+        { key: "20-3", icon: <LinkOutlined />, title: "Users Logs" },
+        { key: "20-4", icon: <UnorderedListOutlined />, title: "Roles List" },
+      ],
+    },
+    {
+      key: "21",
       icon: <SettingOutlined />,
       title: "Settings",
       subItems: [
-        { key: "20-1", icon: <BankOutlined />, title: "Company Profile" },
-        { key: "20-2", icon: <SecurityScanOutlined />, title: "Site Settings" },
-        { key: "20-3", icon: <BankOutlined />, title: "Manage Branch" },
-        { key: "20-4", icon: <PercentageOutlined />, title: "Tax List" },
-        { key: "20-5", icon: <LinkOutlined />, title: "Salutation" },
-        { key: "20-6", icon: <LinkOutlined />, title: "Progress Status" },
-        { key: "20-7", icon: <LinkOutlined />, title: "New Country" },
-        { key: "20-8", icon: <UnorderedListOutlined />, title: "Country List" },
+        { key: "21-1", icon: <BankOutlined />, title: "Company Profile" },
+        { key: "21-2", icon: <SecurityScanOutlined />, title: "Site Settings" },
+        { key: "21-3", icon: <BankOutlined />, title: "Manage Branch" },
+        { key: "21-4", icon: <PercentageOutlined />, title: "Tax List" },
+        { key: "21-5", icon: <LinkOutlined />, title: "Salutation" },
+        { key: "21-6", icon: <LinkOutlined />, title: "Progress Status" },
+        { key: "21-7", icon: <LinkOutlined />, title: "New Country" },
+        { key: "21-8", icon: <UnorderedListOutlined />, title: "Country List" },
         {
-          key: "20-9",
+          key: "21-9",
           icon: <UnorderedListOutlined />,
           title: "Currency List",
         },
-        { key: "20-10", icon: <LockOutlined />, title: "Change Password" },
-        { key: "20-11", icon: <AuditOutlined />, title: "Audit Trail" },
-        { key: "20-12", icon: <HddOutlined />, title: "Database Backup" },
+        { key: "21-10", icon: <LockOutlined />, title: "Change Password" },
+        { key: "21-11", icon: <AuditOutlined />, title: "Audit Trail" },
+        { key: "21-12", icon: <HddOutlined />, title: "Database Backup" },
       ],
     },
-    { key: "21", icon: <LogoutOutlined />, title: "Logout" },
+    { key: "22", icon: <LogoutOutlined />, title: "Logout", link: "/login_page", },
   ];
   
   const generateMenuItems = () => {
@@ -435,18 +483,32 @@ const Sidebar = ({ collapsed, ref }) => {
       if (item.subItems) {
         return {
           key: item.key,
-          icon: item.icon,
+          icon: <Tooltip title={item.title}>{item.icon}</Tooltip>,
           label: item.link ? <Link href={item.link}>{item.title}</Link> : item.title,
-          children: item.subItems.map((subItem) => ({
-            key: subItem.key,
-            icon: subItem.icon,
-            label: subItem.link ? <Link href={subItem.link}>{subItem.title}</Link> : subItem.title,
-          })),
+          children: item.subItems.map((subItem) => {
+            if (subItem.subItems) {
+              return {
+                key: subItem.key,
+                icon: <Tooltip title={subItem.title}>{subItem.icon}</Tooltip>,
+                label: subItem.link ? <Link href={subItem.link}>{subItem.title}</Link> : subItem.title,
+                children: subItem.subItems.map((nestedSubItem) => ({
+                  key: nestedSubItem.key,
+                  icon: <Tooltip title={nestedSubItem.title}>{nestedSubItem.icon}</Tooltip>,
+                  label: nestedSubItem.link ? <Link href={nestedSubItem.link}>{nestedSubItem.title}</Link> : nestedSubItem.title,
+                })),
+              };
+            }
+            return {
+              key: subItem.key,
+              icon: <Tooltip title={subItem.title}>{subItem.icon}</Tooltip>,
+              label: subItem.link ? <Link href={subItem.link}>{subItem.title}</Link> : subItem.title,
+            };
+          }),
         };
       }
       return {
         key: item.key,
-        icon: item.icon,
+        icon: <Tooltip title={item.title}>{item.icon}</Tooltip>,
         label: item.link ? <Link href={item.link}>{item.title}</Link> : item.title,
       };
     });
@@ -454,7 +516,7 @@ const Sidebar = ({ collapsed, ref }) => {
 
   return (
     <div
-      className={`sidebar ${collapsed ? "collapsed" : ""}`}
+      className={`sidebar ${collapsed ? "collapsed no-animation" : "no-animation"}`}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       ref={ref}
@@ -468,6 +530,8 @@ const Sidebar = ({ collapsed, ref }) => {
         className="menu"
         inlineCollapsed={collapsed}
         items={generateMenuItems()}
+        openKeys={openKeys}
+        onOpenChange={onOpenChange}
         {...(hovered && { className: "submenu-hovered" })}
       />
     </div>

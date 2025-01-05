@@ -112,7 +112,7 @@ const AddItems = () => {
     <div className="min-h-screen flex">
       <Sidebar collapsed={collapsed} onCollapse={toggleCollapsed} />
 
-      <Layout className="flex-1 bg-gray-50">
+      <Layout className="flex-1 bg-gray-100">
         <Header collapsed={collapsed} onCollapse={toggleCollapsed} />
 
         <Content className="transition-all duration-300 p-6">

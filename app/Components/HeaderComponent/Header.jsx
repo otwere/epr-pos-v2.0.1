@@ -11,7 +11,11 @@ const Header = ({ collapsed, setCollapsed }) => {
 
   // Handle menu collapse toggle
   const handleToggle = () => {
-    setCollapsed((prevState) => !prevState);
+    if (typeof setCollapsed === 'function') {
+      setCollapsed((prevState) => !prevState);
+    } else {
+      console.error('setCollapsed is not a function');
+    }
   };
 
   // Handle scroll events
@@ -19,7 +23,13 @@ const Header = ({ collapsed, setCollapsed }) => {
     const currentScrollY = window.scrollY;
     // Smoothly hide/show the header based on scroll position
     requestAnimationFrame(() => {
-      setIsOpen(currentScrollY < 100 || currentScrollY < window.scrollY); // Simplified scroll check
+      setIsOpen((prevIsOpen) => {
+        if (currentScrollY < 100 || currentScrollY < window.scrollY) {
+          return true;
+        } else {
+          return false;
+        }
+      });
     });
   };
 

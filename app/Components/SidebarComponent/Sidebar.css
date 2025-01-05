@@ -1,0 +1,87 @@
+/* Sidebar Styles */
+
+.sidebar {
+  height: 100dvh;
+  overflow-y: auto;
+  transition: width 0.3s ease-in-out, background-color 0.3s ease-in-out;
+  background-color: hsl(220, 20%, 96%); 
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  width: 325px;
+  scroll-behavior: smooth;
+  
+}
+
+.sidebar.collapsed {
+  width: 80px;
+  transition: width 0.3s ease-in-out;
+  overflow: hidden;
+  /* Hide overflow when collapsed */
+}
+
+/* Logo Container */
+.logo-container {
+  padding-top: 14px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 48px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid #e0e0e0;
+ 
+}
+
+@media (max-width: 768px) {
+  .logo-container {
+    height: 40px;
+    margin-bottom: 10px;
+  }
+}
+
+/* Menu Styles */
+.menu {
+  border-right: none;
+}
+
+.ant-menu-item,
+.ant-menu-submenu-title {
+  padding-left: 24px !important;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  border-radius: 4px;
+  
+}
+
+.ant-menu-item:hover,
+.ant-menu-submenu-title:hover {
+  background-color: hsl(199, 100%, 95%);
+  color: #1890ff;
+  box-shadow: 0 2px 8px hsla(0, 0%, 0%, 0.1);
+  
+}
+
+.ant-menu-item-selected {
+  background-color: #1890ff !important;
+  color: #fff !important;
+  border-radius: 4px;
+}
+
+.submenu-hovered .ant-menu-submenu-popup {
+  max-height: 500px;
+  overflow-y: auto;
+  background-color: #ffffffde;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: 160px;
+  }
+
+  .sidebar.collapsed {
+    width: 0px;
+  }
+}
+
+.no-animation {
+  transition: none !important;
+}

@@ -1,0 +1,24 @@
+@import 'antd/dist/reset.css';
+
+/* Custom styles for Ant Design overrides */
+.ant-input-affix-wrapper {
+  border-radius: 8px !important;
+}
+
+.ant-input-affix-wrapper:hover {
+  border-color: #2563eb !important;
+}
+
+.ant-input-affix-wrapper-focused {
+  border-color: #2563eb !important;
+  
+}
+
+.ant-btn-primary {
+  background: #2563eb !important;
+}
+
+.ant-btn-primary:hover {
+  background: #1d4ed8 !important;
+}
+

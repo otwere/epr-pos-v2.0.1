@@ -6,11 +6,11 @@ import {
   Table,
   Typography,
   Breadcrumb,
-  DatePicker,
-  Select,
-  Button,
   Tag,
+  Button,
   Dropdown,
+  Row,
+  Col,
 } from "antd";
 import {
   HomeOutlined,
@@ -27,10 +27,10 @@ import Footer from "../Components/FooterComponent/Footer";
 const { Content } = Layout;
 const { Title } = Typography;
 
-
 const PurchaseAnalysisList = () => {
   const [collapsed, setCollapsed] = useState(false);
-  
+  const [filterStatus, setFilterStatus] = useState(null);
+
   const purchaseData = [
     {
       key: "1",
@@ -65,6 +65,23 @@ const PurchaseAnalysisList = () => {
     return { status: "No Change", color: "gray" };
   };
 
+  const filteredData = filterStatus
+    ? purchaseData.filter((record) => {
+        const priceDiff = calculatePriceDiff(record.previousPrice, record.currentPrice);
+        return determinePriceDiffStatus(priceDiff).status === filterStatus;
+      })
+    : purchaseData;
+
+  const statusCounts = purchaseData.reduce(
+    (acc, record) => {
+      const priceDiff = calculatePriceDiff(record.previousPrice, record.currentPrice);
+      const { status } = determinePriceDiffStatus(priceDiff);
+      acc[status] = (acc[status] || 0) + 1;
+      return acc;
+    },
+    { Up: 0, Down: 0, "No Change": 0 }
+  );
+
   const columns = [
     {
       title: "Supplier Name",
@@ -97,7 +114,9 @@ const PurchaseAnalysisList = () => {
     {
       title: "Price Diff",
       key: "priceDiff",
-      sorter: (a, b) => calculatePriceDiff(a.previousPrice, a.currentPrice) - calculatePriceDiff(b.previousPrice, b.currentPrice),
+      sorter: (a, b) =>
+        calculatePriceDiff(a.previousPrice, a.currentPrice) -
+        calculatePriceDiff(b.previousPrice, b.currentPrice),
       render: (_, record) => {
         const priceDiff = calculatePriceDiff(record.previousPrice, record.currentPrice);
         return `KES ${priceDiff.toLocaleString()}`;
@@ -177,17 +196,42 @@ const PurchaseAnalysisList = () => {
           />
           <hr className="mb-4" />
 
+          <Row gutter={16} className="mb-4">
+            {Object.entries(statusCounts).map(([status, count]) => (
+              <Col span={8} key={status}>
+                <Card
+                  hoverable
+                  onClick={() => setFilterStatus(filterStatus === status ? null : status)}
+                  className={`border ${
+                    filterStatus === status
+                      ? "border-blue-500"
+                      : "border-gray-200"
+                  } transition-all duration-300 transform hover:scale-95 hover:bg-blue-50 ${
+                    status === "Up"
+                      ? "bg-red-50"
+                      : status === "Down"
+                      ? "bg-green-100"
+                      : "bg-gray-200"
+                  }`}
+                >
+                  <Title level={5}>{status}</Title>
+                  <p>{count} items</p>
+                </Card>
+              </Col>
+            ))}
+          </Row>
+
           <Card className="bg-gray-50 rounded-sm mb-2">
             <Title level={4}>Purchase Analysis List</Title>
             <Table
               columns={columns}
-              dataSource={purchaseData}
+              dataSource={filteredData}
               pagination={{
                 pageSize: 10,
                 showSizeChanger: true,
                 showQuickJumper: true,
               }}
-              className="shadow-sm"
+              className="shadow-none"
             />
           </Card>
         </Content>

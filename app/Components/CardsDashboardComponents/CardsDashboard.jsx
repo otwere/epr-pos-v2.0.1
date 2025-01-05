@@ -90,6 +90,7 @@ const CustomBreadcrumb = () => (
 // Enhanced card data with more detailed customer information
 const cardData = [
   {
+    key: 1,
     title: "TODAY'S SALES",
     amount: "Kshs 150,210.00",
     subtitle: new Date().toLocaleDateString('en-GB', { 
@@ -102,6 +103,7 @@ const cardData = [
     icon: "💵",
   },
   {
+    key: 2,
     title: "CREDIT SALES",
     amount: "Kshs 2,000.00",
     subtitle: "Accounts Receivable",
@@ -110,6 +112,7 @@ const cardData = [
     icon: "📈",
   },
   {
+    key: 3,
     title: "PURCHASE DUE",
     amount: "Kshs 66,250.00",
     subtitle: "Accounts Payable",
@@ -119,23 +122,27 @@ const cardData = [
     link: "/Purchase_Analysis_List",
   },
   {
+    key: 4,
     title: "EXPENSE AMOUNT",
     amount: "Kshs 4,550.00",
     subtitle: `For ${getCurrentMonth()}`,
     color: "bg-red-500",
     hoverColor: "hover:bg-red-700",
     icon: "💸",
+    link: "/expenditure_breakdown",
   },
   {
+    key: 5,
     title: "CUSTOMERS | CLIENTS",
     amount: "Total Clients - 120",
-    subtitle: `Clients - 95 | ${getCurrentMonth()}`,
+    subtitle: `Clients - 3 | ${getCurrentMonth()}`,
     color: "bg-green-600",
     hoverColor: "hover:bg-green-700",
     icon: "🧑‍🤝‍🧑",
-    link: "/customers",
+    link: "/customers_list",
   },
   {
+    key: 6,
     title: "SUPPLIERS",
     amount: "Total Suppliers - 30",
     subtitle: `Active Suppliers - 25 | ${getCurrentMonth()}`,
@@ -144,6 +151,7 @@ const cardData = [
     icon: "🚚",
   },
   {
+    key: 7,
     title: "PURCHASE INVOICE",
     amount: "Total Invoices - 12",
     subtitle: `Pending - 3 | ${getCurrentMonth()}`,
@@ -153,6 +161,7 @@ const cardData = [
     link: "/Purchase_List",
   },
   {
+    key: 8,
     title: "SALES INVOICE",
     amount: "Total Invoices - 3",
     subtitle: `Paid - 1 | ${getCurrentMonth()}`,

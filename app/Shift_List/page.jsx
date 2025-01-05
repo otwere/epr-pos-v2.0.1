@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Layout, Breadcrumb, Typography } from "antd";
 import Header from "../Components/HeaderComponent/Header";
 import Sidebar from "../Components/SidebarComponent/Sidebar";
@@ -18,6 +18,11 @@ const ShiftList = () => {
   const toggleCollapsed = () => {
     setCollapsed(prevState => !prevState); // Using previous state to toggle safely
   };
+
+  // Ensure useEffect has a dependency array if it exists
+  useEffect(() => {
+    // Any effect logic here
+  }, []); // Empty dependency array to run only once
 
   const breadcrumbItems = [
     {
@@ -63,6 +68,8 @@ const ShiftList = () => {
               </Text>
             </div>
           </div>
+
+          <hr className="mb-4"/>
 
           {/* Shift Table Section */}
           <ShiftTable />

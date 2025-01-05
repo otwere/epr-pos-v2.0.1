@@ -187,7 +187,7 @@ const SalesList = () => {
           }}
           trigger={["click"]}
         >
-          <Button icon={<MoreOutlined />}>Actions</Button>
+          <Button icon={<MoreOutlined />}></Button>
         </Dropdown>
       ),
     },

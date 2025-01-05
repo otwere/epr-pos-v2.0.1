@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import ReactDOM from 'react-dom';
 import {
   Layout,
   Card,
@@ -61,6 +62,7 @@ const SalesInvoiceList = () => {
     total: { count: 0, amount: 0 },
     paid: { count: 0, amount: 0 },
     unpaid: { count: 0, amount: 0 },
+    partial: { count: 0, amount: 0 },
   });
   const [activeFilter, setActiveFilter] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
@@ -130,6 +132,9 @@ const SalesInvoiceList = () => {
         if (invoice.payStatus === "Paid") {
           acc.paid.count++;
           acc.paid.amount += invoice.total;
+        } else if (invoice.payStatus === "Partial") {
+          acc.partial.count++;
+          acc.partial.amount += invoice.balance;
         } else {
           acc.unpaid.count++;
           acc.unpaid.amount += invoice.balance;
@@ -141,6 +146,7 @@ const SalesInvoiceList = () => {
         total: { count: 0, amount: 0 },
         paid: { count: 0, amount: 0 },
         unpaid: { count: 0, amount: 0 },
+        partial: { count: 0, amount: 0 },
       }
     );
 
@@ -161,7 +167,9 @@ const SalesInvoiceList = () => {
     if (activeFilter === "paid") {
       filtered = filtered.filter((invoice) => invoice.payStatus === "Paid");
     } else if (activeFilter === "unpaid") {
-      filtered = filtered.filter((invoice) => invoice.payStatus !== "Paid");
+      filtered = filtered.filter((invoice) => invoice.payStatus === "Unpaid");
+    } else if (activeFilter === "partial") {
+      filtered = filtered.filter((invoice) => invoice.payStatus === "Partial");
     }
 
     // Apply search filter
@@ -501,7 +509,7 @@ const SalesInvoiceList = () => {
 
             <Card className="bg-gray-50 rounded-sm">
               <div className="mb-4 flex justify-between items-center">
-                <Title level={4}>Sales Invoices List</Title>
+                <Title level={4}>Invoices Sales List</Title>
                 <div className="flex gap-4">
                   <Button
                     type="primary"
@@ -520,7 +528,7 @@ const SalesInvoiceList = () => {
               <hr className="mb-4" />
 
               <Row gutter={16} className="mb-4 font-bold">
-                <Col span={8}>
+                <Col span={6}>
                   <Card
                     className={`bg-blue-50 hover:shadow-md cursor-pointer transform transition-transform duration-300 hover:scale-95 ${
                       activeFilter === "all" ? "border-blue-500 border-2" : ""
@@ -528,14 +536,14 @@ const SalesInvoiceList = () => {
                     onClick={() => handleFilterChange("all")}
                   >
                     <Statistic
-                      title="Number of Invoices | Total Invoices Amount (ALL)"
+                      title=" Invoices | Total Invoices Amount"
                       value={invoiceStats.total.count}
                       suffix={` | KES : ${invoiceStats.total.amount.toLocaleString()}`}
                       valueStyle={{ color: "#1890ff" }}
                     />
                   </Card>
                 </Col>
-                <Col span={8}>
+                <Col span={6}>
                   <Card
                     className={`bg-green-50 hover:shadow-md cursor-pointer transform transition-transform duration-300 hover:scale-95 ${
                       activeFilter === "paid" ? "border-green-500 border-2" : ""
@@ -543,14 +551,29 @@ const SalesInvoiceList = () => {
                     onClick={() => handleFilterChange("paid")}
                   >
                     <Statistic
-                      title="Number of Paid Invoices | Amount Paid"
+                      title=" Fully Paid Invoices | Amount Paid"
                       value={invoiceStats.paid.count}
                       suffix={` | KES : ${invoiceStats.paid.amount.toLocaleString()}`}
                       valueStyle={{ color: "#52c41a" }}
                     />
                   </Card>
                 </Col>
-                <Col span={8}>
+                <Col span={6}>
+                  <Card
+                    className={`bg-orange-50 hover:shadow-md cursor-pointer transform transition-transform duration-300 hover:scale-95 ${
+                      activeFilter === "partial" ? "border-orange-500 border-2" : ""
+                    }`}
+                    onClick={() => handleFilterChange("partial")}
+                  >
+                    <Statistic
+                      title="Partially Paid Invoices | Balance Due"
+                      value={invoiceStats.partial.count}
+                      suffix={` | KES : ${invoiceStats.partial.amount.toLocaleString()}`}
+                      valueStyle={{ color: "#faad14" }}
+                    />
+                  </Card>
+                </Col>
+                <Col span={6}>
                   <Card
                     className={`bg-red-50 hover:shadow-md cursor-pointer transform transition-transform duration-300 hover:scale-95 ${
                       activeFilter === "unpaid" ? "border-red-500 border-2" : ""
@@ -558,7 +581,7 @@ const SalesInvoiceList = () => {
                     onClick={() => handleFilterChange("unpaid")}
                   >
                     <Statistic
-                      title=" Number of Unpaid Invoices | Amount Due"
+                      title="Unpaid Invoices | Balance Due"
                       value={invoiceStats.unpaid.count}
                       suffix={` | KES : ${invoiceStats.unpaid.amount.toLocaleString()}`}
                       valueStyle={{ color: "#ff4d4f" }}
@@ -573,6 +596,8 @@ const SalesInvoiceList = () => {
                 onChange={(e) => handleSearch(e.target.value)}
                 style={{ marginBottom: 16 }}
               />
+
+              <hr />
 
               <Table
                 rowSelection={{

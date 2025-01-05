@@ -58,7 +58,7 @@ const ShiftTable = () => {
   ]);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isDeleteModalOpen, setIsDeleteModalOepn] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [shiftToDelete, setShiftToDelete] = useState(null);
   const [editingShift, setEditingShift] = useState(null);
   const [form] = Form.useForm();
