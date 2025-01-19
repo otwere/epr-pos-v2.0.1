@@ -11,6 +11,7 @@ import {
   Dropdown,
   message,
   Typography,
+  Select,
 } from "antd";
 import {
   PlusOutlined,
@@ -19,15 +20,23 @@ import {
   EyeOutlined,
   MoreOutlined,
   SearchOutlined,
+  ExportOutlined,
 } from "@ant-design/icons";
-
 import dayjs from "dayjs";
-import isBetween from "dayjs/plugin/isBetween"; // Import the plugin
-dayjs.extend(isBetween); // Extend dayjs with the isBetween plugin
-
+import isBetween from "dayjs/plugin/isBetween";
 import DeleteConfirmationModal from "../DeleteConfirmationModalComponent/DeleteConfirmationModal";
 
+dayjs.extend(isBetween);
+
 const { Text } = Typography;
+const { RangePicker } = DatePicker;
+const { Option } = Select;
+
+const branches = [
+  "Mombasa Branch Likoni",
+  "Nakuru Branch",
+  "Nairobi Branch (HQ)",
+];
 
 const ShiftTable = () => {
   const [data, setData] = useState([
@@ -63,6 +72,8 @@ const ShiftTable = () => {
   const [editingShift, setEditingShift] = useState(null);
   const [form] = Form.useForm();
   const [searchText, setSearchText] = useState("");
+  const [searchStatus, setSearchStatus] = useState("");
+  const [searchDateRange, setSearchDateRange] = useState([]);
 
   const openEditModal = useCallback((record) => {
     setEditingShift(record);
@@ -102,20 +113,27 @@ const ShiftTable = () => {
               : "Opened",
         };
 
-        if (
-          data.some(
-            (item) =>
-              item.shiftDate === newData.shiftDate &&
-              item.branch === newData.branch &&
-              (!editingShift || editingShift.key !== item.key)
-          )
-        ) {
-          return form.setFields([
-            {
-              name: "shiftDate",
-              errors: ["Shift already exists for this branch and date!"],
-            },
-          ]);
+        // Check for overlapping shifts
+        const isOverlapping = data.some((item) => {
+          if (item.branch === newData.branch && item.key !== newData.key) {
+            const newOpening = dayjs(newData.openingTime);
+            const newClosing = newData.closingTime === "0000-00-00" ? dayjs().add(100, 'year') : dayjs(newData.closingTime);
+            const existingOpening = dayjs(item.openingTime);
+            const existingClosing = item.closingTime === "0000-00-00" ? dayjs().add(100, 'year') : dayjs(item.closingTime);
+
+            return (
+              (newOpening.isBetween(existingOpening, existingClosing, null, '[]') ||
+                newClosing.isBetween(existingOpening, existingClosing, null, '[]')) ||
+              (existingOpening.isBetween(newOpening, newClosing, null, '[]') ||
+                existingClosing.isBetween(newOpening, newClosing, null, '[]'))
+            );
+          }
+          return false;
+        });
+
+        if (isOverlapping) {
+          message.error("Shift overlaps with an existing shift for the same branch!");
+          return;
         }
 
         if (editingShift) {
@@ -131,6 +149,7 @@ const ShiftTable = () => {
       })
       .catch((errorInfo) => {
         console.log("Validation Failed:", errorInfo);
+        message.error("Failed to submit the form. Please check the fields and try again.");
       });
   }, [editingShift, data, closeModal, form]);
 
@@ -142,7 +161,6 @@ const ShiftTable = () => {
   const handleDelete = useCallback(() => {
     if (!shiftToDelete) return;
 
-    // Simulating an async delete operation
     setData((prev) => prev.filter((item) => item.key !== shiftToDelete.key));
     message.success(
       `Shift for ${shiftToDelete.branch} on ${shiftToDelete.shiftDate} deleted successfully!`
@@ -167,7 +185,7 @@ const ShiftTable = () => {
             <Text strong>Opening Time:</Text> {record.openingTime}
           </p>
           <p>
-            <Text strong>Closing Time:</Text> {record.closingTime === "00-00-0000" ? "N/A" : record.closingTime}
+            <Text strong>Closing Time:</Text> {record.closingTime === "0000-00-00" ? "N/A" : record.closingTime}
           </p>
           <p>
             <Text strong>Status:</Text>
@@ -175,30 +193,43 @@ const ShiftTable = () => {
               {record.status}
             </Tag>
           </p>
+          <p>
+            <Text strong>Duration:</Text> {calculateDuration(record.openingTime, record.closingTime)}
+          </p>
         </div>
       ),
     });
   }, []);
 
-  // Check and update the status dynamically based on current time
+  const calculateDuration = (openingTime, closingTime) => {
+    if (closingTime === "0000-00-00") return "Open 24 / 7";
+    const start = dayjs(openingTime);
+    const end = dayjs(closingTime);
+    const duration = end.diff(start, 'hour', true);
+    return `${duration.toFixed(2)} hours`;
+  };
+
   useEffect(() => {
-    const updatedData = data.map((shift) => {
-      const currentTime = dayjs();
-      const openingTime = dayjs(shift.openingTime);
-      const closingTime = shift.closingTime !== "00-00-0000" ? dayjs(shift.closingTime) : null;
+    const interval = setInterval(() => {
+      const updatedData = data.map((shift) => {
+        const currentTime = dayjs();
+        const openingTime = dayjs(shift.openingTime);
+        const closingTime = shift.closingTime !== "0000-00-00" ? dayjs(shift.closingTime) : null;
 
-      // Check if current time is within opening and closing time
-      if (closingTime && currentTime.isAfter(closingTime)) {
-        shift.status = "Closed";
-      } else if (currentTime.isBetween(openingTime, closingTime, null, "[)")) {
-        shift.status = "Opened";
-      } else {
-        shift.status = "Closed"; // if current time is before opening
-      }
+        if (closingTime && currentTime.isAfter(closingTime)) {
+          shift.status = "Closed";
+        } else if (currentTime.isBetween(openingTime, closingTime, null, "[)")) {
+          shift.status = "Opened";
+        } else {
+          shift.status = "Closed";
+        }
 
-      return shift;
-    });
-    setData(updatedData);
+        return shift;
+      });
+      setData(updatedData);
+    }, 60000); // Update every minute
+
+    return () => clearInterval(interval);
   }, [data]);
 
   const columns = [
@@ -223,7 +254,7 @@ const ShiftTable = () => {
       dataIndex: "closingTime",
       key: "closingTime",
       render: (time) =>
-        time === "00-00-0000" ? "N/A" : dayjs(time).format("DD-MM-YYYY HH:mm:ss"),
+        time === "0000-00-00" ? "N/A" : dayjs(time).format("DD-MM-YYYY HH:mm:ss"),
     },
     {
       title: "Status",
@@ -232,6 +263,11 @@ const ShiftTable = () => {
       render: (status) => (
         <Tag color={status === "Opened" ? "green" : "orange"}>{status}</Tag>
       ),
+    },
+    {
+      title: "Duration",
+      key: "duration",
+      render: (_, record) => calculateDuration(record.openingTime, record.closingTime),
     },
     {
       title: "Action",
@@ -273,12 +309,20 @@ const ShiftTable = () => {
     },
   ];
 
-  const filteredData = data.filter(
-    (item) =>
+  const filteredData = data.filter((item) => {
+    const matchesSearchText =
       item.branch.toLowerCase().includes(searchText) ||
       item.shiftDate.includes(searchText) ||
-      item.status.toLowerCase().includes(searchText)
-  );
+      item.status.toLowerCase().includes(searchText);
+
+    const matchesStatus = searchStatus ? item.status === searchStatus : true;
+
+    const matchesDateRange = searchDateRange.length
+      ? dayjs(item.shiftDate).isBetween(searchDateRange[0], searchDateRange[1], null, '[]')
+      : true;
+
+    return matchesSearchText && matchesStatus && matchesDateRange;
+  });
 
   return (
     <div>
@@ -289,13 +333,28 @@ const ShiftTable = () => {
           className="w-1/3"
           prefix={<SearchOutlined className="text-gray-400" />}
         />
-        <Button
-          type="primary"
-          icon={<PlusOutlined />}
-          onClick={() => openEditModal(null)}
-        >
-          Add Shift
-        </Button>
+        <Space>
+          <Select
+            placeholder="Filter by status"
+            allowClear
+            onChange={(value) => setSearchStatus(value)}
+            className="w-40"
+          >
+            <Option value="Opened">Opened</Option>
+            <Option value="Closed">Closed</Option>
+          </Select>
+          <RangePicker
+            onChange={(dates) => setSearchDateRange(dates)}
+            className="w-48"
+          />
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={() => openEditModal(null)}
+          >
+            Add Shift
+          </Button>
+        </Space>
       </div>
 
       <Table
@@ -320,50 +379,65 @@ const ShiftTable = () => {
         onCancel={closeModal}
         onOk={handleSubmit}
         okText={editingShift ? "Update" : "Add"}
+        style={{ width: '1400px' }} // Added this line to increase modal width
       >
         <Form form={form} layout="vertical">
-          <Form.Item
-            name="branch"
-            label="Branch | Station"
-            rules={[{ required: true, message: "Please enter branch name!" }]}
-          >
-            <Input placeholder="Enter branch | station" />
-          </Form.Item>
-          <Form.Item
-            name="shiftDate"
-            label="Shift Date"
-            rules={[{ required: true, message: "Please select shift date!" }]}
-          >
-            <DatePicker className="w-full" />
-          </Form.Item>
-          <Form.Item
-            name="openingTime"
-            label="Opening Date | Time"
-            rules={[{ required: true, message: "Please select opening time!" }]}
-          >
-            <DatePicker showTime format="DD-MM-YYYY HH:mm:ss" className="w-full" />
-          </Form.Item>
-          <Form.Item
-            name="closingTime"
-            label="Closing Date | Time"
-            rules={[
-              { required: true, message: "Please select closing time!" },
-              ({ getFieldValue }) => ({
-                validator(_, value) {
-                  const openingTime = dayjs(getFieldValue("openingTime"));
-                  const closingTime = dayjs(value);
-                  if (!value || closingTime.isAfter(openingTime)) {
-                    return Promise.resolve();
-                  }
-                  return Promise.reject(
-                    new Error("Closing time must be after opening time!")
-                  );
-                },
-              }),
-            ]}
-          >
-            <DatePicker showTime format="DD-MM-YYYY HH:mm:ss" className="w-full" />
-          </Form.Item>
+          <div style={{ display: 'flex', gap: '16px' }}>
+            <Form.Item
+              name="branch"
+              label="Branch | Station"
+              rules={[{ required: true, message: "Please select branch!" }]}
+              style={{ flex: 1 }}
+            >
+              <Select placeholder="Select branch | station">
+                {branches.map((branch) => (
+                  <Option key={branch} value={branch}>
+                    {branch}
+                  </Option>
+                ))}
+              </Select>
+            </Form.Item>
+            <Form.Item
+              name="shiftDate"
+              label="Shift Date"
+              rules={[{ required: true, message: "Please select shift date!" }]}
+              style={{ flex: 1 }}
+            >
+              <DatePicker className="w-full" />
+            </Form.Item>
+          </div>
+          <div style={{ display: 'flex', gap: '16px' }}>
+            <Form.Item
+              name="openingTime"
+              label="Opening Date | Time"
+              rules={[{ required: true, message: "Please select opening time!" }]}
+              style={{ flex: 1 }}
+            >
+              <DatePicker showTime format="DD-MM-YYYY HH:mm:ss" className="w-full" />
+            </Form.Item>
+            <Form.Item
+              name="closingTime"
+              label="Closing Date | Time"
+              rules={[
+                { required: true, message: "Please select closing time!" },
+                ({ getFieldValue }) => ({
+                  validator(_, value) {
+                    const openingTime = dayjs(getFieldValue("openingTime"));
+                    const closingTime = dayjs(value);
+                    if (!value || closingTime.isAfter(openingTime)) {
+                      return Promise.resolve();
+                    }
+                    return Promise.reject(
+                      new Error("Closing time must be after opening time!")
+                    );
+                  },
+                }),
+              ]}
+              style={{ flex: 1 }}
+            >
+              <DatePicker showTime format="DD-MM-YYYY HH:mm:ss" className="w-full" />
+            </Form.Item>
+          </div>
         </Form>
       </Modal>
 

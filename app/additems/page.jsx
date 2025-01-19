@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useRef } from "react";
 import {
   Form,
   Input,
@@ -43,6 +43,7 @@ const AddItems = () => {
   const [openModal, setOpenModal] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
+  const formRef = useRef(null);
 
   const CATEGORIES = {
     groceries: ["Dairy", "Bakery", "Produce", "Frozen Foods"],
@@ -74,9 +75,9 @@ const AddItems = () => {
   }, []);
 
   const handleReset = useCallback(() => {
-    form.resetFields();
+    formRef.current.resetFields();
     setFileList([]);
-  }, [form]);
+  }, []);
 
   const onFinish = useCallback((values) => {
     const submissionData = {
@@ -148,6 +149,7 @@ const AddItems = () => {
             className="shadow-sm rounded-sm p-4 bg-gray-50 mb-8"
           >
             <Form
+              ref={formRef}
               form={form}
               layout="vertical"
               onFinish={onFinish}

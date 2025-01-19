@@ -28,13 +28,13 @@ const CardsDashboard = (props) => {
   };
 
   return (
-    <div className="site-card-wrapper">
+    <div className="site-card-wrapper bg-gray-50">
       <CustomBreadcrumb />
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {props.data.map((item, index) => (
           <Card
             key={index}
-            ref={(el) => (cardRefs.current[index] = el)} // Assign ref for each card
+            ref={cardRefs.current[index]} // Assign ref for each card
             className={` 
               ${item.color} ${item.hoverColor}
               text-white cursor-pointer transition duration-300 

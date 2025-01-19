@@ -76,7 +76,7 @@ const PAYMENT_METHODS = [
   },
 ];
 
-const PaymentModal = ({ open, onClose, isProcessing, setIsProcessing }) => {
+const PaymentModal = ({ open, onClose }) => {
   const [form] = Form.useForm();
   const { totals, clearItems, discount } = usePOS();
   const [currentStep, setCurrentStep] = useState(0);
@@ -84,12 +84,21 @@ const PaymentModal = ({ open, onClose, isProcessing, setIsProcessing }) => {
   const [transactionId, setTransactionId] = useState("");
   const [totalPaid, setTotalPaid] = useState(0);
   const [error, setError] = useState(null);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [fieldsToReset, setFieldsToReset] = useState([]);
 
   useEffect(() => {
     if (open) {
       resetPaymentState();
     }
   }, [open]);
+
+  useEffect(() => {
+    if (fieldsToReset.length > 0) {
+      form.resetFields(fieldsToReset);
+      setFieldsToReset([]);
+    }
+  }, [fieldsToReset, form]);
 
   const resetPaymentState = () => {
     setCurrentStep(0);
@@ -143,7 +152,7 @@ const PaymentModal = ({ open, onClose, isProcessing, setIsProcessing }) => {
       const updated = prev.filter((pm) => pm.method !== methodToRemove);
       const newTotalPaid = updated.reduce((sum, pm) => sum + pm.amount, 0);
       setTotalPaid(newTotalPaid);
-      form.resetFields([`amount_${methodToRemove}`]);
+      setFieldsToReset([`amount_${methodToRemove}`]);
 
       if (newTotalPaid > totals.grandTotal) {
         setError(
@@ -339,13 +348,13 @@ const PaymentModal = ({ open, onClose, isProcessing, setIsProcessing }) => {
               <div className="flex items-center">
                 <Text className="text-gray-600 mr-2">Subtotal:</Text>
                 <Text strong className="text-blue-600">
-                  KES {formatAmount(totals.totalAmt)}
+                  KES : {formatAmount(totals.totalAmt)}
                 </Text>
               </div>
               <div className="flex items-center">
                 <Text className="text-gray-600 mr-2">Discount:</Text>
                 <Text strong className="text-orange-600">
-                  KES {formatAmount(discount)}
+                  KES : {formatAmount(discount)}
                 </Text>
               </div>
             </div>
@@ -357,13 +366,13 @@ const PaymentModal = ({ open, onClose, isProcessing, setIsProcessing }) => {
                 Amount Due:
               </Text>
               <Text strong className="text-xl text-green-600">
-                KES {formatAmount(totals.grandTotal)}
+                KES : {formatAmount(totals.grandTotal)}
               </Text>
             </div>
             <div className="mt-4">
               <Text className="text-gray-600">Amount Paid:</Text>
               <Text strong className="ml-2 text-blue-600">
-                KES {formatAmount(totalPaid)}
+                KES : {formatAmount(totalPaid)}
               </Text>
               <Progress
                 percent={Math.min(100, (totalPaid / totals.grandTotal) * 100)}
@@ -446,7 +455,7 @@ const PaymentModal = ({ open, onClose, isProcessing, setIsProcessing }) => {
                     color={methodInfo?.color}
                     className="text-base px-3 py-1"
                   >
-                    KES {formatAmount(amount)}
+                    KES : {formatAmount(amount)}
                   </Tag>
                 </div>
               );

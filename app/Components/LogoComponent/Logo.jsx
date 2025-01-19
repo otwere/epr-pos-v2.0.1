@@ -13,7 +13,7 @@ const Logo = ({
   return (
     <Link href="/" className="block">
       <div
-        className={`flex items-center justify-start p-2 h-16 w-full shadow-none transition-all duration-300 ${backgroundColor}`}
+        className={`flex items-center justify-start p-2 h-16 w-full shadow-none transition-all duration-300 hover:shadow-md ${backgroundColor}`}
       >
         <img
           src={logoSrc}
@@ -24,9 +24,9 @@ const Logo = ({
         />
         {/* Only show text if not collapsed */}
         {!collapsed && (
-          <div className="ml-2 p-0 mt-[-2px] transition-opacity duration-300">
+          <div className="ml-5 w-full p-0 mt-[-2px] transition-opacity duration-300">
             <h6
-              className={`font-bold text-lg leading-tight ${textColor} text-nowrap`}
+              className={`font-bold text-lg mr-4 leading-tight ${textColor} text-nowrap`}
             >
               {companyName}
             </h6>

@@ -12,10 +12,10 @@ const Content = ({ collapsed }) => {
       className={`
         transition-all duration-300 p-6 
         ${collapsed ? 'ml-[60px] w-[calc(100% - 88px)]' : 'ml-0 w-full'} 
-        bg-gray-50
+        bg-gray-100 h-full overflow-auto
       `}
     >
-      <Card className="shadow-sm rounded-lg bg-gray-50 max-w-full mb-3">
+      <Card className=" rounded-lg bg-gray-50 max-w-full mb-3">
         <div className="mb-4 flex justify-between items-center">
           <Title level={4} className="!mb-0 mt-0 text-blue-600">
             Dashboard Summary

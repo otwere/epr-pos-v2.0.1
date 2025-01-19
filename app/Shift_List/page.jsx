@@ -9,19 +9,19 @@ import ShiftTable from "../Components/ShiftTableComponent/ShiftTable";
 import { HomeOutlined } from '@ant-design/icons';
 
 const { Content } = Layout;
-const { Title, Text } = Typography; // Added Text import for correct usage
+const { Title, Text } = Typography;
 
 const ShiftList = () => {
   const [collapsed, setCollapsed] = useState(false);
 
-  // Avoid infinite loop by ensuring toggleCollapsed only sets state if necessary
   const toggleCollapsed = () => {
-    setCollapsed(prevState => !prevState); // Using previous state to toggle safely
+    setCollapsed(prevState => !prevState);
   };
 
   // Ensure useEffect has a dependency array if it exists
   useEffect(() => {
     // Any effect logic here
+    // Example: Fetch data or set up subscriptions
   }, []); // Empty dependency array to run only once
 
   const breadcrumbItems = [
@@ -45,7 +45,7 @@ const ShiftList = () => {
       <Sidebar collapsed={collapsed} onCollapse={toggleCollapsed} />
       
       {/* Main Layout */}
-      <Layout className="flex-1 bg-gray-50">
+      <Layout className="flex-1 bg-gray-100">
         {/* Header */}
         <Header collapsed={collapsed} setCollapsed={setCollapsed} />
         

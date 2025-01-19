@@ -59,7 +59,7 @@ const POS = () => {
       <div className="min-h-screen flex">
         <Sidebar collapsed={collapsed} onCollapse={toggleCollapsed} />
         
-        <Layout className="flex-1 bg-gray-50 shadow-">
+        <Layout className="flex-1 bg-gray-100">
           <Header collapsed={collapsed} setCollapsed={setCollapsed} />
           
           <Content
@@ -161,9 +161,10 @@ const POSContent = () => {
             All fields with * are required
           </Text>
         </div>
+        <hr className="mb-4" />
       </div>
 
-      <Card className="shadow-sm rounded-lg bg-gray-100 max-w-full">
+      <Card className="rounded-lg bg-gray-50 max-w-full">
         <Form
           form={form}
           layout="vertical"

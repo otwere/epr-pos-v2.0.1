@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useRef } from "react";
 import {
   Layout,
   Breadcrumb,
@@ -52,6 +52,7 @@ function BrandsList() {
   const [filterStatus, setFilterStatus] = React.useState("");
   const [messageApi, contextHolder] = message.useMessage();
   const [editingBrand, setEditingBrand] = React.useState(null);
+  const breadcrumbRef = useRef(null);
 
   // Initial mock data
   const initialBrands = React.useMemo(
@@ -339,7 +340,7 @@ function BrandsList() {
     <div className="min-h-screen flex">
       {contextHolder}
       <Sidebar collapsed={collapsed} onCollapse={setCollapsed} />
-      <Layout className="flex-1 bg-gray-50">
+      <Layout className="flex-1 bg-gray-100">
         <Header collapsed={collapsed} setCollapsed={setCollapsed} />
         <Content className="p-6">
           <Breadcrumb
@@ -355,6 +356,7 @@ function BrandsList() {
               { title: "Brands List" },
             ]}
             className="mb-3"
+            ref={breadcrumbRef}
           />
           <hr />
 
