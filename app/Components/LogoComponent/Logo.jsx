@@ -9,16 +9,18 @@ const Logo = ({
   collapsed = false,
   backgroundColor = "bg-gray-50",
   textColor = "text-blue-600",
+  logoSize = "h-14", // Default logo size
+  showVersion = true, // Control visibility of version text
 }) => {
   return (
-    <Link href="/" className="block">
+    <Link href="/" className="block" aria-label="Go to homepage">
       <div
-        className={`flex items-center justify-start p-2 h-16 w-full shadow-none transition-all duration-300 hover:shadow-md ${backgroundColor}`}
+        className={`flex items-center justify-start p-2 h-16 w-full shadow-none transition-all duration-300 hover:shadow-md ${backgroundColor} hover:bg-opacity-90`}
       >
         <img
           src={logoSrc}
-          alt="Logo"
-          className={`transition-all duration-300 h-14 ml-2 ${
+          alt={`${companyName} Logo`}
+          className={`transition-all duration-300 ${logoSize} ml-2 ${
             collapsed ? "w-12" : "w-14"
           }`}
         />
@@ -30,9 +32,11 @@ const Logo = ({
             >
               {companyName}
             </h6>
-            <span className="text-[11px] text-gray-600 font-semibold text-nowrap mr-2">
-              {version}
-            </span>
+            {showVersion && (
+              <span className="text-[11px] text-gray-600 font-semibold text-nowrap mr-2">
+                {version}
+              </span>
+            )}
           </div>
         )}
       </div>
@@ -48,6 +52,8 @@ Logo.propTypes = {
   collapsed: PropTypes.bool,
   backgroundColor: PropTypes.string,
   textColor: PropTypes.string,
+  logoSize: PropTypes.string,
+  showVersion: PropTypes.bool,
 };
 
 export default Logo;

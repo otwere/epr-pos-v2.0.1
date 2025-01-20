@@ -53,7 +53,7 @@ const Footer = ({ collapsed }) => {
             <CallToActionButton collapsed={collapsed} />
           </div>
           {!collapsed && (
-            <div className=" text-gray-600 text-xs font-medium md:order-2 ml-[33rem]">
+            <div className=" text-gray-600 text-xs font-semibold md:order-2 ml-[50rem]">
               <span className="hidden md:inline">
                 Integrated Advanced EPR - POS (v2.0.1)
               </span>

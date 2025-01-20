@@ -39,7 +39,7 @@ const App = () => {
                 </div>
               </div>
             </div>
-            <Footer collapsed={collapsed} setCollapsed={setCollapsed} />
+            <Footer/>
           </div>
         </div>
       </div>

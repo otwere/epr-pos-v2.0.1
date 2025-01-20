@@ -14,6 +14,9 @@ import {
   message,
   Dropdown,
   Spin,
+  Row,
+  Col,
+  Statistic,
 } from "antd";
 import {
   PlusOutlined,
@@ -22,6 +25,9 @@ import {
   SearchOutlined,
   SaveOutlined,
   MoreOutlined,
+  UserOutlined,
+  TeamOutlined,
+  BarChartOutlined,
 } from "@ant-design/icons";
 
 import Header from "../Components/HeaderComponent/Header";
@@ -155,22 +161,21 @@ const ItemsList = () => {
   ];
 
   const columns = [
-    { title: "#", dataIndex: "slNo", key: "slNo", sorter: (a, b) => a.slNo - b.slNo, className: "whitespace-nowrap" },
-    { title: "Employee ID", dataIndex: "employeeId", key: "employeeId", sorter: (a, b) => a.employeeId.localeCompare(b.employeeId), className: "whitespace-nowrap" },
-    { title: "First Name", dataIndex: "firstName", key: "firstName", sorter: (a, b) => a.firstName.localeCompare(b.firstName), className: "whitespace-nowrap" },
-    { title: "Last Name", dataIndex: "lastName", key: "lastName", sorter: (a, b) => a.lastName.localeCompare(b.lastName), className: "whitespace-nowrap" },
-    { title: "Phone", dataIndex: "phone", key: "phone", className: "whitespace-nowrap" },
-    { title: "Email Address", dataIndex: "email", key: "email", className: "whitespace-nowrap" },
-    { title: "Country", dataIndex: "country", key: "country", sorter: (a, b) => a.country.localeCompare(b.country), className: "whitespace-nowrap" },
-    { title: "County", dataIndex: "county", key: "county", className: "whitespace-nowrap" },
-    { title: "City", dataIndex: "city", key: "city", className: "whitespace-nowrap" },
-    { title: "Zip Code", dataIndex: "zipCode", key: "zipCode", className: "whitespace-nowrap" },
-    { title: "Division | Dept", dataIndex: "division", key: "division", sorter: (a, b) => a.division.localeCompare(b.division), className: "whitespace-nowrap" },
-    { title: "Position", dataIndex: "position", key: "position", sorter: (a, b) => a.position.localeCompare(b.position), className: "whitespace-nowrap" },
+    { title: "#", dataIndex: "slNo", key: "slNo", sorter: (a, b) => a.slNo - b.slNo },
+    { title: "$ID", dataIndex: "employeeId", key: "employeeId", sorter: (a, b) => a.employeeId.localeCompare(b.employeeId) },
+    { title: "First Name", dataIndex: "firstName", key: "firstName", sorter: (a, b) => a.firstName.localeCompare(b.firstName) },
+    { title: "Last Name", dataIndex: "lastName", key: "lastName", sorter: (a, b) => a.lastName.localeCompare(b.lastName) },
+    { title: "Phone", dataIndex: "phone", key: "phone" },
+    { title: "Email Address", dataIndex: "email", key: "email" },
+    { title: "Country", dataIndex: "country", key: "country", sorter: (a, b) => a.country.localeCompare(b.country) },
+    { title: "County", dataIndex: "county", key: "county" },
+    { title: "City", dataIndex: "city", key: "city" },
+    { title: "Code", dataIndex: "zipCode", key: "zipCode" },
+    { title: "Department", dataIndex: "division", key: "division", sorter: (a, b) => a.division.localeCompare(b.division) },
+    { title: "Position", dataIndex: "position", key: "position", sorter: (a, b) => a.position.localeCompare(b.position) },
     {
       title: "Actions",
       key: "actions",
-      className: "whitespace-nowrap",
       render: (text, record) => (
         <Dropdown menu={{ items: actionsMenu(record) }} trigger={["click"]}>
           <Button type="text" icon={<MoreOutlined />} />
@@ -178,6 +183,13 @@ const ItemsList = () => {
       ),
     },
   ];
+
+  // Calculate dashboard metrics
+  const totalEmployees = items.length;
+  const employeesByDepartment = items.reduce((acc, item) => {
+    acc[item.division] = (acc[item.division] || 0) + 1;
+    return acc;
+  }, {});
 
   return (
     <div className="min-h-screen flex">
@@ -196,34 +208,68 @@ const ItemsList = () => {
                 { title: "Employee List" },
               ]}
             />
-            <hr />
+            <hr className="border-gray-200" />
             
             <div className="mb-4 flex justify-between items-center">
-              <Title level={4} className="text-blue-800 mt-2">
-                Employees List
+              <Title level={4} className="text-blue-800 mt-2 font-semibold">
+                Employees Dashboard
               </Title>
-              <Text type="secondary"> View all Employees</Text>
+              <Text type="secondary" className="text-gray-500"> Overview of Employees</Text>
             </div>
-            <hr className="-mt-2 mb-4" />
+            <hr className="border-gray-200 -mt-2 mb-4" />
           </div>
 
-          <Card className="shadow-sm rounded-lg bg-gray-50">
+          {/* Dashboard Section */}
+          <Row gutter={[16, 16]} className="mb-6">
+            <Col span={8}>
+              <Card className="rounded-lg border-0 hover:shadow-lg transition-shadow duration-300">
+                <Statistic
+                  title="Total Employees"
+                  value={totalEmployees}
+                  prefix={<UserOutlined className="text-blue-500" />}
+                  valueStyle={{ color: '#1E40AF' }}
+                />
+              </Card>
+            </Col>
+            <Col span={8}>
+              <Card className="rounded-lg border-0 hover:shadow-lg transition-shadow duration-300">
+                <Statistic
+                  title="Employees in Sales"
+                  value={employeesByDepartment["Sales"] || 0}
+                  prefix={<TeamOutlined className="text-blue-500" />}
+                  valueStyle={{ color: '#1E40AF' }}
+                />
+              </Card>
+            </Col>
+            <Col span={8}>
+              <Card className="rounded-lg border-0 hover:shadow-lg transition-shadow duration-300">
+                <Statistic
+                  title="Employees in Marketing"
+                  value={employeesByDepartment["Marketing"] || 0}
+                  prefix={<TeamOutlined className="text-blue-500" />}
+                  valueStyle={{ color: '#1E40AF' }}
+                />
+              </Card>
+            </Col>
+          </Row>
+
+          <Card className="rounded-lg border-0 bg-gray-50">
             <div className="mb-4 flex justify-between items-center">
               <div className="flex items-center space-x-4">
                 <Input
-                  prefix={<SearchOutlined />}
+                  prefix={<SearchOutlined className="text-gray-400" />}
                   placeholder="Search Employees by Employee ID, Name, Email, Phone, etc."
                   value={searchTerm}
                   onChange={handleSearch}
-                  style={{ width: 1280 }}
+                  className="w-full"
                 />
               </div>
-              <Button type="primary" icon={<PlusOutlined />}>
+              <Button type="primary" icon={<PlusOutlined />} className="bg-blue-600 hover:bg-blue-700">
                 <Link href="/add_new_employee">Add New Employee</Link>
               </Button>
             </div>
 
-            <hr  className="mt-4"/>
+            <hr className="border-gray-200 mt-4 mb-4" />
 
             <Table
               dataSource={filteredItems}
@@ -237,7 +283,9 @@ const ItemsList = () => {
                 defaultPageSize: 10,
               }}
               loading={loading}
-              scroll={{ x: true }} // Ensure horizontal scrolling for small screens
+              scroll={{ x: true }}
+              className="rounded-lg"
+              rowClassName="hover:bg-gray-50 transition-colors duration-200"
             />
           </Card>
         </Content>
@@ -250,7 +298,7 @@ const ItemsList = () => {
         open={isDialogOpen}
         onCancel={() => setIsDialogOpen(false)}
         footer={[
-          <Button key="cancel" onClick={() => setIsDialogOpen(false)}>
+          <Button key="cancel" onClick={() => setIsDialogOpen(false)} className="border-gray-300">
             Cancel
           </Button>,
           <Button
@@ -259,10 +307,12 @@ const ItemsList = () => {
             icon={<SaveOutlined />}
             onClick={handleSave}
             loading={loading}
+            className="bg-blue-600 hover:bg-blue-700"
           >
             Save
           </Button>,
         ]}
+        className="rounded-lg"
       >
         <Spin spinning={loading}>
           <Form
@@ -290,84 +340,84 @@ const ItemsList = () => {
               label="SL No"
               rules={[{ required: true, message: "Please input the SL No" }]}
             >
-              <Input type="number" placeholder="Enter SL No" />
+              <Input type="number" placeholder="Enter SL No" className="rounded-lg" />
             </Form.Item>
             <Form.Item
               name="employeeId"
               label="Employee ID"
               rules={[{ required: true, message: "Please input the Employee ID" }]}
             >
-              <Input placeholder="Enter Employee ID" />
+              <Input placeholder="Enter Employee ID" className="rounded-lg" />
             </Form.Item>
             <Form.Item
               name="firstName"
               label="First Name"
               rules={[{ required: true, message: "Please input the First Name" }]}
             >
-              <Input placeholder="Enter First Name" />
+              <Input placeholder="Enter First Name" className="rounded-lg" />
             </Form.Item>
             <Form.Item
               name="lastName"
               label="Last Name"
               rules={[{ required: true, message: "Please input the Last Name" }]}
             >
-              <Input placeholder="Enter Last Name" />
+              <Input placeholder="Enter Last Name" className="rounded-lg" />
             </Form.Item>
             <Form.Item
               name="phone"
               label="Phone"
               rules={[{ required: true, message: "Please input the Phone" }]}
             >
-              <Input placeholder="Enter Phone" />
+              <Input placeholder="Enter Phone" className="rounded-lg" />
             </Form.Item>
             <Form.Item
               name="email"
               label="Email Address"
               rules={[{ required: true, message: "Please input the Email Address" }]}
             >
-              <Input placeholder="Enter Email Address" />
+              <Input placeholder="Enter Email Address" className="rounded-lg" />
             </Form.Item>
             <Form.Item
               name="country"
               label="Country"
               rules={[{ required: true, message: "Please input the Country" }]}
             >
-              <Input placeholder="Enter Country" />
+              <Input placeholder="Enter Country" className="rounded-lg" />
             </Form.Item>
             <Form.Item
               name="county"
               label="County"
               rules={[{ required: true, message: "Please input the County" }]}
             >
-              <Input placeholder="Enter County" />
+              <Input placeholder="Enter County" className="rounded-lg" />
             </Form.Item>
             <Form.Item
               name="city"
               label="City"
               rules={[{ required: true, message: "Please input the City" }]}
             >
-              <Input placeholder="Enter City" />
+              <Input placeholder="Enter City" className="rounded-lg" />
             </Form.Item>
             <Form.Item
               name="zipCode"
               label="Zip Code"
               rules={[{ required: true, message: "Please input the Zip Code" }]}
             >
-              <Input placeholder="Enter Zip Code" />
+              <Input placeholder="Enter Zip Code" className="rounded-lg" />
             </Form.Item>
             <Form.Item
               name="division"
               label="Division"
               rules={[{ required: true, message: "Please input the Division" }]}
             >
-              <Input placeholder="Enter Division" />
+              <Input placeholder="Enter Division" className="rounded-lg" />
             </Form.Item>
             <Form.Item
               name="position"
               label="Position"
               rules={[{ required: true, message: "Please input the Position" }]}
             >
-              <Input placeholder="Enter Position" />
+              <Input placeholder="Enter Position" className="rounded-lg" />
             </Form.Item>
           </Form>
         </Spin>

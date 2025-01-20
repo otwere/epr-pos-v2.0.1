@@ -158,7 +158,10 @@ const RegisterNewCustomer = () => {
       <Sidebar collapsed={collapsed} onCollapse={toggleCollapsed} />
 
       <Layout className="flex-1 bg-ray-100">
-        <HeaderComponent collapsed={collapsed} onCollapse={setCollapsed} />
+        <HeaderComponent
+          collapsed={collapsed}
+          onCollapse={() => setCollapsed((prev) => !prev)}
+        />
 
         <Content className="transition-all duration-300 p-6">
           {contextHolder}
@@ -173,7 +176,7 @@ const RegisterNewCustomer = () => {
                 ),
                 href: "/",
               },
-               { title: "New Customer" },
+              { title: "New Customer" },
             ]}
             className="mb-3"
           />
@@ -205,7 +208,7 @@ const RegisterNewCustomer = () => {
                 <Select
                   placeholder="Select customer type"
                   onChange={handleCustomerTypeChange}
-                >                  
+                >
                   <Option value="individual">Individual</Option>
                   <Option value="corporate">Corporate | Institution</Option>
                 </Select>

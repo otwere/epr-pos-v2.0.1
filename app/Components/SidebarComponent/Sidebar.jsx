@@ -66,8 +66,8 @@ const Sidebar = ({ collapsed, ref }) => {
   }, [collapsed, ref]);
 
   const onOpenChange = (keys) => {
-    const latestOpenKey = keys.find(key => openKeys.indexOf(key) === -1);
-    if (menuItems.map(item => item.key).indexOf(latestOpenKey) === -1) {
+    const latestOpenKey = keys.find((key) => openKeys.indexOf(key) === -1);
+    if (menuItems.map((item) => item.key).indexOf(latestOpenKey) === -1) {
       setOpenKeys(keys);
     } else {
       setOpenKeys(latestOpenKey ? [latestOpenKey] : []);
@@ -189,8 +189,8 @@ const Sidebar = ({ collapsed, ref }) => {
       icon: <SnippetsOutlined />,
       title: "Documents | Files",
       subItems: [
-        { key: "10-1", icon: <DiffOutlined />, title: "Add New Document File", link: "/add_new_document" },      
-        
+        { key: "10-1", icon: <DiffOutlined />, title: "Add New Document File", link: "/add_new_document" },
+
       ],
     },
     {
@@ -198,7 +198,7 @@ const Sidebar = ({ collapsed, ref }) => {
       icon: <DollarOutlined />,
       title: "Expenses",
       subItems: [
-        { key: "11-1", icon: <PlusOutlined />, title: "Add New Expenditure" , link:"/expense"},
+        { key: "11-1", icon: <PlusOutlined />, title: "Add New Expenditure", link: "/expense" },
         {
           key: "11-2",
           icon: <CalculatorOutlined />,
@@ -213,7 +213,7 @@ const Sidebar = ({ collapsed, ref }) => {
       title: "Accounting",
       subItems: [
         { key: "12-1", icon: <HddFilled />, title: "Accounts Types", link: "/account_type", },
-        { key: "12-2", icon: <BlockOutlined />, title: "Sub Accounts Types", link:"/subaccount_type", },
+        { key: "12-2", icon: <BlockOutlined />, title: "Sub Accounts Types", link: "/subaccount_type", },
         {
           key: "12-3",
           icon: <PlusCircleOutlined />,
@@ -225,18 +225,18 @@ const Sidebar = ({ collapsed, ref }) => {
         //   icon: <DotChartOutlined />,
         //   title: "Chart of Accounts List",
         // },
-        { key: "12-5", icon: <DollarOutlined />, title: "Accounts Balances" , link: "/accounts_balances", },
-        { key: "12-6", icon: <DollarOutlined />, title: "Money | Payments" , link:"/money_payments", },
-        { key: "12-7", icon: <DollarOutlined />, title: "Journal Entry" , link: "/journal_entry", },
+        { key: "12-5", icon: <DollarOutlined />, title: "Accounts Balances", link: "/accounts_balances", },
+        { key: "12-6", icon: <DollarOutlined />, title: "Money | Payments", link: "/money_payments", },
+        { key: "12-7", icon: <DollarOutlined />, title: "Journal Entry", link: "/journal_entry", },
         {
           key: "12-8",
           icon: <DollarOutlined />,
           title: "Profit & Loss (P & L)",
-          link : "/profit_loss",
+          link: "/profit_loss",
         },
         { key: "12-9", icon: <ApartmentOutlined />, title: "Balance Sheet", link: "/balance_sheet", },
-        { key: "12-10", icon: <GoldOutlined />, title: "Trial Balance" , link: "/trial_balance", },
-        { key: "12-11", icon: <GoldOutlined />, title: "Cash Flow Report" , link: "/cash_flow_report", },
+        { key: "12-10", icon: <GoldOutlined />, title: "Trial Balance", link: "/trial_balance", },
+        { key: "12-11", icon: <GoldOutlined />, title: "Cash Flow Report", link: "/cash_flow_report", },
         {
           key: "12-12",
           icon: <UsergroupAddOutlined />,
@@ -287,12 +287,12 @@ const Sidebar = ({ collapsed, ref }) => {
           key: "14-1",
           icon: <BarChartOutlined />,
           title: "Summary Daily Report",
-          link : "/summary_daily_report",
+          link: "/summary_daily_report",
         },
-        { key: "14-2", icon: <BlockOutlined />, title: "Employee Branch Report" , link:  "/employee_branch_report", },
+        { key: "14-2", icon: <BlockOutlined />, title: "Employee Branch Report", link: "/employee_branch_report", },
         { key: "14-3", icon: <BlockOutlined />, title: "Z-Report", link: "/z-report", },
-        { key: "14-4", icon: <TagsOutlined />, title: "Debtors Report" , link: "/debtors_report", },
-        {key: "14-5", icon: <UsergroupAddOutlined />,title: "Creditors Report", link: "/creditors_report", },
+        { key: "14-4", icon: <TagsOutlined />, title: "Debtors Report", link: "/debtors_report", },
+        { key: "14-5", icon: <UsergroupAddOutlined />, title: "Creditors Report", link: "/creditors_report", },
       ],
     },
     {
@@ -325,9 +325,9 @@ const Sidebar = ({ collapsed, ref }) => {
       icon: <ShoppingCartOutlined />,
       title: "Sales Reports",
       subItems: [
-        { key: "16-1", icon: <FileDoneOutlined />, title: "Clearance Report" },
-        { key: "16-2", icon: <BlockOutlined />, title: "Sales Report" },
-        { key: "16-3", icon: <BlockOutlined />, title: "Sales Report Custom" },
+        { key: "16-1", icon: <FileDoneOutlined />, title: "Clearance Report", link: "/clearance_report", },
+        { key: "16-2", icon: <BlockOutlined />, title: "Sales Report" , link:"/sales_report"},
+        { key: "16-3", icon: <BlockOutlined />, title: "Sales Report Custom", link:"/sales_report_summary", },
         {
           key: "16-4",
           icon: <BarChartOutlined />,
@@ -475,9 +475,16 @@ const Sidebar = ({ collapsed, ref }) => {
         { key: "21-12", icon: <HddOutlined />, title: "Database Backup" },
       ],
     },
-    { key: "22", icon: <LogoutOutlined />, title: "Logout", link: "/login_page", },
+
+
+    {
+      key: "22",
+      icon: <LogoutOutlined />,
+      title: "Logout",
+      link: "/login_page",
+    },
   ];
-  
+
   const generateMenuItems = () => {
     return menuItems.map((item) => {
       if (item.subItems) {
@@ -539,4 +546,3 @@ const Sidebar = ({ collapsed, ref }) => {
 };
 
 export default Sidebar;
-
