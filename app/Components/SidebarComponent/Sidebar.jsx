@@ -332,8 +332,9 @@ const Sidebar = ({ collapsed, ref }) => {
           key: "16-4",
           icon: <BarChartOutlined />,
           title: "Sales Report (Employees)",
+          link:"/sales_report_employees",
         },
-        { key: "16-5", icon: <BlockOutlined />, title: "Item Sales Report" },
+        { key: "16-5", icon: <BlockOutlined />, title: "Item Sales Report", link:"/item_sales_report", },
         {
           key: "16-6",
           icon: <BlockOutlined />,
