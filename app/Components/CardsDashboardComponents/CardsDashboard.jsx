@@ -38,7 +38,7 @@ const CardsDashboard = (props) => {
             className={` 
               ${item.color} ${item.hoverColor}
               text-white cursor-pointer transition duration-300 
-              transform hover:scale-95 hover:shadow-xl
+              transform hover:scale-95 
             `}
             style={{
               body: {

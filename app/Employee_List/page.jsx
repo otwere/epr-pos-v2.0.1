@@ -222,7 +222,7 @@ const ItemsList = () => {
           {/* Dashboard Section */}
           <Row gutter={[16, 16]} className="mb-6">
             <Col span={8}>
-              <Card className="rounded-lg border-0 hover:shadow-lg transition-shadow duration-300">
+              <Card className="rounded-lg border-0  duration-300">
                 <Statistic
                   title="Total Employees"
                   value={totalEmployees}
@@ -232,7 +232,7 @@ const ItemsList = () => {
               </Card>
             </Col>
             <Col span={8}>
-              <Card className="rounded-lg border-0 hover:shadow-lg transition-shadow duration-300">
+              <Card className="rounded-lg border-0  duration-300">
                 <Statistic
                   title="Employees in Sales"
                   value={employeesByDepartment["Sales"] || 0}
@@ -242,7 +242,7 @@ const ItemsList = () => {
               </Card>
             </Col>
             <Col span={8}>
-              <Card className="rounded-lg border-0 hover:shadow-lg transition-shadow duration-300">
+              <Card className="rounded-lg border-0  duration-300">
                 <Statistic
                   title="Employees in Marketing"
                   value={employeesByDepartment["Marketing"] || 0}

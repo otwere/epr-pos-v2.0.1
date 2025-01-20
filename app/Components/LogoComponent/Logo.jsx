@@ -15,7 +15,7 @@ const Logo = ({
   return (
     <Link href="/" className="block" aria-label="Go to homepage">
       <div
-        className={`flex items-center justify-start p-2 h-16 w-full shadow-none transition-all duration-300 hover:shadow-md ${backgroundColor} hover:bg-opacity-90`}
+        className={`flex items-center justify-start p-2 h-16 w-full transition-all duration-300  ${backgroundColor} hover:bg-opacity-90`}
       >
         <img
           src={logoSrc}

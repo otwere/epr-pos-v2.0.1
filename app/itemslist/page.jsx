@@ -192,7 +192,7 @@ const ItemsList = () => {
             </div>
           </div>
 
-          <Card className="shadow-sm rounded-lg bg-white">
+          <Card className="rounded-lg bg-white">
             <div className="mb-4 flex justify-between items-center">
               <div className="flex items-center space-x-4">
                 <Input

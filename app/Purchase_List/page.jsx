@@ -402,7 +402,7 @@ const PurchaseList = () => {
                 showSizeChanger: true,
                 showQuickJumper: true,
               }}
-              className="shadow-sm"
+              className=""
             />
           </Card>
         </Content>

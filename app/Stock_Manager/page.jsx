@@ -226,7 +226,7 @@ const StockManagement = () => {
     <div className="min-h-screen flex">
       <Sidebar collapsed={collapsed} onCollapse={toggleCollapsed} />
 
-      <Layout className="flex-1 bg-gray-50 shadow-none">
+      <Layout className="flex-1 bg-gray-50 ">
         <Header collapsed={collapsed} setCollapsed={setCollapsed} />
 
         <Content
@@ -259,7 +259,7 @@ const StockManagement = () => {
             </div>
           </div>
 
-          <Card className="shadow-sm rounded-lg bg-gray-100 max-w-full mb-4">
+          <Card className=" rounded-lg bg-gray-100 max-w-full mb-4">
             <Row gutter={16} className="mb-4">
               <Col xs={24} md={10}>
                 <Input

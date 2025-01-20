@@ -128,7 +128,7 @@ const SalesClearance = () => {
                   title="Total Entries"
                   bordered={false}
                   onClick={() => handleFilter("all")}
-                  className="cursor-pointer transition-transform duration-200 hover:shadow-lg hover:scale-95 bg-blue-100"
+                  className="cursor-pointer transition-transform duration-200  hover:scale-95 bg-blue-100"
                 >
                   <Title level={5} className="text-blue-800 text-center">
                     {summary.total}
@@ -140,7 +140,7 @@ const SalesClearance = () => {
                   title="Fully Collected / Nill Difference"
                   bordered={false}
                   onClick={() => handleFilter("balanced")}
-                  className="cursor-pointer transition-transform duration-200 hover:shadow-lg hover:scale-95 bg-green-100"
+                  className="cursor-pointer transition-transform duration-200  hover:scale-95 bg-green-100"
                 >
                   <Title level={5} className="text-green-600 text-center">
                     {summary.balanced}
@@ -152,7 +152,7 @@ const SalesClearance = () => {
                   title="Shortages (KES)"
                   bordered={false}
                   onClick={() => handleFilter("shortage")}
-                  className="cursor-pointer transition-transform duration-200 hover:shadow-lg hover:scale-95 bg-red-100"
+                  className="cursor-pointer transition-transform duration-200  hover:scale-95 bg-red-100"
                 >
                   <Title
                     level={5}
@@ -170,7 +170,7 @@ const SalesClearance = () => {
                   title="Excesses (KES)"
                   bordered={false}
                   onClick={() => handleFilter("excess")}
-                  className="cursor-pointer transition-transform duration-200 hover:shadow-lg hover:scale-95 bg-yellow-100"
+                  className="cursor-pointer transition-transform duration-200  hover:scale-95 bg-yellow-100"
                 >
                   <Title
                     level={5}

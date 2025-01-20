@@ -51,7 +51,7 @@ const MoneyPaymentsContent = () => {
         </Space>
       </div>
       <hr className="mb-4" />
-      <Card className="shadow-sm rounded-lg bg-gray-50">
+      <Card className="rounded-lg bg-gray-50">
         <Tabs
           defaultActiveKey="1"
           onChange={handleTabChange}

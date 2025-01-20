@@ -198,7 +198,7 @@ const ExpenditureList = () => {
 
           <hr className="mb-4" />
 
-          <Card className="shadow-sm rounded-lg bg-gray-50 p-0">
+          <Card className="rounded-lg bg-gray-50 p-0">
             <div className="mb-4 flex flex-col lg:flex-row justify-between items-center space-y-4 lg:space-y-0">
               {/* Search Section */}
               <div className="flex items-center space-x-4">

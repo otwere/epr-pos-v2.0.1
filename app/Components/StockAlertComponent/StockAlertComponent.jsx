@@ -127,7 +127,7 @@ export default function Home() {
       children: (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-gray-50">
           {isStockAlertOpen && (
-            <div className="bg-white p-4 rounded-lg shadow-none">
+            <div className="bg-white p-4 rounded-lg ">
               <div className="flex justify-between items-center mb-4 border-b border-gray-300">
                 <h1 className="text-xl text-blue-600 font-semibold flex items-center mb-4">
                   <ReconciliationOutlined className="mr-1 text-gray-800" />{" "}
@@ -154,7 +154,7 @@ export default function Home() {
             </div>
           )}
           {isFastMovingItemsOpen && (
-            <div className="bg-white p-4 rounded-lg shadow-none">
+            <div className="bg-white p-4 rounded-lg ">
               <div className="flex justify-between items-center mb-4 border-b border-gray-300">
                 <h2 className="text-xl text-blue-600 font-semibold flex items-center mb-4">
                   <ShoppingCartOutlined className="mr-1 text-gray-800" /> Top
@@ -213,7 +213,7 @@ export default function Home() {
       <Tabs
         activeKey={activeTab}
         onChange={(key) => setActiveTab(key)}
-        className="bg-white p-4 rounded-lg shadow-none"
+        className="bg-white p-4 rounded-lg "
         tabBarExtraContent={
           <button
             className="p-1 border rounded hover:bg-gray-100 transition-colors duration-200 focus:outline-none"

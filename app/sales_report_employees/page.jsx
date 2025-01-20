@@ -442,7 +442,7 @@ const SalesReport = () => {
       startY: 100,
       head: [
         [
-          "Invoice Number",
+          "Invoice No",
           "Sales Date",
           "Customer ID",
           "Customer Name",
@@ -547,39 +547,46 @@ const SalesReport = () => {
 
   const salesColumns = [
     {
-      title: "Invoice Number",
+      title: "Inv No",
       dataIndex: "invoiceNumber",
       key: "invoiceNumber",
+      className: "whitespace-nowrap", 
     },
     {
       title: "Sales Date",
       dataIndex: "salesDate",
       key: "salesDate",
+      className: "whitespace-nowrap", 
     },
     {
       title: "Customer ID",
       dataIndex: "customerId",
       key: "customerId",
+      className: "whitespace-nowrap", 
     },
     {
       title: "Customer Name",
       dataIndex: "customerName",
       key: "customerName",
+      className: "whitespace-nowrap", 
     },
     {
       title: "KRA PIN",
       dataIndex: "kraPin",
       key: "kraPin",
+       
     },
     {
       title: "Employee Name",
       dataIndex: "employeeName",
       key: "employeeName",
+      className: "whitespace-nowrap", 
     },
     {
       title: "Branch",
       dataIndex: "branch",
       key: "branch",
+      // className: "whitespace-nowrap", 
     },
     {
       title: "Invoice Total (Ksh)",
@@ -587,6 +594,7 @@ const SalesReport = () => {
       key: "invoiceTotal",
       render: (invoiceTotal) => <span>{formatNumber(invoiceTotal)}</span>,
       align: "right",
+      className: "whitespace-nowrap", 
     },
     {
       title: "Paid Amt (Ksh)",
@@ -594,6 +602,7 @@ const SalesReport = () => {
       key: "paidAmount",
       render: (paidAmount) => <span>{formatNumber(paidAmount)}</span>,
       align: "right",
+      className: "whitespace-nowrap", 
     },
     {
       title: "Due Amt (Ksh)",
@@ -601,11 +610,14 @@ const SalesReport = () => {
       key: "dueAmount",
       render: (dueAmount) => <span>{formatNumber(dueAmount)}</span>,
       align: "right",
+      className: "whitespace-nowrap", 
     },
     {
       title: "Payment Status",
       dataIndex: "paymentStatus",
-      key: "paymentStatus",
+      key: "paymentStatus",  
+      align: 'right', 
+      className: "whitespace-nowrap",   
       render: (paymentStatus) => {
         let color = "";
         if (paymentStatus === "Paid") {
@@ -616,6 +628,7 @@ const SalesReport = () => {
           color = "red";
         }
         return <Tag color={color}>{paymentStatus}</Tag>;
+        
       },
     },
   ];
@@ -647,7 +660,7 @@ const SalesReport = () => {
 
           <div className="mb-4">
             <Input
-              placeholder="Search by Customer Name, Invoice Number, or Employee Name"
+              placeholder="Search by Customer Name, Invoice No., or Employee Name"
               prefix={<SearchOutlined className="text-blue-500" />}
               value={searchText}
               onChange={(e) => handleSearch(e.target.value)}
@@ -683,7 +696,7 @@ const SalesReport = () => {
                         dataSource={[record]}
                         columns={[
                           {
-                            title: "Invoice Number",
+                            title: "Invoice No.",
                             dataIndex: "invoiceNumber",
                             key: "invoiceNumber",
                           },
@@ -882,8 +895,8 @@ const SalesReport = () => {
                 </Form.Item>
                 <Form.Item 
                   name="paymentStatus" 
-                  label="Pay" 
-                  style={{ width: '140px' }} // Adjust width as needed
+                  label="Payment" 
+                  style={{ width: '150px' }} // Adjust width as needed
                 >
                   <Select>
                     <Option value="">All</Option>
@@ -945,7 +958,7 @@ const SalesReport = () => {
                   icon={<FilePdfOutlined className="text-white" />}
                   onClick={exportToPDF}
                 >
-                  Export to PDF
+                  Print
                 </Button>
               </div>
             </div>

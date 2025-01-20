@@ -187,7 +187,7 @@ const Add_New_Supplier = () => {
 
           <hr  className="mb-4"/>
 
-          <Card className="shadow-none rounded-sm p-4 bg-gray-50 mb-8">
+          <Card className="rounded-sm p-4 bg-gray-50 mb-8">
             <Form
               ref={formRef}
               form={form}

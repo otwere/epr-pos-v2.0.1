@@ -530,7 +530,7 @@ const SalesInvoiceList = () => {
               <Row gutter={16} className="mb-4 font-bold">
                 <Col span={6}>
                   <Card
-                    className={`bg-blue-50 hover:shadow-md cursor-pointer transform transition-transform duration-300 hover:scale-95 ${
+                    className={`bg-blue-50  cursor-pointer transform transition-transform duration-300 hover:scale-95 ${
                       activeFilter === "all" ? "border-blue-500 border-2" : ""
                     }`}
                     onClick={() => handleFilterChange("all")}
@@ -545,7 +545,7 @@ const SalesInvoiceList = () => {
                 </Col>
                 <Col span={6}>
                   <Card
-                    className={`bg-green-50 hover:shadow-md cursor-pointer transform transition-transform duration-300 hover:scale-95 ${
+                    className={`bg-green-50  cursor-pointer transform transition-transform duration-300 hover:scale-95 ${
                       activeFilter === "paid" ? "border-green-500 border-2" : ""
                     }`}
                     onClick={() => handleFilterChange("paid")}
@@ -560,7 +560,7 @@ const SalesInvoiceList = () => {
                 </Col>
                 <Col span={6}>
                   <Card
-                    className={`bg-orange-50 hover:shadow-md cursor-pointer transform transition-transform duration-300 hover:scale-95 ${
+                    className={`bg-orange-50  cursor-pointer transform transition-transform duration-300 hover:scale-95 ${
                       activeFilter === "partial" ? "border-orange-500 border-2" : ""
                     }`}
                     onClick={() => handleFilterChange("partial")}
@@ -575,7 +575,7 @@ const SalesInvoiceList = () => {
                 </Col>
                 <Col span={6}>
                   <Card
-                    className={`bg-red-50 hover:shadow-md cursor-pointer transform transition-transform duration-300 hover:scale-95 ${
+                    className={`bg-red-50  cursor-pointer transform transition-transform duration-300 hover:scale-95 ${
                       activeFilter === "unpaid" ? "border-red-500 border-2" : ""
                     }`}
                     onClick={() => handleFilterChange("unpaid")}

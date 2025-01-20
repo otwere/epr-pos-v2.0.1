@@ -314,7 +314,7 @@ const Supplier_List = () => {
 
           <div className="flex flex-row gap-4 mb-6">
             <div
-              className={`w-full bg-blue-100 p-4 rounded-lg cursor-pointer transition-transform transform hover:scale-95 hover:shadow-sm ease-in duration-300 ${
+              className={`w-full bg-blue-100 p-4 rounded-lg cursor-pointer transition-transform transform hover:scale-95 ease-in duration-300 ${
                 activeFilter === "all" ? "ring-1 ring-blue-500" : ""
               }`}
               onClick={() => setActiveFilter("all")}
@@ -323,7 +323,7 @@ const Supplier_List = () => {
             </div>
 
             <div
-              className={`w-full bg-green-50 p-4 rounded-lg cursor-pointer transition-transform transform hover:scale-95 hover:shadow-sm ease-in duration-300 ${
+              className={`w-full bg-green-50 p-4 rounded-lg cursor-pointer transition-transform transform hover:scale-95 ease-in duration-300 ${
                 activeFilter === "Active" ? "ring-1 ring-green-500" : ""
               }`}
               onClick={() => setActiveFilter("Active")}
@@ -343,7 +343,7 @@ const Supplier_List = () => {
             </div>
 
             <div
-              className={`w-full bg-red-50 p-4 rounded-lg cursor-pointer transition-transform transform hover:scale-95 hover:shadow-sm ease-in duration-300 ${
+              className={`w-full bg-red-50 p-4 rounded-lg cursor-pointer transition-transform transform hover:scale-95 ease-in duration-300 ${
                 activeFilter === "Dormant" ? "ring-1 ring-red-500" : ""
               }`}
               onClick={() => setActiveFilter("Dormant")}

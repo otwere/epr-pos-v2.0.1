@@ -68,7 +68,7 @@ const QuotationPage = () => {
 
             <hr className="mb-3" />
 
-            <Card className="shadow-none rounded-md bg-gray-50">
+            <Card className="rounded-md bg-gray-50">
               <QuotationList
                 onAddNew={handleAddNewQuotation}
                 onEdit={handleEditQuotation}

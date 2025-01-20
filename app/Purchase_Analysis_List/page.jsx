@@ -231,7 +231,7 @@ const PurchaseAnalysisList = () => {
                 showSizeChanger: true,
                 showQuickJumper: true,
               }}
-              className="shadow-none"
+              className=""
             />
           </Card>
         </Content>

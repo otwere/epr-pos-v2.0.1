@@ -146,7 +146,7 @@ const AddItems = () => {
                 All fields marked * are required
               </Text>
             }
-            className="shadow-sm rounded-sm p-4 bg-gray-50 mb-8"
+            className="rounded-sm p-4 bg-gray-50 mb-8"
           >
             <Form
               ref={formRef}

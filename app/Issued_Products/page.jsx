@@ -288,7 +288,7 @@ function IssuedProducts() {
             </Button>
           </div>
 
-          <Card className="shadow-sm rounded-lg overflow-x-auto">
+          <Card className="rounded-lg overflow-x-auto">
             <Table
               columns={columns}
               dataSource={issuedProducts}

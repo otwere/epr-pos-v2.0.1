@@ -28,7 +28,7 @@ const CalltoAction = () => {
         showButton && (
             <button
                 onClick={scrollToTop}
-                className="fixed h-11 bottom-3 right-2 p-3 rounded-md bg-blue-500 text-white shadow-lg hover:bg-blue-700 transition duration-300">            
+                className="fixed h-11 bottom-3 right-2 p-3 rounded-md bg-blue-500 text-white  hover:bg-blue-700 transition duration-300">            
                 <ArrowUpOutlined className="text-sm" />
             </button>
         )

@@ -125,7 +125,7 @@ const DiscountSection = () => {
   const savingsPercentage = ((savingsAmount / totals.totalAmt) * 100).toFixed(1);
 
   return (
-    <Card className="mt-4 bg-gray-50 rounded-lg shadow-sm">
+    <Card className="mt-4 bg-gray-50 rounded-lg">
       <div className="space-y-6">
         <div className="flex justify-between items-center">
           <h4 className="text-xl font-bold text-orange-600">Order Summary</h4>

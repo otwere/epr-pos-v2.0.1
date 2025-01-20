@@ -276,7 +276,7 @@ const PurchaseItems = () => {
               </Text>
             }
             
-            className="shadow-sm rounded-sm p-4 bg-gray-100 mb-8"          >
+            className="rounded-sm p-4 bg-gray-100 mb-8"          >
             
             <Form form={form} onFinish={handleSave} layout="vertical">
               <Row gutter={16}>

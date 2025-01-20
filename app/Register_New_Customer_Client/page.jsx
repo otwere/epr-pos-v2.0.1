@@ -193,7 +193,7 @@ const RegisterNewCustomer = () => {
             </div>
           </div>
 
-          <Card className="shadow-none rounded-sm p-4 bg-gray-50 mb-8">
+          <Card className="rounded-sm p-4 bg-gray-50 mb-8">
             <Form
               ref={formRef}
               form={form}

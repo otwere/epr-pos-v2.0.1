@@ -213,7 +213,7 @@ const DeliveryNoteList = () => {
             <hr className="-mt-2 mb-4" />
           </div>
 
-          <Card className="shadow-sm rounded-lg bg-gray-50">
+          <Card className="rounded-lg bg-gray-50">
             <div className="mb-4 flex justify-between items-center">
               <div className="flex items-center space-x-4">
                 <Input

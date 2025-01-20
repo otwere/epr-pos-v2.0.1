@@ -175,7 +175,7 @@ const BarChart = ({ collapsed }) => {
     };
 
     return (
-        <div className={`bg-gray-50 p-8 rounded-lg shadow-none transition-all duration-300 ${collapsed ? 'w-64' : 'w-full'} h-[calc(100vh-120px)]`}>
+        <div className={`bg-gray-50 p-8 rounded-lg  transition-all duration-300 ${collapsed ? 'w-64' : 'w-full'} h-[calc(100vh-120px)]`}>
             <div className="flex justify-center mb-6">
                 <button
                     className={`px-8 py-1 mr-4 rounded-lg focus:outline-none transition duration-300 ${chartData === 'daily' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800 hover:bg-gray-300'}`}

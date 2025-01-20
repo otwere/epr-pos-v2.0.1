@@ -18,7 +18,7 @@ const StatisticCard = ({
   return (
     <Card 
       loading={loading}
-      className={`transform transition-all duration-300 hover:scale-95 hover:shadow-sm ${className}`}
+      className={`transform transition-all duration-300 hover:scale-95 ${className}`}
     >
       <Statistic
         title={

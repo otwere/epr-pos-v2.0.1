@@ -3,7 +3,7 @@ import { SearchOutlined } from "@ant-design/icons";
 
 const SearchBar = ({ collapsed }) => {
   return (
-    <div className={`fixed top-0 right-0 z-10 search-bar p-2 ${collapsed ? 'ml-0' : 'ml-10'} rounded-none shadow-none`}>
+    <div className={`fixed top-0 right-0 z-10 search-bar p-2 ${collapsed ? 'ml-0' : 'ml-10'} rounded-none `}>
       <form className="search-form flex items-center" method="POST" action="#">
         <input
           type="text"

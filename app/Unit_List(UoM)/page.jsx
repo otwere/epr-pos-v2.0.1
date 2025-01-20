@@ -325,7 +325,7 @@ function UnitList() {
             <Text type="secondary">Manage your units effectively</Text>
           </div>
 
-          <Card className="shadow-sm rounded-lg">
+          <Card className="rounded-lg">
             <div className="mb-4">
               <Space size="large" className="w-full flex justify-between">
                 <Input

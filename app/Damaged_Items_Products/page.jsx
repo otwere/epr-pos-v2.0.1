@@ -297,7 +297,7 @@ function DamagedProducts() {
             </Button>
           </div>
 
-          <Card className="shadow-md rounded-lg overflow-hidden">
+          <Card className="rounded-lg overflow-hidden">
             <Table
               columns={columns}
               dataSource={DamagedProducts}
