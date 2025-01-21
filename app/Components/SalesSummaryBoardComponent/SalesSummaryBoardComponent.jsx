@@ -40,7 +40,7 @@ const SalesSummaryBoardComponent = () => {
       sorter: (a, b) => a.label.localeCompare(b.label),
     },
     {
-      title: 'Amount (Kshs)',
+      title: 'Amount (KES)',
       dataIndex: 'value',
       key: 'value',
       render: (text) => (

@@ -79,7 +79,7 @@ const CustomBreadcrumb = () => (
   <div className="mb-4 flex justify-between items-center border-b border-gray-300 pb-2">
     <Breadcrumb
       items={[
-        { title: <Link href="/">Home</Link> },
+        { title: <Link href="/Dashboard">Home</Link> },
         { title: "Dashboard" },
       ]}
     />
@@ -92,7 +92,7 @@ const cardData = [
   {
     key: 1,
     title: "TODAY'S SALES",
-    amount: "Kshs 150,210.00",
+    amount: "KES 150,210.00",
     subtitle: new Date().toLocaleDateString('en-GB', { 
       day: '2-digit', 
       month: '2-digit', 
@@ -105,7 +105,7 @@ const cardData = [
   {
     key: 2,
     title: "CREDIT SALES",
-    amount: "Kshs 2,000.00",
+    amount: "KES 2,000.00",
     subtitle: "Accounts Receivable",
     color: "bg-teal-600",
     hoverColor: "hover:bg-teal-700",
@@ -114,7 +114,7 @@ const cardData = [
   {
     key: 3,
     title: "PURCHASE DUE",
-    amount: "Kshs 66,250.00",
+    amount: "KES 66,250.00",
     subtitle: "Accounts Payable",
     color: "bg-lime-600",
     hoverColor: "hover:bg-lime-700",
@@ -124,7 +124,7 @@ const cardData = [
   {
     key: 4,
     title: "EXPENSE AMOUNT",
-    amount: "Kshs 4,550.00",
+    amount: "KES 4,550.00",
     subtitle: `For ${getCurrentMonth()}`,
     color: "bg-red-500",
     hoverColor: "hover:bg-red-700",

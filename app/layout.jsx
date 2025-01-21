@@ -6,7 +6,7 @@ import LoadingSpinner from "./Components/LoadingSpinnerComponent/LoadingSpinner"
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "POS | Integrated Advanced ERP v2.0.1",
+  title: "SnavePOS | Integrated Advanced ERP v2.0.1",
   description:
     "Elevate your Business Management with Snave Webhub Africa's cutting-edge Seamless ERP-POS system. Our solution integrates seamlessly with KRA eTIMS and offers diverse payment options, optimizing efficiency and fostering growth in a competitive landscape.",
 };

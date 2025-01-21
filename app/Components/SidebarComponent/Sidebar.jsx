@@ -79,7 +79,7 @@ const Sidebar = ({ collapsed, ref }) => {
       key: "1",
       icon: <DashboardOutlined />,
       title: "Dashboard",
-      link: "/",
+      link: "/Dashboard",
     },
     {
       key: "2",
@@ -331,10 +331,10 @@ const Sidebar = ({ collapsed, ref }) => {
         {
           key: "16-4",
           icon: <BarChartOutlined />,
-          title: "Sales Report (Employees)",
+          title: "Sales Report (Employees | Branches)", 
           link:"/sales_report_employees",
         },
-        { key: "16-5", icon: <BlockOutlined />, title: "Item Sales Report", link:"/item_sales_report", },
+        { key: "16-5", icon: <BlockOutlined />, title: "Items Sales Report", link:"/item_sales_report", },
         {
           key: "16-6",
           icon: <BlockOutlined />,
@@ -408,7 +408,7 @@ const Sidebar = ({ collapsed, ref }) => {
     {
       key: "19",
       icon: <UsergroupAddOutlined />,
-      title: "Human Resource Management",
+      title: "Human Resource (HRIMS)",
       subItems: [
         { key: "19-1", icon: <UserAddOutlined />, title: "Add New Employee", link: "/add_new_employee" },
         { key: "19-2", icon: <UnorderedListOutlined />, title: "Employee List", link: "/Employee_List" },
@@ -416,7 +416,7 @@ const Sidebar = ({ collapsed, ref }) => {
         { key: "19-4", icon: <DollarOutlined />, title: "Payroll", link: "/Payroll" },
         { key: "19-5", icon: <FileTextOutlined />, title: "Employee Data Management", link: "/Employee_Data_Management" },
         { key: "19-6", icon: <FileTextOutlined />, title: "Leave Management", link: "/Leave_Management" },
-        { key: "19-7", icon: <FileTextOutlined />, title: "Time and Attendance Management", link: "/Time_Attendance_Management" },
+        { key: "19-7", icon: <FileTextOutlined />, title: "Time | Attendance Management", link: "/Time_Attendance_Management" },
         { key: "19-8", icon: <FileTextOutlined />, title: "Bulk SMS", link: "/Bulk_SMS" },
         { key: "19-9", icon: <FileTextOutlined />, title: "Allowances | Deductions", link: "/Allowances_Deductions_Management" },
         { key: "19-10", icon: <FileTextOutlined />, title: "Statutory Deductions Management", link: "/Statutory_Deductions_Management" },
@@ -482,7 +482,7 @@ const Sidebar = ({ collapsed, ref }) => {
       key: "22",
       icon: <LogoutOutlined />,
       title: "Logout",
-      link: "/login_page",
+      link: "/",
     },
   ];
 

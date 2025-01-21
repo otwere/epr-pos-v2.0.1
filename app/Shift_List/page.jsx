@@ -28,11 +28,11 @@ const ShiftList = () => {
     {
       title: (
         <span>
-          <HomeOutlined style={{ marginRight: 4 }} />
+          <HomeOutlined style={{ marginRight: 4 , color: '#1890ff'}} />
           Home
         </span>
       ),
-      href: "/",
+      href: "/Dashboard",
     },
     {
       title: "Shift List",

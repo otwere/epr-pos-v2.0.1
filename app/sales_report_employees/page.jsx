@@ -45,6 +45,12 @@ const { Title, Text } = Typography;
 const { Panel } = Collapse;
 const { Option } = Select;
 
+// Employee to Branch mapping
+const employeeBranchMap = {
+  "John Doe": "Nairobi",
+  "Jane Smith": "Mombasa",
+};
+
 const SalesReport = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [form] = Form.useForm();
@@ -57,7 +63,7 @@ const SalesReport = () => {
     customerName: "",
     paymentStatus: "Paid",         // Default to "Paid"
     employeeName: "John Doe",      // Default to "John Doe"
-    branch: "",                    // Default to empty (all branches)
+    branch: "Nairobi",             // Default to "Nairobi" based on employee
   });
   const [salesData, setSalesData] = useState([]);
   const [isReportVisible, setIsReportVisible] = useState(false);
@@ -69,10 +75,20 @@ const SalesReport = () => {
   const toggleCollapsed = () => setCollapsed(!collapsed);
 
   const handleFilterChange = (changedValues, allValues) => {
-    setFilters({
-      ...filters,
-      ...allValues,
-    });
+    if (changedValues.employeeName) {
+      const branch = employeeBranchMap[changedValues.employeeName] || "";
+      form.setFieldsValue({ branch });
+      setFilters({
+        ...filters,
+        ...allValues,
+        branch,
+      });
+    } else {
+      setFilters({
+        ...filters,
+        ...allValues,
+      });
+    }
   };
 
   const formatNumber = (value) => {
@@ -449,9 +465,9 @@ const SalesReport = () => {
           "KRA PIN",
           "Employee Name",
           "Branch",
-          "Invoice Total (Ksh)",
-          "Paid Amt (Ksh)",
-          "Due Amt (Ksh)",
+          "Invoice Total (KES)",
+          "Paid Amt (KES)",
+          "Due Amt (KES)",
         ],
       ],
       body: salesData.map((item) => [
@@ -589,7 +605,7 @@ const SalesReport = () => {
       // className: "whitespace-nowrap", 
     },
     {
-      title: "Invoice Total (Ksh)",
+      title: "Invoice Total (KES)",
       dataIndex: "invoiceTotal",
       key: "invoiceTotal",
       render: (invoiceTotal) => <span>{formatNumber(invoiceTotal)}</span>,
@@ -597,7 +613,7 @@ const SalesReport = () => {
       className: "whitespace-nowrap", 
     },
     {
-      title: "Paid Amt (Ksh)",
+      title: "Paid Amt (KES)",
       dataIndex: "paidAmount",
       key: "paidAmount",
       render: (paidAmount) => <span>{formatNumber(paidAmount)}</span>,
@@ -605,7 +621,7 @@ const SalesReport = () => {
       className: "whitespace-nowrap", 
     },
     {
-      title: "Due Amt (Ksh)",
+      title: "Due Amt (KES)",
       dataIndex: "dueAmount",
       key: "dueAmount",
       render: (dueAmount) => <span>{formatNumber(dueAmount)}</span>,
@@ -727,42 +743,42 @@ const SalesReport = () => {
                             align: "right",
                           },
                           {
-                            title: "Paid Amount (Ksh)",
+                            title: "Paid Amount (KES)",
                             dataIndex: "paidAmount",
                             key: "paidAmount",
                             render: (paidAmount) => <span>{formatNumber(paidAmount)}</span>,
                             align: "right",
                           },
                           {
-                            title: "Due Amount (Ksh)",
+                            title: "Due Amount (KES)",
                             dataIndex: "dueAmount",
                             key: "dueAmount",
                             render: (dueAmount) => <span>{formatNumber(dueAmount)}</span>,
                             align: "right",
                           },
                           {
-                            title: "Cash (Ksh)",
+                            title: "Cash (KES)",
                             dataIndex: ["paymentModes", "cash"],
                             key: "cash",
                             render: (cash) => <span>{formatNumber(cash)}</span>,
                             align: "right",
                           },
                           {
-                            title: "Mpesa (Ksh)",
+                            title: "Mpesa (KES)",
                             dataIndex: ["paymentModes", "mpesa"],
                             key: "mpesa",
                             render: (mpesa) => <span>{formatNumber(mpesa)}</span>,
                             align: "right",
                           },
                           {
-                            title: "Bank (Ksh)",
+                            title: "Bank (KES)",
                             dataIndex: ["paymentModes", "bank"],
                             key: "bank",
                             render: (bank) => <span>{formatNumber(bank)}</span>,
                             align: "right",
                           },
                           {
-                            title: "PDQ | CHEQUE (Ksh)",
+                            title: "PDQ | CHEQUE (KES)",
                             dataIndex: ["paymentModes", "pdqCheque"],
                             key: "pdqCheque",
                             render: (pdqCheque) => <span>{formatNumber(pdqCheque)}</span>,
@@ -779,7 +795,7 @@ const SalesReport = () => {
                       <div className="flex items-center">
                         <UserOutlined className="text-green-600 text-2xl mr-2 mb-6" />
                         <Title level={4} style={{ marginTop: "-10px" }}>
-                          Employees Sales Summary
+                         Sales Person Summary
                         </Title>
                       </div>
                       <hr />
@@ -797,14 +813,14 @@ const SalesReport = () => {
                             key: "branch",
                           },
                           {
-                            title: "Total Sales (Ksh)",
+                            title: "Total Sales (KES)",
                             dataIndex: "invoiceTotal",
                             key: "invoiceTotal",
                             render: (invoiceTotal) => <span>{formatNumber(invoiceTotal)}</span>,
                             align: "right",
                           },
                           {
-                            title: "Due Amt (Ksh)",
+                            title: "Due Amt (KES)",
                             dataIndex: "dueAmount",
                             key: "dueAmount",
                             render: (dueAmount) => <span>{formatNumber(dueAmount)}</span>,
@@ -855,18 +871,18 @@ const SalesReport = () => {
               items={[
                 {
                   title: (
-                    <Link href="/">
+                    <Link href="/Dashboard">
                       <HomeOutlined className="text-blue-500" /> Home
                     </Link>
                   ),
                 },
-                { title: "Employee Sales Report" },
+                { title: "Employees & Branches  Report" },
               ]}
             />
             <hr />
             <div className="mb-4 flex justify-between items-center">
               <Title level={4} className="text-blue-800 mt-2">
-                Employee Sales Report
+                Sales Employees Report
               </Title>
             </div>
           </div>
@@ -926,7 +942,7 @@ const SalesReport = () => {
                 <Form.Item 
                   name="branch" 
                   label="Branch" 
-                  style={{ width: '200px' }} // Adjust width as needed
+                  style={{ width: '200px' }} 
                 >
                   <Select
                     showSearch

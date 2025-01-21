@@ -20,12 +20,14 @@ import {
 } from "antd";
 import {
   FilterOutlined,
-  FilePdfOutlined,
   HomeOutlined,
   CaretDownOutlined,
   CaretUpOutlined,
   BarChartOutlined,
   SearchOutlined,
+  ProductOutlined ,
+  UserOutlined,
+  PrinterOutlined ,
 } from "@ant-design/icons";
 
 import Header from "../Components/HeaderComponent/Header";
@@ -42,6 +44,27 @@ const { Title, Text } = Typography;
 const { Panel } = Collapse;
 const { Option } = Select;
 
+// Employee to Branch mapping
+const employeeBranchMap = {
+  "John Doe": "Nairobi",
+  "Jane Smith": "Mombasa",
+  "Alice Johnson": "Kisumu",
+  "Bob Brown": "Nakuru",
+  "Charlie Davis": "Eldoret",
+};
+
+// List of item names for the select option
+const itemNames = [
+  "Mara Sugar 1kg",
+  "Mara Tea 500g",
+  "Mara Rice 5kg",
+  "Mara Flour 2kg",
+  "Mara Cooking Oil 1L",
+  "Mara Biscuits 200g",
+  "Mara Spaghetti 500g",
+  "Mara Salt 1kg",
+];
+
 const SalesReport = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [form] = Form.useForm();
@@ -49,10 +72,11 @@ const SalesReport = () => {
     notification.useNotification();
   const [loading, setLoading] = useState(false);
   const [filters, setFilters] = useState({
-    fromDate: dayjs("2024-10-01"), // Ensure this is a valid dayjs object
-    toDate: dayjs("2025-01-19"),   // Ensure this is a valid dayjs object
-    customerName: "",
-    paymentStatus: "",
+    fromDate: dayjs("2025-01-20"), // Updated to 20-01-2025
+    toDate: dayjs("2025-01-31"),   // Updated to 31-01-2025
+    itemName: "",                  // Changed from customerName to itemName
+    category: "",                  // Changed from paymentStatus to category
+    branch: "Nairobi",             // Default to "Nairobi"
   });
   const [salesData, setSalesData] = useState([]);
   const [isReportVisible, setIsReportVisible] = useState(false);
@@ -60,6 +84,7 @@ const SalesReport = () => {
   const [generatedBy, setGeneratedBy] = useState("Admin");
   const [searchText, setSearchText] = useState("");
   const [pagination, setPagination] = useState({ current: 1, pageSize: 10 });
+  const [expandedRowKeys, setExpandedRowKeys] = useState([]);
 
   const toggleCollapsed = () => setCollapsed(!collapsed);
 
@@ -82,14 +107,22 @@ const SalesReport = () => {
     {
       id: "S001",
       invoiceNumber: "INV001",
-      salesDate: "2024-10-05",
+      salesDate: "2025-01-21",
       customerId: "cust_001",
       customerName: "WALKIN",
       kraPin: "A001234567890",
       invoiceTotal: 25000.0,
-      paidAmount: 20000.0,
-      dueAmount: 5000.0,
+      paidAmount: 25000.0,
+      dueAmount: 0.0,
       paymentStatus: "Paid",
+      employeeName: "John Doe",
+      branch: "Nairobi",
+      paymentModes: {
+        cash: 10000.0,
+        mpesa: 15000.0,
+        bank: 0.0,
+        pdqCheque: 0.0,
+      },
       itemsSold: [
         {
           itemName: "Mara Sugar 1kg",
@@ -97,6 +130,7 @@ const SalesReport = () => {
           price: 100.0,
           tax: 0.0,
           total: 1000.0,
+          category: "Grocery", // Added category
         },
         {
           itemName: "Mara Tea 500g",
@@ -104,6 +138,7 @@ const SalesReport = () => {
           price: 200.0,
           tax: 0.0,
           total: 1000.0,
+          category: "Beverages", // Added category
         },
         {
           itemName: "Mara Rice 5kg",
@@ -111,13 +146,14 @@ const SalesReport = () => {
           price: 500.0,
           tax: 0.0,
           total: 1000.0,
+          category: "Grocery", // Added category
         },
       ],
     },
     {
       id: "S002",
       invoiceNumber: "INV002",
-      salesDate: "2024-11-15",
+      salesDate: "2025-01-25",
       customerId: "cust_002",
       customerName: "Customer B",
       kraPin: "B001234567890",
@@ -125,6 +161,14 @@ const SalesReport = () => {
       paidAmount: 15000.0,
       dueAmount: 0.0,
       paymentStatus: "Paid",
+      employeeName: "Jane Smith",
+      branch: "Mombasa",
+      paymentModes: {
+        cash: 5000.0,
+        mpesa: 10000.0,
+        bank: 0.0,
+        pdqCheque: 0.0,
+      },
       itemsSold: [
         {
           itemName: "Mara Sugar 1kg",
@@ -132,6 +176,7 @@ const SalesReport = () => {
           price: 100.0,
           tax: 0.0,
           total: 500.0,
+          category: "Grocery", // Added category
         },
         {
           itemName: "Mara Flour 2kg",
@@ -139,111 +184,128 @@ const SalesReport = () => {
           price: 150.0,
           tax: 0.0,
           total: 450.0,
+          category: "Grocery", // Added category
         },
       ],
     },
     {
       id: "S003",
       invoiceNumber: "INV003",
-      salesDate: "2024-12-20",
+      salesDate: "2025-01-22",
       customerId: "cust_003",
       customerName: "Customer C",
       kraPin: "C001234567890",
       invoiceTotal: 30000.0,
-      paidAmount: 20000.0,
-      dueAmount: 10000.0,
-      paymentStatus: "Unpaid",
+      paidAmount: 30000.0,
+      dueAmount: 0.0,
+      paymentStatus: "Paid",
+      employeeName: "Alice Johnson",
+      branch: "Kisumu",
+      paymentModes: {
+        cash: 10000.0,
+        mpesa: 20000.0,
+        bank: 0.0,
+        pdqCheque: 0.0,
+      },
       itemsSold: [
         {
-          itemName: "Mara Sugar 1kg",
-          quantity: 20,
-          price: 100.0,
+          itemName: "Mara Cooking Oil 1L",
+          quantity: 10,
+          price: 300.0,
           tax: 0.0,
-          total: 2000.0,
+          total: 3000.0,
+          category: "Grocery", // Added category
         },
         {
-          itemName: "Mara Tea 500g",
-          quantity: 10,
-          price: 200.0,
+          itemName: "Mara Biscuits 200g",
+          quantity: 20,
+          price: 50.0,
           tax: 0.0,
-          total: 2000.0,
+          total: 1000.0,
+          category: "Snacks", // Added category
         },
       ],
     },
     {
       id: "S004",
       invoiceNumber: "INV004",
-      salesDate: "2025-01-10",
+      salesDate: "2025-01-23",
       customerId: "cust_004",
       customerName: "Customer D",
       kraPin: "D001234567890",
-      invoiceTotal: 50000.0,
-      paidAmount: 30000.0,
-      dueAmount: 20000.0,
+      invoiceTotal: 20000.0,
+      paidAmount: 20000.0,
+      dueAmount: 0.0,
       paymentStatus: "Paid",
+      employeeName: "Bob Brown",
+      branch: "Nakuru",
+      paymentModes: {
+        cash: 5000.0,
+        mpesa: 15000.0,
+        bank: 0.0,
+        pdqCheque: 0.0,
+      },
       itemsSold: [
         {
-          itemName: "Mara Sugar 1kg",
-          quantity: 30,
+          itemName: "Mara Spaghetti 500g",
+          quantity: 15,
           price: 100.0,
           tax: 0.0,
-          total: 3000.0,
-        },
-        {
-          itemName: "Mara Flour 2kg",
-          quantity: 10,
-          price: 150.0,
-          tax: 0.0,
           total: 1500.0,
+          category: "Grocery", // Added category
         },
         {
-          itemName: "Mara Rice 5kg",
-          quantity: 5,
-          price: 500.0,
+          itemName: "Mara Salt 1kg",
+          quantity: 10,
+          price: 50.0,
           tax: 0.0,
-          total: 2500.0,
+          total: 500.0,
+          category: "Grocery", // Added category
         },
       ],
     },
     {
       id: "S005",
       invoiceNumber: "INV005",
-      salesDate: "2025-01-15",
+      salesDate: "2025-01-24",
       customerId: "cust_005",
       customerName: "Customer E",
       kraPin: "E001234567890",
-      invoiceTotal: 45000.0,
-      paidAmount: 30000.0,
-      dueAmount: 15000.0,
-      paymentStatus: "Unpaid",
+      invoiceTotal: 18000.0,
+      paidAmount: 18000.0,
+      dueAmount: 0.0,
+      paymentStatus: "Paid",
+      employeeName: "Charlie Davis",
+      branch: "Eldoret",
+      paymentModes: {
+        cash: 8000.0,
+        mpesa: 10000.0,
+        bank: 0.0,
+        pdqCheque: 0.0,
+      },
       itemsSold: [
         {
-          itemName: "Mara Sugar 1kg",
-          quantity: 15,
-          price: 100.0,
-          tax: 0.0,
-          total: 1500.0,
-        },
-        {
           itemName: "Mara Tea 500g",
-          quantity: 8,
+          quantity: 10,
           price: 200.0,
           tax: 0.0,
-          total: 1600.0,
+          total: 2000.0,
+          category: "Beverages", // Added category
         },
         {
-          itemName: "Mara Rice 5kg",
-          quantity: 3,
-          price: 500.0,
+          itemName: "Mara Biscuits 200g",
+          quantity: 30,
+          price: 50.0,
           tax: 0.0,
           total: 1500.0,
+          category: "Snacks", // Added category
         },
       ],
     },
   ];
 
   const generateReport = () => {
-    const { fromDate, toDate, customerName, paymentStatus } =
+    const { fromDate, toDate, itemName, category, branch } =
       form.getFieldsValue();
 
     if (!fromDate || !toDate) {
@@ -263,16 +325,29 @@ const SalesReport = () => {
         const salesDate = dayjs(item.salesDate);
 
         // Ensure properties are defined before calling .toLowerCase()
-        const itemCustomerName = item.customerName || "";
-        const itemPaymentStatus = item.paymentStatus || "";
-
-        return (
-          salesDate.isAfter(fromDate) &&
-          salesDate.isBefore(toDate) &&
-          itemCustomerName.toLowerCase().includes((customerName || "").toLowerCase()) &&
-          itemPaymentStatus.toLowerCase().includes((paymentStatus || "").toLowerCase())
+        const itemNameMatch = item.itemsSold.some((soldItem) =>
+          soldItem.itemName.toLowerCase().includes(itemName.toLowerCase())
         );
+        const categoryMatch = item.itemsSold.some((soldItem) =>
+          soldItem.category.toLowerCase().includes(category.toLowerCase())
+        );
+        const branchMatch = item.branch.toLowerCase().includes(branch.toLowerCase());
+
+        // Check if the sales date is within the selected range
+        const isDateInRange =
+          salesDate.isAfter(fromDate) && salesDate.isBefore(toDate);
+
+        return isDateInRange && itemNameMatch && categoryMatch && branchMatch;
       });
+
+      if (filteredData.length === 0) {
+        notificationApi.warning({
+          message: "No Data Found",
+          description: "No sales data found for the selected filters.",
+          placement: "topRight",
+          className: "bg-yellow-50",
+        });
+      }
 
       setSalesData(filteredData);
       setLoading(false);
@@ -347,11 +422,13 @@ const SalesReport = () => {
       startY: 100,
       head: [
         [
-          "Invoice Number",
+          "Invoice No",
           "Sales Date",
           "Customer ID",
           "Customer Name",
-          "KRA PIN",
+          "Item Name",
+          "Employee Name",
+          "Branch",
           "Invoice Total (KES)",
           "Paid Amt (KES)",
           "Due Amt (KES)",
@@ -362,7 +439,9 @@ const SalesReport = () => {
         item.salesDate,
         item.customerId,
         item.customerName,
-        item.kraPin,
+        item.itemsSold.map((soldItem) => soldItem.itemName).join(", "),
+        item.employeeName,
+        item.branch,
         formatNumber(item.invoiceTotal),
         formatNumber(item.paidAmount),
         formatNumber(item.dueAmount),
@@ -383,9 +462,11 @@ const SalesReport = () => {
         2: { cellWidth: 30 },
         3: { cellWidth: 40 },
         4: { cellWidth: 40 },
-        5: { halign: "right", cellWidth: 30 },
-        6: { halign: "right", cellWidth: 30 },
+        5: { cellWidth: 40 },
+        6: { cellWidth: 40 },
         7: { halign: "right", cellWidth: 30 },
+        8: { halign: "right", cellWidth: 30 },
+        9: { halign: "right", cellWidth: 30 },
       },
       alternateRowStyles: {
         fillColor: brandColors.lightGray,
@@ -439,56 +520,71 @@ const SalesReport = () => {
   const filteredData = salesData.filter((item) => {
     return (
       item.customerName.toLowerCase().includes(searchText.toLowerCase()) ||
-      item.invoiceNumber.toLowerCase().includes(searchText.toLowerCase())
+      item.invoiceNumber.toLowerCase().includes(searchText.toLowerCase()) ||
+      item.employeeName.toLowerCase().includes(searchText.toLowerCase())
     );
   });
+
+  const handleExpand = (expanded, record) => {
+    if (expanded) {
+      setExpandedRowKeys([...expandedRowKeys, record.id]);
+    } else {
+      setExpandedRowKeys(expandedRowKeys.filter(key => key !== record.id));
+    }
+  };
 
   const salesColumns = [
     {
       title: "Invoice Number",
       dataIndex: "invoiceNumber",
       key: "invoiceNumber",
+      className: "whitespace-nowrap",
     },
     {
       title: "Sales Date",
       dataIndex: "salesDate",
       key: "salesDate",
-    },
-    {
-      title: "Customer ID",
-      dataIndex: "customerId",
-      key: "customerId",
+      className: "whitespace-nowrap",
     },
     {
       title: "Customer Name",
       dataIndex: "customerName",
       key: "customerName",
+      className: "whitespace-nowrap",
     },
     {
-      title: "KRA PIN",
-      dataIndex: "kraPin",
-      key: "kraPin",
+      title: "Branch",
+      dataIndex: "branch",
+      key: "branch",
+      align: "right",
+      className: "whitespace-nowrap",
     },
     {
-      title: "Invoice Total (KES)",
+      title: "Item Sales Count",
+      dataIndex: "itemsSold",
+      key: "itemSalesCount",
+      align: "right",
+      render: (itemsSold) => itemsSold.reduce((sum, item) => sum + item.quantity, 0),
+      className: "whitespace-nowrap",
+      onCell: (record) => ({
+        onClick: () => handleExpand(!expandedRowKeys.includes(record.id), record),
+        style: { cursor: "pointer" }, // Add cursor pointer style
+      }),
+    },
+    {
+      title: "Invoice Total (Ksh)",
       dataIndex: "invoiceTotal",
       key: "invoiceTotal",
       render: (invoiceTotal) => <span>{formatNumber(invoiceTotal)}</span>,
       align: "right",
+      className: "whitespace-nowrap",
     },
     {
-      title: "Paid Amt (KES)",
-      dataIndex: "paidAmount",
-      key: "paidAmount",
-      render: (paidAmount) => <span>{formatNumber(paidAmount)}</span>,
+      title: "Sold By",
+      dataIndex: "employeeName",
+      key: "employeeName",
       align: "right",
-    },
-    {
-      title: "Due Amt (KES)",
-      dataIndex: "dueAmount",
-      key: "dueAmount",
-      render: (dueAmount) => <span>{formatNumber(dueAmount)}</span>,
-      align: "right",
+      className: "whitespace-nowrap",
     },
   ];
 
@@ -519,8 +615,8 @@ const SalesReport = () => {
 
           <div className="mb-4">
             <Input
-              placeholder="Search by Customer Name or Invoice Number"
-              prefix={<SearchOutlined />}
+              placeholder="Search by Customer Name, Invoice No., or Employee Name"
+              prefix={<SearchOutlined className="text-blue-500" />}
               value={searchText}
               onChange={(e) => handleSearch(e.target.value)}
               allowClear
@@ -542,96 +638,130 @@ const SalesReport = () => {
             }}
             expandable={{
               expandedRowRender: (record) => {
-                // Calculate totals for items sold
-                const itemsSoldTotals = record.itemsSold.reduce(
-                  (totals, item) => {
-                    totals.quantity += item.quantity || 0;
-                    totals.price += (item.quantity || 0) * (item.price || 0);
-                    totals.tax += item.tax || 0;
-                    totals.total += item.total || 0;
-                    return totals;
-                  },
-                  { quantity: 0, price: 0, tax: 0, total: 0 }
-                );
+                const totalQty = record.itemsSold.reduce((sum, item) => sum + item.quantity, 0);
+                const totalSales = record.itemsSold.reduce((sum, item) => sum + item.total, 0);
 
                 return (
                   <div key={`expanded-${record.id}`}>
-                    <Title level={4}>Items Sold</Title>
-                    <hr />
-                    <Table
-                      dataSource={record.itemsSold}
-                      columns={[
-                        {
-                          title: "Item Name",
-                          dataIndex: "itemName",
-                          key: "itemName",
-                        },
-                        {
-                          title: "Quantity",
-                          dataIndex: "quantity",
-                          key: "quantity",
-                          align: "right",
-                        },
-                        {
-                          title: "Price",
-                          dataIndex: "price",
-                          key: "price",
-                          render: (price) => formatNumber(price),
-                          align: "right",
-                        },
-                        {
-                          title: "Tax",
-                          dataIndex: "tax",
-                          key: "tax",
-                          render: (tax) => formatNumber(tax),
-                          align: "right",
-                        },
-                        {
-                          title: "Total",
-                          dataIndex: "total",
-                          key: "total",
-                          render: (total) => formatNumber(total),
-                          align: "right",
-                        },
-                      ]}
-                      pagination={false}
-                      rowKey="itemName"
-                    />
-                    {/* Modern and Professional Total Section */}
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "flex-end",
-                        marginTop: "16px",
-                        padding: "16px",
-                        backgroundColor: "#f5f5f5",
-                        borderRadius: "8px",
-                      }}
-                    >
-                      <div
-                        style={{
-                          display: "flex",
-                          gap: "24px",
-                          alignItems: "center",
-                        }}
-                      >
-                        <Text strong style={{ fontSize: "14px" }}>
-                          Total Quantity: {itemsSoldTotals.quantity}
-                        </Text>
-                        <Text strong style={{ fontSize: "14px" }}>
-                          Total Price: {formatNumber(itemsSoldTotals.price)}
-                        </Text>
-                        <Text strong style={{ fontSize: "14px" }}>
-                          Total Tax: {formatNumber(itemsSoldTotals.tax)}
-                        </Text>
-                        <Text strong style={{ fontSize: "14px" }}>
-                          Grand Total: {formatNumber(itemsSoldTotals.total)}
-                        </Text>
+                    {/* Items Sold Details Section */}
+                    <Card className="bg-green-50">
+                      <div className="flex items-center">
+                        <ProductOutlined className="text-green-600 text-2xl mr-2 mb-6" />
+                        <Title level={4} style={{ marginTop: "-10px" }}>
+                          Items Sold Details
+                        </Title>
                       </div>
-                    </div>
+                      <hr />
+                      <Table
+                        dataSource={record.itemsSold}
+                        columns={[
+                          {
+                            title: "Item Name",
+                            dataIndex: "itemName",
+                            key: "itemName",
+                          },
+                          {
+                            title: "Qty Sold",
+                            dataIndex: "quantity",
+                            key: "quantity",
+                            align: "right",
+                          },
+                          {
+                            title: "Price (KES)",
+                            dataIndex: "price",
+                            key: "price",
+                            render: (price) => <span>{formatNumber(price)}</span>,
+                            align: "right",
+                          },
+                          {
+                            title: "Total (KES)",
+                            dataIndex: "total",
+                            key: "total",
+                            render: (total) => <span>{formatNumber(total)}</span>,
+                            align: "right",
+                          },
+                          {
+                            title: "Branch",
+                            dataIndex: "branch",
+                            key: "branch",
+                            align: "right",
+                            render: () => record.branch,
+                          },
+                        ]}
+                        pagination={false}
+                        rowKey="itemName"
+                        footer={() => (
+                          <div className="flex justify-between">
+                            <Text strong>Total Qty of Items Sold : {totalQty}</Text>
+                            <Text strong>Total Sales : {formatNumber(totalSales)}</Text>
+                          </div>
+                        )}
+                      />
+                    </Card>
+
+                    {/* Employees Sales Section */}
+                    <Card className="bg-blue-50 mt-4">
+                      <div className="flex items-center">
+                        <UserOutlined className="text-blue-600 text-2xl mr-2 mb-6" />
+                        <Title level={4} style={{ marginTop: "-10px" }}>
+                          Employees Sales
+                        </Title>
+                      </div>
+                      <hr />
+                      <Table
+                        dataSource={record.itemsSold}
+                        columns={[
+                          {
+                            title: "Employee Name",
+                            dataIndex: "employeeName",
+                            key: "employeeName",
+                            render: () => record.employeeName,
+                          },
+                          {
+                            title: "Item Name",
+                            dataIndex: "itemName",
+                            key: "itemName",
+                          },
+                          {
+                            title: "Qty Sold",
+                            dataIndex: "quantity",
+                            key: "quantity",
+                            align: "right",
+                          },
+                          {
+                            title: "Total (KES)",
+                            dataIndex: "total",
+                            key: "total",
+                            render: (total) => <span>{formatNumber(total)}</span>,
+                            align: "right",
+                          },
+                          {
+                            title: "Branch",
+                            dataIndex: "branch",
+                            key: "branch",
+                            align: "right",
+                            render: () => record.branch,
+                          },
+                        ]}
+                        pagination={false}
+                        rowKey="itemName"
+                        footer={() => (
+                          <div className="text-right">
+                            <Text strong>Total Qty of Items Sold :</Text>
+                            <Text>{totalQty}</Text>
+                          </div>
+                        )}
+                      />
+                      <div className="mt-4 text-right">
+                        <Text strong>Total Sales : </Text>
+                        <Text>{formatNumber(totalSales)}</Text>
+                      </div>
+                    </Card>
                   </div>
                 );
               },
+              expandedRowKeys: expandedRowKeys,
+              onExpand: handleExpand,
             }}
           />
           <div
@@ -669,18 +799,18 @@ const SalesReport = () => {
               items={[
                 {
                   title: (
-                    <Link href="/">
-                      <HomeOutlined /> Home
+                    <Link href="/Dashboard">
+                      <HomeOutlined className="text-blue-500" /> Home
                     </Link>
                   ),
                 },
-                { title: "Sales Report" },
+                { title: "Items Sales Report" }, // Updated to "Items Sales Report"
               ]}
             />
             <hr />
             <div className="mb-4 flex justify-between items-center">
               <Title level={4} className="text-blue-800 mt-2">
-                Sales Report
+                Items Sales Report
               </Title>
             </div>
           </div>
@@ -696,8 +826,9 @@ const SalesReport = () => {
                 initialValues={{
                   fromDate: filters.fromDate,
                   toDate: filters.toDate,
-                  customerName: filters.customerName,
-                  paymentStatus: filters.paymentStatus,
+                  itemName: filters.itemName,
+                  category: filters.category,
+                  branch: filters.branch,
                 }}
               >
                 <Form.Item name="fromDate" label="From Date">
@@ -707,42 +838,81 @@ const SalesReport = () => {
                   <DatePicker format="DD-MM-YYYY" />
                 </Form.Item>
                 <Form.Item 
-                  name="customerName" 
-                  label="Customer Name" 
-                  style={{ width: '300px' }} // Adjust width as needed
+                  name="itemName" 
+                  label="Item" 
+                  style={{ width: '200px' }} // Adjust width as needed
                 >
-                  <Select>
-                    <Option value="">All Customers</Option>
-                    <Option value="client 1">Client 1</Option>
-                    <Option value="client 2">Client 2</Option>
+                  <Select
+                    showSearch
+                    placeholder="Select Item Name"
+                    optionFilterProp="children"
+                    filterOption={(input, option) =>
+                      option.children.toLowerCase().includes(input.toLowerCase())
+                    }
+                  >
+                    <Option value="">All Items</Option>
+                    {itemNames.map((item) => (
+                      <Option key={item} value={item}>
+                        {item}
+                      </Option>
+                    ))}
                   </Select>
                 </Form.Item>
                 <Form.Item 
-                  name="paymentStatus" 
-                  label="Payment Status" 
-                  style={{ width: '250px' }} // Adjust width as needed
+                  name="category" 
+                  label="Category" 
+                  style={{ width: '200px' }} // Adjust width as needed
                 >
-                  <Select>
-                    <Option value="">All</Option>
-                    <Option value="Paid">Paid</Option>
-                    <Option value="Unpaid">Unpaid</Option>
+                  <Select
+                    showSearch
+                    placeholder="Select Category"
+                    optionFilterProp="children"
+                    filterOption={(input, option) =>
+                      option.children.toLowerCase().includes(input.toLowerCase())
+                    }
+                  >
+                    <Option value="">All Categories</Option>
+                    <Option value="Grocery">Grocery</Option>
+                    <Option value="Beverages">Beverages</Option>
+                    <Option value="Snacks">Snacks</Option>
+                  </Select>
+                </Form.Item>
+                <Form.Item 
+                  name="branch" 
+                  label="Branch" 
+                  style={{ width: '180px' }} 
+                >
+                  <Select
+                    showSearch
+                    placeholder="Select Branch"
+                    optionFilterProp="children"
+                    filterOption={(input, option) =>
+                      option.children.toLowerCase().includes(input.toLowerCase())
+                    }
+                  >
+                    <Option value="">All Branches</Option>
+                    <Option value="Nairobi">Nairobi</Option>
+                    <Option value="Mombasa">Mombasa</Option>
+                    <Option value="Kisumu">Kisumu</Option>
+                    <Option value="Nakuru">Nakuru</Option>
+                    <Option value="Eldoret">Eldoret</Option>
                   </Select>
                 </Form.Item>
               </Form>
               <div className="flex space-x-4">
                 <Button
                   type="primary"
-                  icon={<FilterOutlined />}
+                  icon={<FilterOutlined className="text-white" />}
                   onClick={generateReport}
                 >
                   Generate Report
                 </Button>
                 <Button
                   type="primary"
-                  icon={<FilePdfOutlined />}
+                  icon={<PrinterOutlined  className="text-white" />}
                   onClick={exportToPDF}
                 >
-                  Export to PDF
+                  Print
                 </Button>
               </div>
             </div>
@@ -754,7 +924,7 @@ const SalesReport = () => {
                 <Collapse
                   defaultActiveKey={["1"]}
                   expandIcon={({ isActive }) =>
-                    isActive ? <CaretUpOutlined /> : <CaretDownOutlined />
+                    isActive ? <CaretUpOutlined className="text-blue-500" /> : <CaretDownOutlined className="text-blue-500" />
                   }
                   className="mt-4"
                   items={collapseItems}

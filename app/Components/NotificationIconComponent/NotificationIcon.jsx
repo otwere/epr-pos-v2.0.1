@@ -12,7 +12,7 @@ const generateUniqueMessages = (numMessages, tillNumber) => {
     messages.push({
       id: `${tillNumber}-${i + 1}`,
       title: `Mpesa | Till No : ${tillNumber}`,
-      content: `FDE2284E3 Confirmed you received Kshs.3000 from 0712345678 Client's Name ${date.toLocaleString()}. Mpesa Balance Kshs.230,000.00`,
+      content: `FDE2284E3 Confirmed you received KES : 3000 from 0712345678 Client's Name ${date.toLocaleString()}. Mpesa Balance KES : 230,000.00`,
       read: false,
       datetime: date.toISOString(),
       tillNumber,

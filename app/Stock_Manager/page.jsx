@@ -226,7 +226,7 @@ const StockManagement = () => {
     <div className="min-h-screen flex">
       <Sidebar collapsed={collapsed} onCollapse={toggleCollapsed} />
 
-      <Layout className="flex-1 bg-gray-50 ">
+      <Layout className="flex-1 bg-gray-100 ">
         <Header collapsed={collapsed} setCollapsed={setCollapsed} />
 
         <Content
@@ -238,7 +238,7 @@ const StockManagement = () => {
             <Breadcrumb
               className="mb-4"
               items={[
-                { title: <Link href="/">Home</Link> },
+                { title: <Link href="/Dashboard">Home</Link> },
                 { title: "Stock Management" },
               ]}
             />
@@ -259,7 +259,9 @@ const StockManagement = () => {
             </div>
           </div>
 
-          <Card className=" rounded-lg bg-gray-100 max-w-full mb-4">
+          <hr className="mb-4" />
+
+          <Card className=" rounded-lg bg-gray-50 max-w-full mb-4">
             <Row gutter={16} className="mb-4">
               <Col xs={24} md={10}>
                 <Input
@@ -299,6 +301,7 @@ const StockManagement = () => {
                 </Button>
               </Col>
             </Row>
+            <hr className="mt-4" />
 
             <Table
               columns={columns}

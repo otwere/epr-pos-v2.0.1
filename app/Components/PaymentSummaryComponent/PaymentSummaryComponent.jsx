@@ -130,7 +130,7 @@ const PaymentSummaryComponent = () => {
       render: (text) => <span style={{ whiteSpace: "nowrap" }}>{text}</span>,
     },
     {
-      title: "Amount(Kshs)",
+      title: "Amount(KES)",
       dataIndex: "advanceAmount",
       key: "advanceAmount",
       width: "15%",
@@ -226,7 +226,7 @@ const PaymentSummaryComponent = () => {
           pagination={{ pageSize: 10 }}
           footer={() => (
             <div style={{ textAlign: "right", fontWeight: "bold" }}>
-              Total : Kshs{" "}
+              Total : KES{" "}
               {new Intl.NumberFormat("en-US", {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2,

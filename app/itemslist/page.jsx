@@ -171,7 +171,7 @@ const ItemsList = () => {
       {contextHolder}
       <Sidebar collapsed={collapsed} onCollapse={toggleCollapsed} />
 
-      <Layout className="flex-1 bg-gray-50">
+      <Layout className="flex-1 bg-gray-100">
         <Header collapsed={collapsed} setCollapsed={setCollapsed} />
 
         <Content className="transition-all duration-300 p-6">
@@ -179,7 +179,7 @@ const ItemsList = () => {
             <Breadcrumb
               className="mb-4"
               items={[
-                { title: <Link href="/">Home</Link> },
+                { title: <Link href="/Dashboard">Home</Link> },
                 { title: "Items List" },
               ]}
             />
@@ -192,7 +192,9 @@ const ItemsList = () => {
             </div>
           </div>
 
-          <Card className="rounded-lg bg-white">
+          <hr className="mb-4" />
+
+          <Card className="rounded-lg bg-gray-50">
             <div className="mb-4 flex justify-between items-center">
               <div className="flex items-center space-x-4">
                 <Input
@@ -213,6 +215,8 @@ const ItemsList = () => {
                 <Link href="/additems">Add New Item</Link>
               </Button>
             </div>
+
+            <hr />
 
             <Table
               dataSource={filteredItems}

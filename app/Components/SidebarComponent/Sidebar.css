@@ -1,11 +1,11 @@
 /* Sidebar Styles */
 .sidebar {
+  margin-top: 2px;  
   height: 100dvh;
   overflow-y: auto;
-  transition: width 0.3s ease-in-out, background-color 0.3s ease-in-out;
-  /* background-color: hsl(225, 5%, 84%); */
-  width: 325px;
+  transition: width 0.3s ease-in-out, background-color 0.3s ease-in-out; 
   scroll-behavior: smooth;
+  width: 340px;
 }
 
 .sidebar.collapsed {
@@ -21,8 +21,7 @@
   justify-content: center;
   align-items: center;
   height: 48px;
-  margin-bottom: 16px;
-  border-bottom: 1px solid #e0e0e0;
+  margin-bottom: 18px;
 }
 
 @media (max-width: 768px) {
@@ -59,7 +58,7 @@
 .submenu-hovered .ant-menu-submenu-popup {
   max-height: 500px;
   overflow-y: auto;
-  background-color: rgba(255, 255, 255, 0.871);
+  background-color: hsla(0, 0%, 100%, 0.871);
   border-radius: 4px;
 }
 

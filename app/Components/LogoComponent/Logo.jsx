@@ -9,31 +9,29 @@ const Logo = ({
   collapsed = false,
   backgroundColor = "bg-gray-50",
   textColor = "text-blue-600",
-  logoSize = "h-14", // Default logo size
-  showVersion = true, // Control visibility of version text
+  logoSize = "h-12", 
+  showVersion = true,
 }) => {
   return (
-    <Link href="/" className="block" aria-label="Go to homepage">
+    <Link href="/Dashboard" className="block" aria-label="Go to Dashboard">
       <div
-        className={`flex items-center justify-start p-2 h-16 w-full transition-all duration-300  ${backgroundColor} hover:bg-opacity-90`}
+        className={`flex items-center justify-start p-4 h-20 w-80 transition-all duration-300 ${backgroundColor} hover:bg-opacity-90 cursor-pointer mb-1`}
       >
         <img
           src={logoSrc}
           alt={`${companyName} Logo`}
-          className={`transition-all duration-300 ${logoSize} ml-2 ${
-            collapsed ? "w-12" : "w-14"
-          }`}
+          className={`transition-all duration-300 ${logoSize} ${collapsed ? "w-10" : "w-12"}`}
         />
         {/* Only show text if not collapsed */}
         {!collapsed && (
-          <div className="ml-5 w-full p-0 mt-[-2px] transition-opacity duration-300">
+          <div className="ml-1 w-full transition-opacity duration-300">
             <h6
-              className={`font-bold text-lg mr-4 leading-tight ${textColor} text-nowrap`}
+              className={`font-semibold ml-4 text-lg leading-tight ${textColor} text-nowrap`}
             >
               {companyName}
             </h6>
             {showVersion && (
-              <span className="text-[11px] text-gray-600 font-semibold text-nowrap mr-2">
+              <span className="text-xs ml-4 text-gray-500 font-medium text-nowrap">
                 {version}
               </span>
             )}

@@ -113,7 +113,7 @@ const AccountList = () => {
             <Breadcrumb
               className="mb-4"
               items={[
-                { title: <Link href="/"><HomeOutlined /> Home</Link> },
+                { title: <Link href="/Dashboard"><HomeOutlined /> Home</Link> },
                 { title: "Account  Type List" },
               ]}
             />

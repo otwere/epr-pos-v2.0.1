@@ -59,7 +59,7 @@ const HeaderProfile = () => {
     {
       key: "5",
       label: (
-        <a href="/login_page" className="text-xs">
+        <a href="/" className="text-xs">
           Sign Out
         </a>
       ),

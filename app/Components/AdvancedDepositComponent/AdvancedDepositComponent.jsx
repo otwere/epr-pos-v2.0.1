@@ -412,7 +412,7 @@ const AdvanceDepositComponent = () => {
         summary={() => (
           <Table.Summary.Row>
             <Table.Summary.Cell colSpan={8}>
-              <span className="font-bold">Total Account Balance (Kshs) :</span>
+              <span className="font-bold">Total Account Balance (KES) :</span>
             </Table.Summary.Cell>
             <Table.Summary.Cell align="right">
               <span className="font-bold">
