@@ -338,14 +338,28 @@ const Sidebar = ({ collapsed, ref }) => {
         {
           key: "16-6",
           icon: <BlockOutlined />,
-          title: "Sales Payments Report",
+          title: "Items  Category Sales Report",
+          link: "/items_category_sales_summary",
         },
         {
           key: "16-7",
+          icon: <BlockOutlined />,
+          title: "Branch Items  Category Sales Report",
+          link:  '/Branch_Items_category'
+        },
+        {
+          key: "16-8",
+          icon: <BlockOutlined />,
+          title: "Sales Payments Report",
+          link: "/sales_payments_report",
+        },
+        {
+          key: "16-9",
           icon: <RotateRightOutlined />,
           title: "Sales Return Report",
+          link: "/sales_return_report",
         },
-        { key: "16-8", icon: <BlockOutlined />, title: "Sales Cancel Report" },
+        { key: "16-10", icon: <BlockOutlined />, title: "Sales Cancel Report" },
       ],
     },
     {

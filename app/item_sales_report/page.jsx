@@ -25,9 +25,9 @@ import {
   CaretUpOutlined,
   BarChartOutlined,
   SearchOutlined,
-  ProductOutlined ,
+  ProductOutlined,
   UserOutlined,
-  PrinterOutlined ,
+  PrinterOutlined,
 } from "@ant-design/icons";
 
 import Header from "../Components/HeaderComponent/Header";
@@ -130,7 +130,7 @@ const SalesReport = () => {
           price: 100.0,
           tax: 0.0,
           total: 1000.0,
-          category: "Grocery", // Added category
+          category: "Grocery",
         },
         {
           itemName: "Mara Tea 500g",
@@ -138,7 +138,7 @@ const SalesReport = () => {
           price: 200.0,
           tax: 0.0,
           total: 1000.0,
-          category: "Beverages", // Added category
+          category: "Beverages",
         },
         {
           itemName: "Mara Rice 5kg",
@@ -146,7 +146,7 @@ const SalesReport = () => {
           price: 500.0,
           tax: 0.0,
           total: 1000.0,
-          category: "Grocery", // Added category
+          category: "Grocery",
         },
       ],
     },
@@ -176,7 +176,7 @@ const SalesReport = () => {
           price: 100.0,
           tax: 0.0,
           total: 500.0,
-          category: "Grocery", // Added category
+          category: "Grocery",
         },
         {
           itemName: "Mara Flour 2kg",
@@ -184,7 +184,7 @@ const SalesReport = () => {
           price: 150.0,
           tax: 0.0,
           total: 450.0,
-          category: "Grocery", // Added category
+          category: "Grocery",
         },
       ],
     },
@@ -214,7 +214,7 @@ const SalesReport = () => {
           price: 300.0,
           tax: 0.0,
           total: 3000.0,
-          category: "Grocery", // Added category
+          category: "Grocery",
         },
         {
           itemName: "Mara Biscuits 200g",
@@ -222,7 +222,7 @@ const SalesReport = () => {
           price: 50.0,
           tax: 0.0,
           total: 1000.0,
-          category: "Snacks", // Added category
+          category: "Snacks",
         },
       ],
     },
@@ -252,7 +252,7 @@ const SalesReport = () => {
           price: 100.0,
           tax: 0.0,
           total: 1500.0,
-          category: "Grocery", // Added category
+          category: "Grocery",
         },
         {
           itemName: "Mara Salt 1kg",
@@ -260,7 +260,7 @@ const SalesReport = () => {
           price: 50.0,
           tax: 0.0,
           total: 500.0,
-          category: "Grocery", // Added category
+          category: "Grocery",
         },
       ],
     },
@@ -290,7 +290,7 @@ const SalesReport = () => {
           price: 200.0,
           tax: 0.0,
           total: 2000.0,
-          category: "Beverages", // Added category
+          category: "Beverages",
         },
         {
           itemName: "Mara Biscuits 200g",
@@ -298,7 +298,198 @@ const SalesReport = () => {
           price: 50.0,
           tax: 0.0,
           total: 1500.0,
-          category: "Snacks", // Added category
+          category: "Snacks",
+        },
+      ],
+    },
+    // Additional mock data
+    {
+      id: "S006",
+      invoiceNumber: "INV006",
+      salesDate: "2025-01-26",
+      customerId: "cust_006",
+      customerName: "Customer F",
+      kraPin: "F001234567890",
+      invoiceTotal: 22000.0,
+      paidAmount: 22000.0,
+      dueAmount: 0.0,
+      paymentStatus: "Paid",
+      employeeName: "John Doe",
+      branch: "Nairobi",
+      paymentModes: {
+        cash: 12000.0,
+        mpesa: 10000.0,
+        bank: 0.0,
+        pdqCheque: 0.0,
+      },
+      itemsSold: [
+        {
+          itemName: "Mara Sugar 1kg",
+          quantity: 8,
+          price: 100.0,
+          tax: 0.0,
+          total: 800.0,
+          category: "Grocery",
+        },
+        {
+          itemName: "Mara Rice 5kg",
+          quantity: 4,
+          price: 500.0,
+          tax: 0.0,
+          total: 2000.0,
+          category: "Grocery",
+        },
+      ],
+    },
+    {
+      id: "S007",
+      invoiceNumber: "INV007",
+      salesDate: "2025-01-27",
+      customerId: "cust_007",
+      customerName: "Customer G",
+      kraPin: "G001234567890",
+      invoiceTotal: 17000.0,
+      paidAmount: 17000.0,
+      dueAmount: 0.0,
+      paymentStatus: "Paid",
+      employeeName: "Jane Smith",
+      branch: "Mombasa",
+      paymentModes: {
+        cash: 7000.0,
+        mpesa: 10000.0,
+        bank: 0.0,
+        pdqCheque: 0.0,
+      },
+      itemsSold: [
+        {
+          itemName: "Mara Flour 2kg",
+          quantity: 5,
+          price: 150.0,
+          tax: 0.0,
+          total: 750.0,
+          category: "Grocery",
+        },
+        {
+          itemName: "Mara Cooking Oil 1L",
+          quantity: 5,
+          price: 300.0,
+          tax: 0.0,
+          total: 1500.0,
+          category: "Grocery",
+        },
+      ],
+    },
+    {
+      id: "S008",
+      invoiceNumber: "INV008",
+      salesDate: "2025-01-28",
+      customerId: "cust_008",
+      customerName: "Customer H",
+      kraPin: "H001234567890",
+      invoiceTotal: 19000.0,
+      paidAmount: 19000.0,
+      dueAmount: 0.0,
+      paymentStatus: "Paid",
+      employeeName: "Alice Johnson",
+      branch: "Kisumu",
+      paymentModes: {
+        cash: 9000.0,
+        mpesa: 10000.0,
+        bank: 0.0,
+        pdqCheque: 0.0,
+      },
+      itemsSold: [
+        {
+          itemName: "Mara Biscuits 200g",
+          quantity: 25,
+          price: 50.0,
+          tax: 0.0,
+          total: 1250.0,
+          category: "Snacks",
+        },
+        {
+          itemName: "Mara Spaghetti 500g",
+          quantity: 10,
+          price: 100.0,
+          tax: 0.0,
+          total: 1000.0,
+          category: "Grocery",
+        },
+      ],
+    },
+    {
+      id: "S009",
+      invoiceNumber: "INV009",
+      salesDate: "2025-01-29",
+      customerId: "cust_009",
+      customerName: "Customer I",
+      kraPin: "I001234567890",
+      invoiceTotal: 21000.0,
+      paidAmount: 21000.0,
+      dueAmount: 0.0,
+      paymentStatus: "Paid",
+      employeeName: "Bob Brown",
+      branch: "Nakuru",
+      paymentModes: {
+        cash: 11000.0,
+        mpesa: 10000.0,
+        bank: 0.0,
+        pdqCheque: 0.0,
+      },
+      itemsSold: [
+        {
+          itemName: "Mara Salt 1kg",
+          quantity: 15,
+          price: 50.0,
+          tax: 0.0,
+          total: 750.0,
+          category: "Grocery",
+        },
+        {
+          itemName: "Mara Tea 500g",
+          quantity: 10,
+          price: 200.0,
+          tax: 0.0,
+          total: 2000.0,
+          category: "Beverages",
+        },
+      ],
+    },
+    {
+      id: "S010",
+      invoiceNumber: "INV010",
+      salesDate: "2025-01-30",
+      customerId: "cust_010",
+      customerName: "Customer J",
+      kraPin: "J001234567890",
+      invoiceTotal: 23000.0,
+      paidAmount: 23000.0,
+      dueAmount: 0.0,
+      paymentStatus: "Paid",
+      employeeName: "Charlie Davis",
+      branch: "Eldoret",
+      paymentModes: {
+        cash: 13000.0,
+        mpesa: 10000.0,
+        bank: 0.0,
+        pdqCheque: 0.0,
+      },
+      itemsSold: [
+        {
+          itemName: "Mara Rice 5kg",
+          quantity: 6,
+          price: 500.0,
+          tax: 0.0,
+          total: 3000.0,
+          category: "Grocery",
+        },
+        {
+          itemName: "Mara Cooking Oil 1L",
+          quantity: 5,
+          price: 300.0,
+          tax: 0.0,
+          total: 1500.0,
+          category: "Grocery",
         },
       ],
     },
@@ -747,14 +938,14 @@ const SalesReport = () => {
                         rowKey="itemName"
                         footer={() => (
                           <div className="text-right">
-                            <Text strong>Total Qty of Items Sold :</Text>
-                            <Text>{totalQty}</Text>
+                            <Text strong>Total Qty of Items Sold : </Text>
+                            <Text strong>{totalQty}</Text>
                           </div>
                         )}
                       />
                       <div className="mt-4 text-right">
                         <Text strong>Total Sales : </Text>
-                        <Text>{formatNumber(totalSales)}</Text>
+                        <Text strong>{formatNumber(totalSales)}</Text>
                       </div>
                     </Card>
                   </div>
