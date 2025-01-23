@@ -365,7 +365,7 @@ const Sidebar = ({ collapsed, ref }) => {
           title: "Sales Return Report",
           link: "/sales_return_report",
         },
-        { key: "16-11", icon: <BlockOutlined />, title: "Sales Cancel Report" },
+        { key: "16-11", icon: <BlockOutlined />, title: "Sales Cancel Report" , link:"/sales_cancel_report"},
       ],
     },
     {

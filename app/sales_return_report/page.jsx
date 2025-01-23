@@ -17,6 +17,10 @@ import {
   Input,
   Select,
   Statistic,
+  Dropdown,
+  Menu,
+  Tag,
+  Modal,
 } from "antd";
 import {
   FilterOutlined,
@@ -25,6 +29,9 @@ import {
   CaretUpOutlined,
   SearchOutlined,
   PrinterOutlined,
+  CheckCircleOutlined,
+  CloseCircleOutlined,
+  MoreOutlined,
 } from "@ant-design/icons";
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
@@ -53,66 +60,86 @@ const colors = {
   error: "#ff4d4f", // Red
 };
 
-// Mock data for Sales Commission Report
-const mockSalesPaymentsData = [
+// Mock data for Sales Return Report
+const mockSalesReturnData = [
   {
-    id: "P001",
+    id: "R001",
     branch: "Nairobi",
+    employee: "Alice Johnson",
     invoiceNumber: "INV-001",
-    paymentDate: "2025-01-25 14:30:00",
+    returnDate: "2025-01-25",
+    dateTime: "2025-01-25 14:30:00",
+    customerName: "John Doe",
     itemName: "Product A",
-    qtySold: 10,
-    salesPrice: 1500.0,
-    discount: 100.0,
-    commission: 50.0,
+    returnQty: 5,
+    note: "Damaged during delivery",
+    stockValueReturn: 7500.0,
+    status: "Pending", // New field for approval status
+    rejectReason: "", // New field for rejection reason
   },
   {
-    id: "P002",
+    id: "R002",
     branch: "Mombasa",
+    employee: "Bob Williams",
     invoiceNumber: "INV-002",
-    paymentDate: "2025-01-26 10:15:00",
+    returnDate: "2025-01-26",
+    dateTime: "2025-01-26 10:15:00",
+    customerName: "Jane Smith",
     itemName: "Product B",
-    qtySold: 5,
-    salesPrice: 2000.0,
-    discount: 150.0,
-    commission: 75.0,
+    returnQty: 3,
+    note: "Wrong item shipped",
+    stockValueReturn: 6000.0,
+    status: "Pending", // New field for approval status
+    rejectReason: "", // New field for rejection reason
   },
   {
-    id: "P003",
+    id: "R003",
     branch: "Kisumu",
+    employee: "Charlie Brown",
     invoiceNumber: "INV-003",
-    paymentDate: "2025-01-27 16:45:00",
+    returnDate: "2025-01-27",
+    dateTime: "2025-01-27 16:45:00",
+    customerName: "Peter Parker",
     itemName: "Product C",
-    qtySold: 8,
-    salesPrice: 2500.0,
-    discount: 200.0,
-    commission: 100.0,
+    returnQty: 8,
+    note: "Customer changed mind",
+    stockValueReturn: 20000.0,
+    status: "Pending", // New field for approval status
+    rejectReason: "", // New field for rejection reason
   },
   {
-    id: "P004",
+    id: "R004",
     branch: "Nakuru",
+    employee: "Diana Prince",
     invoiceNumber: "INV-004",
-    paymentDate: "2025-01-28 09:00:00",
+    returnDate: "2025-01-28",
+    dateTime: "2025-01-28 09:00:00",
+    customerName: "Clark Kent",
     itemName: "Product D",
-    qtySold: 12,
-    salesPrice: 3000.0,
-    discount: 250.0,
-    commission: 120.0,
+    returnQty: 12,
+    note: "Defective product",
+    stockValueReturn: 36000.0,
+    status: "Pending", // New field for approval status
+    rejectReason: "", // New field for rejection reason
   },
   {
-    id: "P005",
+    id: "R005",
     branch: "Eldoret",
+    employee: "Eve Adams",
     invoiceNumber: "INV-005",
-    paymentDate: "2025-01-29 12:00:00",
+    returnDate: "2025-01-29",
+    dateTime: "2025-01-29 12:00:00",
+    customerName: "Bruce Wayne",
     itemName: "Product E",
-    qtySold: 15,
-    salesPrice: 3500.0,
-    discount: 300.0,
-    commission: 150.0,
+    returnQty: 15,
+    note: "Customer not satisfied",
+    stockValueReturn: 52500.0,
+    status: "Pending", // New field for approval status
+    rejectReason: "", // New field for rejection reason
   },
 ];
 
-const SaleCommission = () => {
+const SalesReturn = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [form] = Form.useForm();
   const [notificationApi, notificationContextHolder] =
@@ -122,18 +149,22 @@ const SaleCommission = () => {
     fromDate: dayjs("2025-01-20"),
     toDate: dayjs("2025-01-31"),
     itemName: null,
+    customerName: null,
     employee: null,
   });
-  const [salesPaymentsData, setSalesPaymentsData] = useState([]);
-  const [isReportVisible, setIsReportVisible] = useState(false);
+  const [salesReturnData, setSalesReturnData] = useState(mockSalesReturnData);
+  const [isReportOpen, setIsReportOpen] = useState(false);
   const [reportGeneratedTime, setReportGeneratedTime] = useState(null);
   const [generatedBy, setGeneratedBy] = useState("Admin");
   const [searchText, setSearchText] = useState("");
   const [pagination, setPagination] = useState({ current: 1, pageSize: 10 });
+  const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
+  const [selectedRecord, setSelectedRecord] = useState(null);
+  const [rejectReason, setRejectReason] = useState("");
 
   const toggleCollapsed = () => setCollapsed(!collapsed);
 
-  const handleFilterChange = (changedValues, allValues) => {
+  const handleFilterChange = (_changedValues, allValues) => {
     const { fromDate, toDate } = allValues;
 
     if (fromDate && toDate && fromDate.isAfter(toDate)) {
@@ -161,7 +192,7 @@ const SaleCommission = () => {
   };
 
   const generateReport = () => {
-    const { fromDate, toDate, itemName, employee } = form.getFieldsValue();
+    const { fromDate, toDate, itemName, customerName, employee } = form.getFieldsValue();
 
     if (!fromDate || !toDate) {
       notificationApi.error({
@@ -176,14 +207,16 @@ const SaleCommission = () => {
 
     setLoading(true);
     setTimeout(() => {
-      const filteredData = mockSalesPaymentsData.filter((item) => {
-        const itemDate = dayjs(item.paymentDate);
+      const filteredData = mockSalesReturnData.filter((item) => {
+        const itemDate = dayjs(item.returnDate);
         const matchesItemName = !itemName || itemName === "All" || item.itemName === itemName;
+        const matchesCustomerName = !customerName || customerName === "All" || item.customerName === customerName;
         const matchesEmployee = !employee || employee === "All" || item.employee === employee;
         return (
           itemDate.isAfter(fromDate.subtract(1, "day")) &&
           itemDate.isBefore(toDate.add(1, "day")) &&
           matchesItemName &&
+          matchesCustomerName &&
           matchesEmployee
         );
       });
@@ -191,19 +224,19 @@ const SaleCommission = () => {
       if (filteredData.length === 0) {
         notificationApi.warning({
           message: "No Data Found",
-          description: "No sales commission data found for the selected filters.",
+          description: "No sales return data found for the selected filters.",
           placement: "topRight",
           className: "bg-yellow-50",
         });
       }
 
-      setSalesPaymentsData(filteredData);
+      setSalesReturnData(filteredData);
       setLoading(false);
-      setIsReportVisible(true);
+      setIsReportOpen(true);
       setReportGeneratedTime(dayjs().format("DD-MM-YYYY HH:mm:ss"));
       notificationApi.success({
         message: "Report Generated",
-        description: "Sales Commission Report generated successfully.",
+        description: "Sales Return Report generated successfully.",
         placement: "topRight",
         className: "bg-green-50",
       });
@@ -232,7 +265,7 @@ const SaleCommission = () => {
     doc.text("Snave Webhub Africa", 70, 20);
     doc.setFontSize(16);
     doc.setFont("helvetica", "normal");
-    doc.text("Sales Commission Report", 70, 30);
+    doc.text("Sales Return Report", 70, 30);
 
     doc.setTextColor(brandColors.primary);
     doc.setFontSize(12);
@@ -247,7 +280,7 @@ const SaleCommission = () => {
     );
 
     doc.setFont("helvetica", "bold");
-    doc.text(" Sales Commission Report Information", margin.left + 5, 60);
+    doc.text(" Sales Return Report Information", margin.left + 5, 60);
     doc.setFont("helvetica", "normal");
     doc.setFontSize(10);
     doc.setTextColor(brandColors.gray);
@@ -265,32 +298,40 @@ const SaleCommission = () => {
       80
     );
 
-    // Add Sales Payments Table to PDF
+    // Add Sales Return Table to PDF
     doc.autoTable({
       startY: 100,
       head: [
         [
           "#",
           "Branch",
+          "Employee",
           "Invoice Number",
-          "Sales Date",
+          "Return Date",
+          "Date/Time",
+          "Customer Name",
           "Item Name",
-          "Qty Sold",
-          "Sales Price",
-          "Discount",
-          "Commission",
+          "Return Qty",
+          "Note",
+          "Stock Value Return",
+          "Status",
+          "Reason for Reject", // New column
         ],
       ],
-      body: salesPaymentsData.map((item, index) => [
+      body: salesReturnData.map((item, index) => [
         index + 1,
         item.branch,
+        item.employee,
         item.invoiceNumber,
-        dayjs(item.paymentDate).format("DD-MM-YYYY HH:mm:ss"),
+        dayjs(item.returnDate).format("DD-MM-YYYY"),
+        dayjs(item.dateTime).format("DD-MM-YYYY HH:mm:ss"),
+        item.customerName,
         item.itemName,
-        item.qtySold,
-        formatNumber(item.salesPrice),
-        formatNumber(item.discount),
-        formatNumber(item.commission),
+        item.returnQty,
+        item.note,
+        formatNumber(item.stockValueReturn),
+        item.status,
+        item.rejectReason || "N/A", // New field
       ]),
       headStyles: {
         fillColor: brandColors.secondary,
@@ -306,12 +347,16 @@ const SaleCommission = () => {
         0: { cellWidth: 15 },
         1: { cellWidth: 25 },
         2: { cellWidth: 25 },
-        3: { cellWidth: 30 },
-        4: { cellWidth: 25 },
-        5: { cellWidth: 25 },
-        6: { halign: "right", cellWidth: 25 },
-        7: { halign: "right", cellWidth: 25 },
+        3: { cellWidth: 25 },
+        4: { cellWidth: 30 },
+        5: { cellWidth: 30 },
+        6: { cellWidth: 25 },
+        7: { cellWidth: 25 },
         8: { halign: "right", cellWidth: 25 },
+        9: { cellWidth: 50 },
+        10: { halign: "right", cellWidth: 25 },
+        11: { cellWidth: 25 },
+        12: { cellWidth: 50 }, // New column
       },
       alternateRowStyles: {
         fillColor: brandColors.lightGray,
@@ -347,7 +392,7 @@ const SaleCommission = () => {
     };
 
     addFooter();
-    doc.save(`sales_payments_report_${dayjs().format("DD-MM-YYYY")}.pdf`);
+    doc.save(`sales_return_report_${dayjs().format("DD-MM-YYYY")}.pdf`);
 
     notificationApi.success({
       message: "PDF Export Complete",
@@ -362,40 +407,71 @@ const SaleCommission = () => {
     setPagination({ ...pagination, current: 1 });
   };
 
-  const filteredData = salesPaymentsData.filter((item) => {
+  const handleStatusChange = (record, status) => {
+    if (status === "Rejected") {
+      setSelectedRecord(record);
+      setIsRejectModalOpen(true);
+    } else {
+      const updatedData = salesReturnData.map((item) =>
+        item.id === record.id ? { ...item, status } : item
+      );
+      setSalesReturnData(updatedData);
+
+      notificationApi.success({
+        message: "Approval Successful",
+        description: `Invoice ${record.invoiceNumber} has been Approved.`,
+        placement: "topRight",
+        className: "bg-green-50",
+      });
+    }
+  };
+
+  const handleRejectSubmit = () => {
+    if (!rejectReason) {
+      notificationApi.error({
+        message: "Reason Required",
+        description: "Please provide a reason for rejection.",
+        placement: "topRight",
+        className: "bg-red-50",
+      });
+      return;
+    }
+
+    const updatedData = salesReturnData.map((item) =>
+      item.id === selectedRecord.id ? { ...item, status: "Rejected", rejectReason } : item
+    );
+    setSalesReturnData(updatedData);
+
+    setIsRejectModalOpen(false);
+    setRejectReason("");
+
+    notificationApi.error({
+      message: "Rejected",
+      description: `Invoice ${selectedRecord.invoiceNumber} has been Rejected. Reason: ${rejectReason}`,
+      placement: "topRight",
+      className: "bg-red-50",
+    });
+  };
+
+  const filteredData = salesReturnData.filter((item) => {
     return (
       item.branch.toLowerCase().includes(searchText.toLowerCase()) ||
       item.invoiceNumber.toLowerCase().includes(searchText.toLowerCase()) ||
-      item.itemName.toLowerCase().includes(searchText.toLowerCase())
+      item.itemName.toLowerCase().includes(searchText.toLowerCase()) ||
+      item.customerName.toLowerCase().includes(searchText.toLowerCase()) ||
+      item.employee.toLowerCase().includes(searchText.toLowerCase())
     );
   });
 
-  const totalSalesAmount = filteredData.reduce(
-    (sum, item) => sum + item.salesPrice * item.qtySold,
-    0
-  );
+  const totalQty = filteredData.reduce((sum, item) => sum + item.returnQty, 0);
+  const totalAmount = filteredData.reduce((sum, item) => sum + item.stockValueReturn, 0);
 
-  const totalDiscount = filteredData.reduce(
-    (sum, item) => sum + item.discount,
-    0
-  );
-
-  const totalCommission = filteredData.reduce(
-    (sum, item) => sum + item.commission,
-    0
-  );
-
-  const totalQtySold = filteredData.reduce(
-    (sum, item) => sum + item.qtySold,
-    0
-  );
-
-  const salesPaymentsColumns = [
+  const salesReturnColumns = [
     {
       title: "#",
       dataIndex: "id",
       key: "id",
-      render: (text, record, index) => index + 1,
+      render: (_text, _record, index) => index + 1,
       className: "whitespace-nowrap",
       width: 50,
     },
@@ -404,10 +480,17 @@ const SaleCommission = () => {
       dataIndex: "branch",
       key: "branch",
       className: "whitespace-nowrap",
-      width: 100,
+      width: 250,
     },
     {
-      title: "Invoice Number",
+      title: "Employee",
+      dataIndex: "employee",
+      key: "employee",
+      className: "whitespace-nowrap",
+      width: 150,
+    },
+    {
+      title: "Invoices - No.",
       dataIndex: "invoiceNumber",
       key: "invoiceNumber",
       render: (text, record) => (
@@ -416,70 +499,128 @@ const SaleCommission = () => {
         </Link>
       ),
       className: "whitespace-nowrap",
-      width: 120,
+      width: 100,
     },
     {
-      title: "Sales Date",
-      dataIndex: "paymentDate",
-      key: "paymentDate",
+        title: "Return Date | Time",
+        dataIndex: "returnDate",
+        key: "returnDate",
+        align: "left",
+        render: (text) => dayjs(text).format("DD-MM-YYYY HH:mm:ss"), // Added time format
+        className: "whitespace-nowrap",
+        width: 150,
+      },
+    {
+      title: " Sales Date | Time",
+      dataIndex: "dateTime",
+      key: "dateTime",
+      align: "left",
       render: (text) => dayjs(text).format("DD-MM-YYYY HH:mm:ss"),
       className: "whitespace-nowrap",
       width: 150,
+    },
+    {
+      title: "Customer Name",
+      dataIndex: "customerName",
+      key: "customerName",
+      className: "whitespace-nowrap",
+      width: 200,
     },
     {
       title: "Item Name",
       dataIndex: "itemName",
       key: "itemName",
       className: "whitespace-nowrap",
+      width: 220,
+    },
+    {
+      title: "Return Qty",
+      dataIndex: "returnQty",
+      key: "returnQty",
+      align: "right",
+      className: "whitespace-nowrap",
+      width: 50,
+    },
+    {
+      title: "Note",
+      dataIndex: "note",
+      key: "note",
+    //   className: "whitespace-nowrap",
+      width: 130,
+    },
+    {
+      title: "Stock Value Return (KES)",
+      dataIndex: "stockValueReturn",
+      key: "stockValueReturn",
+      render: (value) => formatNumber(value),
+      align: "right",
+      className: "whitespace-nowrap",
+      width: 80,
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      align: "right",
+      render: (status, record) => (
+        <Dropdown
+          menu={{
+            items: [
+              {
+                key: "approve",
+                label: "Approve",
+                icon: <CheckCircleOutlined className="text-green-500" />,
+                onClick: () => handleStatusChange(record, "Approved"),
+              },
+              {
+                key: "reject",
+                label: "Reject",
+                icon: <CloseCircleOutlined className="text-red-500" />,
+                onClick: () => handleStatusChange(record, "Rejected"),
+              },
+            ],
+          }}
+          trigger={["click"]}
+        >
+          <Button type="text" style={{ textAlign: "right" }}>
+            <Tag
+              style={{ textAlign: "right" }}
+              color={
+                status === "Approved"
+                  ? "green"
+                  : status === "Rejected"
+                  ? "red"
+                  : "default"
+              }
+            >
+              {status}
+            </Tag>
+          </Button>
+        </Dropdown>
+      ),
+      className: "whitespace-nowrap text-right",
+      width: 50,
+    },
+    {
+      title: "Reason for Reject",
+      dataIndex: "rejectReason",
+      key: "rejectReason",
+      render: (text) => text || "N/A", // Display "N/A" if no reason is provided
+      className: "whitespace-nowrap",
       width: 150,
-    },
-    {
-      title: "Qty Sold",
-      dataIndex: "qtySold",
-      key: "qtySold",
-      align: "right",
-      className: "whitespace-nowrap",
-      width: 100,
-    },
-    {
-      title: "Sales Price (KES)",
-      dataIndex: "salesPrice",
-      key: "salesPrice",
-      render: (salesPrice) => formatNumber(salesPrice),
-      align: "right",
-      className: "whitespace-nowrap",
-      width: 120,
-    },
-    {
-      title: "Discount (KES)",
-      dataIndex: "discount",
-      key: "discount",
-      render: (discount) => formatNumber(discount),
-      align: "right",
-      className: "whitespace-nowrap",
-      width: 100,
-    },
-    {
-      title: "Commission (KES)",
-      dataIndex: "commission",
-      key: "commission",
-      render: (commission) => formatNumber(commission),
-      align: "right",
-      className: "whitespace-nowrap",
-      width: 120,
     },
   ];
 
   const collapseItems = [
     {
       key: "1",
-      label: "Sales Commission Report",
+      label: "Sales Return Report",
       children: (
         <>
           <Row gutter={16} className="mb-4">
             <Col span={24}>
               <Input
-                placeholder="Search by Branch, Invoice Number, or Item Name"
+                placeholder="Search by Branch, Invoice Number, Item Name, Customer Name, or Employee"
                 prefix={<SearchOutlined className="text-blue-500" />}
                 value={searchText}
                 onChange={(e) => handleSearch(e.target.value)}
@@ -490,7 +631,7 @@ const SaleCommission = () => {
 
           <Table
             dataSource={filteredData}
-            columns={salesPaymentsColumns}
+            columns={salesReturnColumns}
             rowKey="id"
             pagination={{
               current: pagination.current,
@@ -501,14 +642,12 @@ const SaleCommission = () => {
               showSizeChanger: true,
               pageSizeOptions: ["10", "20", "50", "100"],
             }}
-            scroll={{ x: 1200 }} 
+            scroll={{ x: 1000 }} // Adjusted scroll width
             footer={() => (
               <div style={{ textAlign: "right", fontWeight: "bold" }}>
                 <div className="flex justify-between gap-x-4">
-                  <div>Total Qty Sold : {totalQtySold}</div>
-                  <div>Total Sales Amount : KES : {formatNumber(totalSalesAmount)}</div>
-                  <div>Total Discount : KES : {formatNumber(totalDiscount)}</div>
-                  <div>Total Commission : KES : {formatNumber(totalCommission)}</div>
+                  <div>Total Qty : {totalQty}</div>
+                  <div>Total Amount : KES : {formatNumber(totalAmount)}</div>
                 </div>
               </div>
             )}
@@ -554,13 +693,13 @@ const SaleCommission = () => {
                     </Link>
                   ),
                 },
-                { title: "Sales Commission Report" },
+                { title: "Sales Return Report" },
               ]}
             />
             <hr />
             <div className="mb-4 flex justify-between items-center">
               <Title level={4} className="text-blue-800 mt-2">
-                Sales Commission Report
+                Sales Return Report
               </Title>
             </div>
           </div>
@@ -576,8 +715,9 @@ const SaleCommission = () => {
                 initialValues={{
                   fromDate: filters.fromDate,
                   toDate: filters.toDate,
-                  itemName: "All ",
-                  employee: "All"
+                  itemName: "All",
+                  customerName: "All",
+                  employee: "All",
                 }}
               >
                 <Form.Item name="fromDate" label="From Date">
@@ -586,12 +726,12 @@ const SaleCommission = () => {
                 <Form.Item name="toDate" label="To Date">
                   <DatePicker format="DD-MM-YYYY" />
                 </Form.Item>
-                <Form.Item name="itemName" label="Item Name">
-                  <Select 
-                    placeholder="Select Item Name" 
+                <Form.Item name="itemName" label="Item">
+                  <Select
+                    placeholder="Select Item Name"
                     allowClear
                     showSearch
-                    style={{ width: 200 }}
+                    style={{ width: 150 }}
                     filterOption={(input, option) =>
                       option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                     }
@@ -604,22 +744,40 @@ const SaleCommission = () => {
                     <Option value="Product E">Product E</Option>
                   </Select>
                 </Form.Item>
-                <Form.Item name="employee" label="Employee">
-                  <Select 
-                    placeholder="Select Employee" 
+                <Form.Item name="customerName" label="Customer">
+                  <Select
+                    placeholder="Select Customer"
                     allowClear
                     showSearch
-                    style={{ width: 200 }}
+                    style={{ width: 150 }}
                     filterOption={(input, option) =>
                       option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                     }
                   >
-                    <Option value="All">All Employees</Option>
+                    <Option value="All">All Customers</Option>
                     <Option value="John Doe">John Doe</Option>
                     <Option value="Jane Smith">Jane Smith</Option>
                     <Option value="Peter Parker">Peter Parker</Option>
                     <Option value="Clark Kent">Clark Kent</Option>
                     <Option value="Bruce Wayne">Bruce Wayne</Option>
+                  </Select>
+                </Form.Item>
+                <Form.Item name="employee" label="Employee">
+                  <Select
+                    placeholder="Select Employee"
+                    allowClear
+                    showSearch
+                    style={{ width: 150 }}
+                    filterOption={(input, option) =>
+                      option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    }
+                  >
+                    <Option value="All">All Employees</Option>
+                    <Option value="Alice Johnson">Alice Johnson</Option>
+                    <Option value="Bob Williams">Bob Williams</Option>
+                    <Option value="Charlie Brown">Charlie Brown</Option>
+                    <Option value="Diana Prince">Diana Prince</Option>
+                    <Option value="Eve Adams">Eve Adams</Option>
                   </Select>
                 </Form.Item>
               </Form>
@@ -629,7 +787,7 @@ const SaleCommission = () => {
                   icon={<FilterOutlined className="text-white" />}
                   onClick={generateReport}
                 >
-                  Generate Report
+                  Report
                 </Button>
                 <Button
                   type="primary"
@@ -644,7 +802,7 @@ const SaleCommission = () => {
             <hr />
 
             <Spin spinning={loading}>
-              {isReportVisible && (
+              {isReportOpen && (
                 <Collapse
                   defaultActiveKey={["1"]}
                   expandIcon={({ isActive }) =>
@@ -664,8 +822,28 @@ const SaleCommission = () => {
 
         <Footer />
       </Layout>
+
+      <Modal
+        title="Reject Invoice"
+        open={isRejectModalOpen}
+        onOk={handleRejectSubmit}
+        onCancel={() => setIsRejectModalOpen(false)}
+        okText="Submit"
+        cancelText="Cancel"
+      >
+        <Form layout="vertical">
+          <Form.Item label="Reason for Rejection">
+            <Input.TextArea
+              value={rejectReason}
+              onChange={(e) => setRejectReason(e.target.value)}
+              placeholder="Enter the reason for rejection"
+              required
+            />
+          </Form.Item>
+        </Form>
+      </Modal>
     </div>
   );
 };
 
-export default SaleCommission;
+export default SalesReturn;

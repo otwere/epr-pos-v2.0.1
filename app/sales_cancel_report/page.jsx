@@ -17,6 +17,10 @@ import {
   Input,
   Select,
   Statistic,
+  Dropdown,
+  Menu,
+  Tag,
+  Modal,
 } from "antd";
 import {
   FilterOutlined,
@@ -25,6 +29,9 @@ import {
   CaretUpOutlined,
   SearchOutlined,
   PrinterOutlined,
+  CheckCircleOutlined,
+  CloseCircleOutlined,
+  MoreOutlined,
 } from "@ant-design/icons";
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
@@ -53,66 +60,86 @@ const colors = {
   error: "#ff4d4f", // Red
 };
 
-// Mock data for Sales Commission Report
-const mockSalesPaymentsData = [
+// Mock data for Sales Cancelled Report
+const mockSalesCancelledData = [
   {
-    id: "P001",
+    id: "C001",
     branch: "Nairobi",
     invoiceNumber: "INV-001",
-    paymentDate: "2025-01-25 14:30:00",
     itemName: "Product A",
-    qtySold: 10,
-    salesPrice: 1500.0,
-    discount: 100.0,
-    commission: 50.0,
+    salesDate: "2025-01-25 14:30:00",
+    cancellationDate: "2025-01-26 10:00:00", // New field for cancellation date
+    customerName: "John Doe",
+    qty: 10,
+    price: 1500.0,
+    total: 15000.0,
+    status: "Pending", // New field for approval status
+    rejectReason: "", // New field for rejection reason
+    salesPerson: "Alice Johnson", // New field for sales person
   },
   {
-    id: "P002",
+    id: "C002",
     branch: "Mombasa",
     invoiceNumber: "INV-002",
-    paymentDate: "2025-01-26 10:15:00",
     itemName: "Product B",
-    qtySold: 5,
-    salesPrice: 2000.0,
-    discount: 150.0,
-    commission: 75.0,
+    salesDate: "2025-01-26 10:15:00",
+    cancellationDate: "2025-01-27 09:30:00", // New field for cancellation date
+    customerName: "Jane Smith",
+    qty: 5,
+    price: 2000.0,
+    total: 10000.0,
+    status: "Pending", // New field for approval status
+    rejectReason: "", // New field for rejection reason
+    salesPerson: "Bob Williams", // New field for sales person
   },
   {
-    id: "P003",
+    id: "C003",
     branch: "Kisumu",
     invoiceNumber: "INV-003",
-    paymentDate: "2025-01-27 16:45:00",
     itemName: "Product C",
-    qtySold: 8,
-    salesPrice: 2500.0,
-    discount: 200.0,
-    commission: 100.0,
+    salesDate: "2025-01-27 16:45:00",
+    cancellationDate: "2025-01-28 14:00:00", // New field for cancellation date
+    customerName: "Peter Parker",
+    qty: 8,
+    price: 2500.0,
+    total: 20000.0,
+    status: "Pending", // New field for approval status
+    rejectReason: "", // New field for rejection reason
+    salesPerson: "Charlie Brown", // New field for sales person
   },
   {
-    id: "P004",
+    id: "C004",
     branch: "Nakuru",
     invoiceNumber: "INV-004",
-    paymentDate: "2025-01-28 09:00:00",
     itemName: "Product D",
-    qtySold: 12,
-    salesPrice: 3000.0,
-    discount: 250.0,
-    commission: 120.0,
+    salesDate: "2025-01-28 09:00:00",
+    cancellationDate: "2025-01-29 11:00:00", // New field for cancellation date
+    customerName: "Clark Kent",
+    qty: 12,
+    price: 3000.0,
+    total: 36000.0,
+    status: "Pending", // New field for approval status
+    rejectReason: "", // New field for rejection reason
+    salesPerson: "Diana Prince", // New field for sales person
   },
   {
-    id: "P005",
+    id: "C005",
     branch: "Eldoret",
     invoiceNumber: "INV-005",
-    paymentDate: "2025-01-29 12:00:00",
     itemName: "Product E",
-    qtySold: 15,
-    salesPrice: 3500.0,
-    discount: 300.0,
-    commission: 150.0,
+    salesDate: "2025-01-29 12:00:00",
+    cancellationDate: "2025-01-30 13:00:00", // New field for cancellation date
+    customerName: "Bruce Wayne",
+    qty: 15,
+    price: 3500.0,
+    total: 52500.0,
+    status: "Pending", // New field for approval status
+    rejectReason: "", // New field for rejection reason
+    salesPerson: "Eve Adams", // New field for sales person
   },
 ];
 
-const SaleCommission = () => {
+const SalesCancelled = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [form] = Form.useForm();
   const [notificationApi, notificationContextHolder] =
@@ -122,18 +149,22 @@ const SaleCommission = () => {
     fromDate: dayjs("2025-01-20"),
     toDate: dayjs("2025-01-31"),
     itemName: null,
-    employee: null,
+    customerName: null,
+    salesPerson: null, // New filter for Sales Person
   });
-  const [salesPaymentsData, setSalesPaymentsData] = useState([]);
-  const [isReportVisible, setIsReportVisible] = useState(false);
+  const [salesCancelledData, setSalesCancelledData] = useState(mockSalesCancelledData);
+  const [isReportOpen, setIsReportOpen] = useState(false);
   const [reportGeneratedTime, setReportGeneratedTime] = useState(null);
   const [generatedBy, setGeneratedBy] = useState("Admin");
   const [searchText, setSearchText] = useState("");
   const [pagination, setPagination] = useState({ current: 1, pageSize: 10 });
+  const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
+  const [selectedRecord, setSelectedRecord] = useState(null);
+  const [rejectReason, setRejectReason] = useState("");
 
   const toggleCollapsed = () => setCollapsed(!collapsed);
 
-  const handleFilterChange = (changedValues, allValues) => {
+  const handleFilterChange = (_changedValues, allValues) => {
     const { fromDate, toDate } = allValues;
 
     if (fromDate && toDate && fromDate.isAfter(toDate)) {
@@ -161,7 +192,7 @@ const SaleCommission = () => {
   };
 
   const generateReport = () => {
-    const { fromDate, toDate, itemName, employee } = form.getFieldsValue();
+    const { fromDate, toDate, itemName, customerName, salesPerson } = form.getFieldsValue();
 
     if (!fromDate || !toDate) {
       notificationApi.error({
@@ -176,34 +207,36 @@ const SaleCommission = () => {
 
     setLoading(true);
     setTimeout(() => {
-      const filteredData = mockSalesPaymentsData.filter((item) => {
-        const itemDate = dayjs(item.paymentDate);
+      const filteredData = mockSalesCancelledData.filter((item) => {
+        const itemDate = dayjs(item.salesDate);
         const matchesItemName = !itemName || itemName === "All" || item.itemName === itemName;
-        const matchesEmployee = !employee || employee === "All" || item.employee === employee;
+        const matchesCustomerName = !customerName || customerName === "All" || item.customerName === customerName;
+        const matchesSalesPerson = !salesPerson || salesPerson === "All" || item.salesPerson === salesPerson; // New filter condition
         return (
           itemDate.isAfter(fromDate.subtract(1, "day")) &&
           itemDate.isBefore(toDate.add(1, "day")) &&
           matchesItemName &&
-          matchesEmployee
+          matchesCustomerName &&
+          matchesSalesPerson // Include Sales Person filter
         );
       });
 
       if (filteredData.length === 0) {
         notificationApi.warning({
           message: "No Data Found",
-          description: "No sales commission data found for the selected filters.",
+          description: "No sales cancelled data found for the selected filters.",
           placement: "topRight",
           className: "bg-yellow-50",
         });
       }
 
-      setSalesPaymentsData(filteredData);
+      setSalesCancelledData(filteredData);
       setLoading(false);
-      setIsReportVisible(true);
+      setIsReportOpen(true);
       setReportGeneratedTime(dayjs().format("DD-MM-YYYY HH:mm:ss"));
       notificationApi.success({
         message: "Report Generated",
-        description: "Sales Commission Report generated successfully.",
+        description: "Sales Cancelled Report generated successfully.",
         placement: "topRight",
         className: "bg-green-50",
       });
@@ -232,7 +265,7 @@ const SaleCommission = () => {
     doc.text("Snave Webhub Africa", 70, 20);
     doc.setFontSize(16);
     doc.setFont("helvetica", "normal");
-    doc.text("Sales Commission Report", 70, 30);
+    doc.text("Sales Cancelled Report", 70, 30);
 
     doc.setTextColor(brandColors.primary);
     doc.setFontSize(12);
@@ -247,7 +280,7 @@ const SaleCommission = () => {
     );
 
     doc.setFont("helvetica", "bold");
-    doc.text(" Sales Commission Report Information", margin.left + 5, 60);
+    doc.text(" Sales Cancelled Report Information", margin.left + 5, 60);
     doc.setFont("helvetica", "normal");
     doc.setFontSize(10);
     doc.setTextColor(brandColors.gray);
@@ -265,7 +298,7 @@ const SaleCommission = () => {
       80
     );
 
-    // Add Sales Payments Table to PDF
+    // Add Sales Cancelled Table to PDF
     doc.autoTable({
       startY: 100,
       head: [
@@ -273,24 +306,32 @@ const SaleCommission = () => {
           "#",
           "Branch",
           "Invoice Number",
-          "Sales Date",
           "Item Name",
-          "Qty Sold",
-          "Sales Price",
-          "Discount",
-          "Commission",
+          "Sales Date",
+          "Cancellation Date", // New column
+          "Customer Name",
+          "Sales Person", // New column
+          "Qty",
+          "Price",
+          "Total",
+          "Status",
+          "Reason for Reject", // New column
         ],
       ],
-      body: salesPaymentsData.map((item, index) => [
+      body: salesCancelledData.map((item, index) => [
         index + 1,
         item.branch,
         item.invoiceNumber,
-        dayjs(item.paymentDate).format("DD-MM-YYYY HH:mm:ss"),
         item.itemName,
-        item.qtySold,
-        formatNumber(item.salesPrice),
-        formatNumber(item.discount),
-        formatNumber(item.commission),
+        dayjs(item.salesDate).format("DD-MM-YYYY HH:mm:ss"),
+        dayjs(item.cancellationDate).format("DD-MM-YYYY HH:mm:ss"), // New field
+        item.customerName,
+        item.salesPerson, // New field
+        item.qty,
+        formatNumber(item.price),
+        formatNumber(item.total),
+        item.status,
+        item.rejectReason || "N/A", // New field
       ]),
       headStyles: {
         fillColor: brandColors.secondary,
@@ -306,12 +347,16 @@ const SaleCommission = () => {
         0: { cellWidth: 15 },
         1: { cellWidth: 25 },
         2: { cellWidth: 25 },
-        3: { cellWidth: 30 },
-        4: { cellWidth: 25 },
-        5: { cellWidth: 25 },
-        6: { halign: "right", cellWidth: 25 },
-        7: { halign: "right", cellWidth: 25 },
+        3: { cellWidth: 25 },
+        4: { cellWidth: 30 },
+        5: { cellWidth: 30 }, // New column
+        6: { cellWidth: 25 },
+        7: { cellWidth: 25 }, // New column
         8: { halign: "right", cellWidth: 25 },
+        9: { halign: "right", cellWidth: 25 },
+        10: { halign: "right", cellWidth: 25 },
+        11: { cellWidth: 25 },
+        12: { cellWidth: 50 }, // New column
       },
       alternateRowStyles: {
         fillColor: brandColors.lightGray,
@@ -347,7 +392,7 @@ const SaleCommission = () => {
     };
 
     addFooter();
-    doc.save(`sales_payments_report_${dayjs().format("DD-MM-YYYY")}.pdf`);
+    doc.save(`sales_cancelled_report_${dayjs().format("DD-MM-YYYY")}.pdf`);
 
     notificationApi.success({
       message: "PDF Export Complete",
@@ -362,49 +407,80 @@ const SaleCommission = () => {
     setPagination({ ...pagination, current: 1 });
   };
 
-  const filteredData = salesPaymentsData.filter((item) => {
+  const handleStatusChange = (record, status) => {
+    if (status === "Rejected") {
+      setSelectedRecord(record);
+      setIsRejectModalOpen(true);
+    } else {
+      const updatedData = salesCancelledData.map((item) =>
+        item.id === record.id ? { ...item, status } : item
+      );
+      setSalesCancelledData(updatedData);
+
+      notificationApi.success({
+        message: "Approval Successful",
+        description: `Invoice ${record.invoiceNumber} has been Approved.`,
+        placement: "topRight",
+        className: "bg-green-50",
+      });
+    }
+  };
+
+  const handleRejectSubmit = () => {
+    if (!rejectReason) {
+      notificationApi.error({
+        message: "Reason Required",
+        description: "Please provide a reason for rejection.",
+        placement: "topRight",
+        className: "bg-red-50",
+      });
+      return;
+    }
+
+    const updatedData = salesCancelledData.map((item) =>
+      item.id === selectedRecord.id ? { ...item, status: "Rejected", rejectReason } : item
+    );
+    setSalesCancelledData(updatedData);
+
+    setIsRejectModalOpen(false);
+    setRejectReason("");
+
+    notificationApi.error({
+      message: "Rejected",
+      description: `Invoice ${selectedRecord.invoiceNumber} has been Rejected. Reason: ${rejectReason}`,
+      placement: "topRight",
+      className: "bg-red-50",
+    });
+  };
+
+  const filteredData = salesCancelledData.filter((item) => {
     return (
       item.branch.toLowerCase().includes(searchText.toLowerCase()) ||
       item.invoiceNumber.toLowerCase().includes(searchText.toLowerCase()) ||
-      item.itemName.toLowerCase().includes(searchText.toLowerCase())
+      item.itemName.toLowerCase().includes(searchText.toLowerCase()) ||
+      item.customerName.toLowerCase().includes(searchText.toLowerCase()) ||
+      item.salesPerson.toLowerCase().includes(searchText.toLowerCase()) // Include sales person in search
     );
   });
 
-  const totalSalesAmount = filteredData.reduce(
-    (sum, item) => sum + item.salesPrice * item.qtySold,
-    0
-  );
+  const totalQty = filteredData.reduce((sum, item) => sum + item.qty, 0);
+  const totalAmount = filteredData.reduce((sum, item) => sum + item.total, 0);
 
-  const totalDiscount = filteredData.reduce(
-    (sum, item) => sum + item.discount,
-    0
-  );
-
-  const totalCommission = filteredData.reduce(
-    (sum, item) => sum + item.commission,
-    0
-  );
-
-  const totalQtySold = filteredData.reduce(
-    (sum, item) => sum + item.qtySold,
-    0
-  );
-
-  const salesPaymentsColumns = [
+  const salesCancelledColumns = [
     {
       title: "#",
       dataIndex: "id",
       key: "id",
-      render: (text, record, index) => index + 1,
+      render: (_text, _record, index) => index + 1,
       className: "whitespace-nowrap",
-      width: 50,
+      width: 20,
     },
     {
       title: "Branch",
       dataIndex: "branch",
       key: "branch",
       className: "whitespace-nowrap",
-      width: 100,
+      width: 250,
     },
     {
       title: "Invoice Number",
@@ -416,70 +492,138 @@ const SaleCommission = () => {
         </Link>
       ),
       className: "whitespace-nowrap",
-      width: 120,
-    },
-    {
-      title: "Sales Date",
-      dataIndex: "paymentDate",
-      key: "paymentDate",
-      render: (text) => dayjs(text).format("DD-MM-YYYY HH:mm:ss"),
-      className: "whitespace-nowrap",
-      width: 150,
+      width: 100,
     },
     {
       title: "Item Name",
       dataIndex: "itemName",
       key: "itemName",
       className: "whitespace-nowrap",
+      width: 200,
+    },
+    {
+      title: "Sales Date",
+      dataIndex: "salesDate",
+      key: "salesDate",
+      align : 'left',
+      render: (text) => dayjs(text).format("DD-MM-YYYY HH:mm:ss"),
+      className: "whitespace-nowrap",
+      width: 120,
+    },
+    {
+      title: "Cancellation Date", // New column
+      dataIndex: "cancellationDate",
+      key: "cancellationDate",
+      align : 'left',
+      render: (text) => dayjs(text).format("DD-MM-YYYY HH:mm:ss"),
+      className: "whitespace-nowrap",
       width: 150,
     },
     {
-      title: "Qty Sold",
-      dataIndex: "qtySold",
-      key: "qtySold",
-      align: "right",
+      title: "Customer Name",
+      dataIndex: "customerName",
+      key: "customerName",
       className: "whitespace-nowrap",
-      width: 100,
+      width: 200,
     },
     {
-      title: "Sales Price (KES)",
-      dataIndex: "salesPrice",
-      key: "salesPrice",
-      render: (salesPrice) => formatNumber(salesPrice),
-      align: "right",
+      title: "Sales Person", // New column
+      dataIndex: "salesPerson",
+      key: "salesPerson",
       className: "whitespace-nowrap",
-      width: 120,
+      width: 150,
     },
     {
-      title: "Discount (KES)",
-      dataIndex: "discount",
-      key: "discount",
-      render: (discount) => formatNumber(discount),
+      title: "Qty",
+      dataIndex: "qty",
+      key: "qty",
       align: "right",
       className: "whitespace-nowrap",
-      width: 100,
+      width: 50,
     },
     {
-      title: "Commission (KES)",
-      dataIndex: "commission",
-      key: "commission",
-      render: (commission) => formatNumber(commission),
+      title: "Price (KES)",
+      dataIndex: "price",
+      key: "price",
+      render: (price) => formatNumber(price),
       align: "right",
       className: "whitespace-nowrap",
-      width: 120,
+      width: 80,
     },
+    {
+      title: "Total (KES)",
+      dataIndex: "total",
+      key: "total",
+      render: (total) => formatNumber(total),
+      align: "right",
+      className: "whitespace-nowrap",
+      width: 80,
+    },
+    {
+        title: "Reason for Reject",
+        dataIndex: "rejectReason",
+        key: "rejectReason",
+        render: (text) => text || "N/A", // Display "N/A" if no reason is provided
+        className: "whitespace-nowrap",
+        width: 150,
+      },
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      align: "right",
+      render: (status, record) => (
+        <Dropdown
+          menu={{
+            items: [
+              {
+                key: "approve",
+                label: "Approve",
+                icon: <CheckCircleOutlined className="text-green-500" />,
+                onClick: () => handleStatusChange(record, "Approved"),
+              },
+              {
+                key: "reject",
+                label: "Reject",
+                icon: <CloseCircleOutlined className="text-red-500" />,
+                onClick: () => handleStatusChange(record, "Rejected"),
+              },
+            ],
+          }}
+          trigger={["click"]}
+        >
+          <Button type="text" style={{ textAlign: "right" }}>
+            <Tag
+              style={{ textAlign: "right" }}
+              color={
+                status === "Approved"
+                  ? "green"
+                  : status === "Rejected"
+                  ? "red"
+                  : "default"
+              }
+            >
+              {status}
+            </Tag>
+          </Button>
+        </Dropdown>
+      ),
+      className: "whitespace-nowrap text-right",
+      width: 50,
+    },
+    
   ];
 
   const collapseItems = [
     {
       key: "1",
-      label: "Sales Commission Report",
+      label: "Sales Cancelled Report",
       children: (
         <>
           <Row gutter={16} className="mb-4">
             <Col span={24}>
               <Input
-                placeholder="Search by Branch, Invoice Number, or Item Name"
+                placeholder="Search by Branch, Invoice Number, Item Name, Customer Name, or Sales Person"
                 prefix={<SearchOutlined className="text-blue-500" />}
                 value={searchText}
                 onChange={(e) => handleSearch(e.target.value)}
@@ -490,7 +634,7 @@ const SaleCommission = () => {
 
           <Table
             dataSource={filteredData}
-            columns={salesPaymentsColumns}
+            columns={salesCancelledColumns}
             rowKey="id"
             pagination={{
               current: pagination.current,
@@ -501,14 +645,12 @@ const SaleCommission = () => {
               showSizeChanger: true,
               pageSizeOptions: ["10", "20", "50", "100"],
             }}
-            scroll={{ x: 1200 }} 
+            scroll={{ x: 1000 }} // Adjusted scroll width
             footer={() => (
               <div style={{ textAlign: "right", fontWeight: "bold" }}>
                 <div className="flex justify-between gap-x-4">
-                  <div>Total Qty Sold : {totalQtySold}</div>
-                  <div>Total Sales Amount : KES : {formatNumber(totalSalesAmount)}</div>
-                  <div>Total Discount : KES : {formatNumber(totalDiscount)}</div>
-                  <div>Total Commission : KES : {formatNumber(totalCommission)}</div>
+                  <div>Total Qty : {totalQty}</div>
+                  <div>Total Amount : KES : {formatNumber(totalAmount)}</div>
                 </div>
               </div>
             )}
@@ -554,13 +696,13 @@ const SaleCommission = () => {
                     </Link>
                   ),
                 },
-                { title: "Sales Commission Report" },
+                { title: "Sales Cancelled Report" },
               ]}
             />
             <hr />
             <div className="mb-4 flex justify-between items-center">
               <Title level={4} className="text-blue-800 mt-2">
-                Sales Commission Report
+                Sales Cancelled Report
               </Title>
             </div>
           </div>
@@ -576,8 +718,9 @@ const SaleCommission = () => {
                 initialValues={{
                   fromDate: filters.fromDate,
                   toDate: filters.toDate,
-                  itemName: "All ",
-                  employee: "All"
+                  itemName: "All",
+                  customerName: "All",
+                  salesPerson: "All", // Initialize Sales Person filter
                 }}
               >
                 <Form.Item name="fromDate" label="From Date">
@@ -586,12 +729,12 @@ const SaleCommission = () => {
                 <Form.Item name="toDate" label="To Date">
                   <DatePicker format="DD-MM-YYYY" />
                 </Form.Item>
-                <Form.Item name="itemName" label="Item Name">
+                <Form.Item name="itemName" label="Item">
                   <Select 
                     placeholder="Select Item Name" 
                     allowClear
                     showSearch
-                    style={{ width: 200 }}
+                    style={{ width: 150 }}
                     filterOption={(input, option) =>
                       option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                     }
@@ -604,22 +747,40 @@ const SaleCommission = () => {
                     <Option value="Product E">Product E</Option>
                   </Select>
                 </Form.Item>
-                <Form.Item name="employee" label="Employee">
+                <Form.Item name="customerName" label="Customer">
                   <Select 
-                    placeholder="Select Employee" 
+                    placeholder="Select Customer" 
                     allowClear
                     showSearch
-                    style={{ width: 200 }}
+                    style={{ width: 150 }}
                     filterOption={(input, option) =>
                       option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                     }
                   >
-                    <Option value="All">All Employees</Option>
+                    <Option value="All">All Customers</Option>
                     <Option value="John Doe">John Doe</Option>
                     <Option value="Jane Smith">Jane Smith</Option>
                     <Option value="Peter Parker">Peter Parker</Option>
                     <Option value="Clark Kent">Clark Kent</Option>
                     <Option value="Bruce Wayne">Bruce Wayne</Option>
+                  </Select>
+                </Form.Item>
+                <Form.Item name="salesPerson" label="Sales by">
+                  <Select 
+                    placeholder="Select Sales Person" 
+                    allowClear
+                    showSearch
+                    style={{ width: 150 }}
+                    filterOption={(input, option) =>
+                      option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    }
+                  >
+                    <Option value="All">All Sales Persons</Option>
+                    <Option value="Alice Johnson">Alice Johnson</Option>
+                    <Option value="Bob Williams">Bob Williams</Option>
+                    <Option value="Charlie Brown">Charlie Brown</Option>
+                    <Option value="Diana Prince">Diana Prince</Option>
+                    <Option value="Eve Adams">Eve Adams</Option>
                   </Select>
                 </Form.Item>
               </Form>
@@ -629,7 +790,7 @@ const SaleCommission = () => {
                   icon={<FilterOutlined className="text-white" />}
                   onClick={generateReport}
                 >
-                  Generate Report
+                  Report
                 </Button>
                 <Button
                   type="primary"
@@ -644,7 +805,7 @@ const SaleCommission = () => {
             <hr />
 
             <Spin spinning={loading}>
-              {isReportVisible && (
+              {isReportOpen && (
                 <Collapse
                   defaultActiveKey={["1"]}
                   expandIcon={({ isActive }) =>
@@ -664,8 +825,28 @@ const SaleCommission = () => {
 
         <Footer />
       </Layout>
+
+      <Modal
+        title="Reject Invoice"
+        open={isRejectModalOpen}
+        onOk={handleRejectSubmit}
+        onCancel={() => setIsRejectModalOpen(false)}
+        okText="Submit"
+        cancelText="Cancel"
+      >
+        <Form layout="vertical">
+          <Form.Item label="Reason for Rejection">
+            <Input.TextArea
+              value={rejectReason}
+              onChange={(e) => setRejectReason(e.target.value)}
+              placeholder="Enter the reason for rejection"
+              required
+            />
+          </Form.Item>
+        </Form>
+      </Modal>
     </div>
   );
 };
 
-export default SaleCommission;
+export default SalesCancelled;
