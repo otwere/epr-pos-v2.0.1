@@ -374,8 +374,7 @@ const Sidebar = ({ collapsed, ref }) => {
       icon: <ShoppingOutlined />,
       title: "Purchase Reports",
       subItems: [
-        { key: "17-1", icon: <FilePdfOutlined />, title: "Purchase Report" },
-        {
+        { key: "17-1", icon: <FilePdfOutlined />, title: "Purchase Report" , link: "/purchase_report"},{
           key: "17-2",
           icon: <FilePdfOutlined />,
           title: "Items Purchase Report",

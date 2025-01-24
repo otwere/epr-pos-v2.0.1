@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Form,
   Button,
@@ -44,7 +44,7 @@ const { Title, Text } = Typography;
 const { Panel } = Collapse;
 const { Option } = Select;
 
-const CreditSalesAgingReport = () => {
+const PurchaseReport = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [form] = Form.useForm();
   const [notificationApi, notificationContextHolder] =
@@ -53,26 +53,35 @@ const CreditSalesAgingReport = () => {
   const [filters, setFilters] = useState({
     fromDate: dayjs().startOf("month"), // Start of the month
     toDate: dayjs().endOf("month"), // End of the month
-    paymentStatus: null, // Payment status filter
+    supplierName: null, // Supplier name filter
+    status: null, // Status filter (Received, Ordered)
   });
-  const [creditSalesData, setCreditSalesData] = useState([]);
+  const [purchaseData, setPurchaseData] = useState([]);
   const [isReportVisible, setIsReportVisible] = useState(false);
   const [reportGeneratedTime, setReportGeneratedTime] = useState(null);
   const [generatedBy, setGeneratedBy] = useState("Admin");
   const [searchText, setSearchText] = useState(""); // State for search text
   const [pagination, setPagination] = useState({ current: 1, pageSize: 10 }); // Pagination state
   const [selectedAgeRange, setSelectedAgeRange] = useState(null); // State for selected age range filter
-  const [selectedCreditSalesAgeRange, setSelectedCreditSalesAgeRange] =
-    useState(null); // State for selected age range filter in Credit Sales Details
+  const [selectedPurchaseAgeRange, setSelectedPurchaseAgeRange] =
+    useState(null); // State for selected age range filter in Purchase Details
+  const [supplierNames, setSupplierNames] = useState([]); // State for supplier names
 
   const toggleCollapsed = () => setCollapsed(!collapsed);
 
+  // Fetch supplier names from mock data
+  useEffect(() => {
+    const names = mockPurchaseData.map((supplier) => supplier.supplierName);
+    setSupplierNames(names);
+  }, []);
+
   const handleFilterChange = (changedValues, allValues) => {
-    const { fromDate, toDate, paymentStatus } = allValues;
+    const { fromDate, toDate, supplierName, status } = allValues;
     setFilters({
       fromDate: fromDate ? dayjs(fromDate) : dayjs().startOf("month"),
       toDate: toDate ? dayjs(toDate) : dayjs().endOf("month"),
-      paymentStatus,
+      supplierName,
+      status,
     });
   };
 
@@ -85,22 +94,22 @@ const CreditSalesAgingReport = () => {
   };
 
   // Function to calculate aging analysis dynamically
-  const calculateAgingAnalysis = (sales) => {
+  const calculateAgingAnalysis = (purchases) => {
     const today = dayjs();
     const agingAnalysis = { "0-30": 0, "31-60": 0, "61-90": 0, "90+": 0 };
 
-    sales.forEach((sale) => {
-      const saleDate = dayjs(sale.saleDate);
-      const daysDiff = today.diff(saleDate, "day");
+    purchases.forEach((purchase) => {
+      const purchaseDate = dayjs(purchase.purchaseDate);
+      const daysDiff = today.diff(purchaseDate, "day");
 
       if (daysDiff >= 0 && daysDiff <= 30) {
-        agingAnalysis["0-30"] += sale.amount;
+        agingAnalysis["0-30"] += purchase.amount;
       } else if (daysDiff > 30 && daysDiff <= 60) {
-        agingAnalysis["31-60"] += sale.amount;
+        agingAnalysis["31-60"] += purchase.amount;
       } else if (daysDiff > 60 && daysDiff <= 90) {
-        agingAnalysis["61-90"] += sale.amount;
+        agingAnalysis["61-90"] += purchase.amount;
       } else if (daysDiff > 90) {
-        agingAnalysis["90+"] += sale.amount;
+        agingAnalysis["90+"] += purchase.amount;
       }
     });
 
@@ -108,12 +117,12 @@ const CreditSalesAgingReport = () => {
   };
 
   // Function to calculate RISK LEVEL based on the oldest overdue payment
-  const calculateRiskLevel = (sales) => {
+  const calculateRiskLevel = (purchases) => {
     const today = dayjs();
     let maxOverdueDays = 0;
 
-    sales.forEach((sale) => {
-      const dueDate = dayjs(sale.dueDate);
+    purchases.forEach((purchase) => {
+      const dueDate = dayjs(purchase.dueDate);
       const overdueDays = today.diff(dueDate, "day");
       if (overdueDays > maxOverdueDays) {
         maxOverdueDays = overdueDays;
@@ -127,53 +136,55 @@ const CreditSalesAgingReport = () => {
   };
 
   // Function to calculate outstanding balance dynamically
-  const calculateOutstandingBalance = (creditSales, paymentHistory) => {
-    const totalSales = creditSales.reduce((sum, sale) => sum + sale.amount, 0);
+  const calculateOutstandingBalance = (purchases, paymentHistory) => {
+    const totalPurchases = purchases.reduce((sum, purchase) => sum + purchase.amount, 0);
     const totalPayments = paymentHistory.reduce(
       (sum, payment) => sum + payment.amount,
       0
     );
-    return totalSales - totalPayments;
+    return totalPurchases - totalPayments;
   };
 
   // Function to calculate totals for unpaid and partial payments
-  const calculateUnpaidAndPartialTotals = (creditSales) => {
+  const calculateUnpaidAndPartialTotals = (purchases) => {
     let unpaidTotal = 0;
     let partialTotal = 0;
 
-    creditSales.forEach((sale) => {
-      if (sale.paymentStatus === "Unpaid") {
-        unpaidTotal += sale.amount;
-      } else if (sale.paymentStatus === "Partial") {
-        partialTotal += sale.amount;
+    purchases.forEach((purchase) => {
+      if (purchase.paymentStatus === "Unpaid") {
+        unpaidTotal += purchase.amount;
+      } else if (purchase.paymentStatus === "Partial") {
+        partialTotal += purchase.amount;
       }
     });
 
     return { unpaidTotal, partialTotal };
   };
 
-  const mockCreditSalesData = [
+  const mockPurchaseData = [
     {
       id: 1,
-      customerName: "John Doe",
+      supplierName: "John Doe",
       branch: "Nairobi",
       contactDetails: "john.doe@example.com",
       accountNumber: "ACC123456",
       creditLimit: 100000,
-      creditSales: [
+      purchases: [
         {
-          saleNumber: "INV001",
-          saleDate: "2023-09-01",
+          purchaseNumber: "PUR001",
+          purchaseDate: "2023-09-01",
           dueDate: "2023-10-01",
           amount: 50000,
           paymentStatus: "Unpaid",
+          status: "Ordered",
         },
         {
-          saleNumber: "INV002",
-          saleDate: "2025-01-01",
+          purchaseNumber: "PUR002",
+          purchaseDate: "2025-01-01",
           dueDate: "2025-01-15",
           amount: 30000,
           paymentStatus: "Partial",
+          status: "Received",
         },
       ],
       paymentHistory: [
@@ -188,31 +199,33 @@ const CreditSalesAgingReport = () => {
       lateFees: 500,
       adjustments: 0,
       writeOffs: 0,
-      followUpNotes: "Customer to be contacted for payment.",
+      followUpNotes: "Supplier to be contacted for payment.",
       followUpPerson: "Jane Smith",
       followUpRole: "Account Manager",
     },
     {
       id: 2,
-      customerName: "Jane Smith",
+      supplierName: "Jane Smith",
       branch: "Mombasa",
       contactDetails: "jane.smith@example.com",
       accountNumber: "ACC654321",
       creditLimit: 150000,
-      creditSales: [
+      purchases: [
         {
-          saleNumber: "INV003",
-          saleDate: "2023-07-01",
+          purchaseNumber: "PUR003",
+          purchaseDate: "2023-07-01",
           dueDate: "2023-08-01",
           amount: 75000,
           paymentStatus: "Unpaid",
+          status: "Ordered",
         },
         {
-          saleNumber: "INV004",
-          saleDate: "2023-06-15",
+          purchaseNumber: "PUR004",
+          purchaseDate: "2023-06-15",
           dueDate: "2023-07-15",
           amount: 45000,
           paymentStatus: "Paid",
+          status: "Received",
         },
       ],
       paymentHistory: [
@@ -227,31 +240,33 @@ const CreditSalesAgingReport = () => {
       lateFees: 1000,
       adjustments: 0,
       writeOffs: 0,
-      followUpNotes: "Payment received for INV004.",
+      followUpNotes: "Payment received for PUR004.",
       followUpPerson: "John Doe",
       followUpRole: "Account Manager",
     },
     {
       id: 3,
-      customerName: "Alice Johnson",
+      supplierName: "Alice Johnson",
       branch: "Kisumu",
       contactDetails: "alice.johnson@example.com",
       accountNumber: "ACC789012",
       creditLimit: 200000,
-      creditSales: [
+      purchases: [
         {
-          saleNumber: "INV005",
-          saleDate: "2023-08-01",
+          purchaseNumber: "PUR005",
+          purchaseDate: "2023-08-01",
           dueDate: "2023-09-01",
           amount: 100000,
           paymentStatus: "Partial",
+          status: "Received",
         },
         {
-          saleNumber: "INV006",
-          saleDate: "2023-07-15",
+          purchaseNumber: "PUR006",
+          purchaseDate: "2023-07-15",
           dueDate: "2023-08-15",
           amount: 50000,
           paymentStatus: "Unpaid",
+          status: "Ordered",
         },
       ],
       paymentHistory: [
@@ -272,25 +287,27 @@ const CreditSalesAgingReport = () => {
     },
     {
       id: 4,
-      customerName: "Bob Brown",
+      supplierName: "Bob Brown",
       branch: "Eldoret",
       contactDetails: "bob.brown@example.com",
       accountNumber: "ACC345678",
       creditLimit: 120000,
-      creditSales: [
+      purchases: [
         {
-          saleNumber: "INV007",
-          saleDate: "2023-09-15",
+          purchaseNumber: "PUR007",
+          purchaseDate: "2023-09-15",
           dueDate: "2023-10-15",
           amount: 60000,
           paymentStatus: "Unpaid",
+          status: "Ordered",
         },
         {
-          saleNumber: "INV008",
-          saleDate: "2023-08-01",
+          purchaseNumber: "PUR008",
+          purchaseDate: "2023-08-01",
           dueDate: "2023-09-01",
           amount: 40000,
           paymentStatus: "Paid",
+          status: "Received",
         },
       ],
       paymentHistory: [
@@ -305,31 +322,33 @@ const CreditSalesAgingReport = () => {
       lateFees: 500,
       adjustments: 0,
       writeOffs: 0,
-      followUpNotes: "Payment received for INV008.",
+      followUpNotes: "Payment received for PUR008.",
       followUpPerson: "John Doe",
       followUpRole: "Account Manager",
     },
     {
       id: 5,
-      customerName: "Charlie Davis",
+      supplierName: "Charlie Davis",
       branch: "Nakuru",
       contactDetails: "charlie.davis@example.com",
       accountNumber: "ACC901234",
       creditLimit: 180000,
-      creditSales: [
+      purchases: [
         {
-          saleNumber: "INV009",
-          saleDate: "2023-07-01",
+          purchaseNumber: "PUR009",
+          purchaseDate: "2023-07-01",
           dueDate: "2023-08-01",
           amount: 90000,
           paymentStatus: "Unpaid",
+          status: "Ordered",
         },
         {
-          saleNumber: "INV010",
-          saleDate: "2023-06-15",
+          purchaseNumber: "PUR010",
+          purchaseDate: "2023-06-15",
           dueDate: "2023-07-15",
           amount: 60000,
           paymentStatus: "Partial",
+          status: "Received",
         },
       ],
       paymentHistory: [
@@ -352,7 +371,7 @@ const CreditSalesAgingReport = () => {
 
   // Generate report with updated RISK LEVEL logic
   const generateReport = () => {
-    const { fromDate, toDate, paymentStatus } = form.getFieldsValue();
+    const { fromDate, toDate, supplierName, status } = form.getFieldsValue();
 
     if (!fromDate || !toDate) {
       notificationApi.error({
@@ -367,33 +386,54 @@ const CreditSalesAgingReport = () => {
 
     setLoading(true);
     setTimeout(() => {
-      // Calculate aging analysis, RISK LEVEL, and outstanding balance dynamically for each customer
-      const updatedCreditSalesData = mockCreditSalesData.map((customer) => {
+      // Filter data based on date range
+      const filteredByDate = mockPurchaseData.filter((supplier) => {
+        return supplier.purchases.some((purchase) => {
+          const purchaseDate = dayjs(purchase.purchaseDate);
+          return (
+            purchaseDate.isAfter(fromDate) && purchaseDate.isBefore(toDate)
+          );
+        });
+      });
+
+      if (filteredByDate.length === 0) {
+        notificationApi.warning({
+          message: "No Data Found",
+          description: "No data found within the selected date range.",
+          placement: "topRight",
+          className: "bg-yellow-50",
+        });
+        setLoading(false);
+        return;
+      }
+
+      // Calculate aging analysis, RISK LEVEL, and outstanding balance dynamically for each supplier
+      const updatedPurchaseData = filteredByDate.map((supplier) => {
         const outstandingBalance = calculateOutstandingBalance(
-          customer.creditSales,
-          customer.paymentHistory
+          supplier.purchases,
+          supplier.paymentHistory
         );
         const { unpaidTotal, partialTotal } = calculateUnpaidAndPartialTotals(
-          customer.creditSales
+          supplier.purchases
         );
 
         return {
-          ...customer,
-          agingAnalysis: calculateAgingAnalysis(customer.creditSales),
-          riskLevel: calculateRiskLevel(customer.creditSales),
+          ...supplier,
+          agingAnalysis: calculateAgingAnalysis(supplier.purchases),
+          riskLevel: calculateRiskLevel(supplier.purchases),
           outstandingBalance,
           unpaidTotal,
           partialTotal,
         };
       });
 
-      setCreditSalesData(updatedCreditSalesData);
+      setPurchaseData(updatedPurchaseData);
       setLoading(false);
       setIsReportVisible(true);
       setReportGeneratedTime(dayjs().format("DD-MM-YYYY HH:mm:ss"));
       notificationApi.success({
         message: "Report Generated",
-        description: "Credit Sales Aging Report generated successfully.",
+        description: "Purchase Report generated successfully.",
         placement: "topRight",
         className: "bg-green-50",
       });
@@ -423,7 +463,7 @@ const CreditSalesAgingReport = () => {
     doc.text("Snave Webhub Africa", 70, 20);
     doc.setFontSize(16);
     doc.setFont("helvetica", "normal");
-    doc.text("Credit Sales Aging Report", 70, 30);
+    doc.text("Purchase Report", 70, 30);
 
     doc.setTextColor(brandColors.primary);
     doc.setFontSize(12);
@@ -438,7 +478,7 @@ const CreditSalesAgingReport = () => {
     );
 
     doc.setFont("helvetica", "bold");
-    doc.text(" Credit Sales Aging Report Information", margin.left + 5, 60);
+    doc.text(" Purchase Report Information", margin.left + 5, 60);
     doc.setFont("helvetica", "normal");
     doc.setFontSize(10);
     doc.setTextColor(brandColors.gray);
@@ -456,12 +496,12 @@ const CreditSalesAgingReport = () => {
       80
     );
 
-    // Add Credit Sales Table to PDF
+    // Add Purchase Table to PDF
     doc.autoTable({
       startY: 100,
       head: [
         [
-          "CUSTOMER NAME",
+          "SUPPLIER NAME",
           "BRANCH",
           "OUTSTANDING BALANCE",
           "RISK LEVEL",
@@ -469,8 +509,8 @@ const CreditSalesAgingReport = () => {
           "UTILIZATION",
         ],
       ],
-      body: creditSalesData.map((item) => [
-        item.customerName,
+      body: purchaseData.map((item) => [
+        item.supplierName,
         item.branch,
         formatNumber(item.outstandingBalance),
         item.riskLevel,
@@ -529,7 +569,7 @@ const CreditSalesAgingReport = () => {
     };
 
     addFooter();
-    doc.save(`credit_sales_aging_report_${dayjs().format("DD-MM-YYYY")}.pdf`);
+    doc.save(`purchase_report_${dayjs().format("DD-MM-YYYY")}.pdf`);
 
     notificationApi.success({
       message: "PDF Export Complete",
@@ -545,27 +585,29 @@ const CreditSalesAgingReport = () => {
     setPagination({ ...pagination, current: 1 }); // Reset to the first page on search
   };
 
-  // Filter data based on search text, selected age range, and payment status
-  const filteredData = creditSalesData.filter((item) => {
+  // Filter data based on search text, selected age range, supplier name, and status
+  const filteredData = purchaseData.filter((item) => {
     const matchesSearchText =
-      item.customerName.toLowerCase().includes(searchText.toLowerCase()) ||
+      item.supplierName.toLowerCase().includes(searchText.toLowerCase()) ||
       item.contactDetails.toLowerCase().includes(searchText.toLowerCase());
 
     const matchesAgeRange = !selectedAgeRange || item.agingAnalysis[selectedAgeRange] > 0;
 
-    const matchesPaymentStatus = !filters.paymentStatus || item.creditSales.some(
-      (sale) => sale.paymentStatus === filters.paymentStatus
+    const matchesSupplierName = !filters.supplierName || item.supplierName === filters.supplierName;
+
+    const matchesStatus = !filters.status || item.purchases.some(
+      (purchase) => purchase.status === filters.status
     );
 
-    return matchesSearchText && matchesAgeRange && matchesPaymentStatus;
+    return matchesSearchText && matchesAgeRange && matchesSupplierName && matchesStatus;
   });
 
-  // Function to filter credit sales by age range and payment status
-  const filterCreditSalesByAgeRange = (creditSales, ageRange) => {
+  // Function to filter purchases by age range and status
+  const filterPurchasesByAgeRange = (purchases, ageRange) => {
     const today = dayjs();
-    return creditSales.filter((sale) => {
-      const saleDate = dayjs(sale.saleDate);
-      const daysDiff = today.diff(saleDate, "day");
+    return purchases.filter((purchase) => {
+      const purchaseDate = dayjs(purchase.purchaseDate);
+      const daysDiff = today.diff(purchaseDate, "day");
 
       const matchesAgeRange =
         (ageRange === "0-30" && daysDiff >= 0 && daysDiff <= 30) ||
@@ -573,18 +615,17 @@ const CreditSalesAgingReport = () => {
         (ageRange === "61-90" && daysDiff > 60 && daysDiff <= 90) ||
         (ageRange === "90+" && daysDiff > 90);
 
-      const matchesPaymentStatus =
-        sale.paymentStatus === "Unpaid" || sale.paymentStatus === "Partial";
+      const matchesStatus = !filters.status || purchase.status === filters.status;
 
-      return matchesAgeRange && matchesPaymentStatus;
+      return matchesAgeRange && matchesStatus;
     });
   };
 
-  const creditSalesColumns = [
+  const purchaseColumns = [
     {
-      title: "CUSTOMER NAME",
-      dataIndex: "customerName",
-      key: "customerName",
+      title: "SUPPLIER NAME",
+      dataIndex: "supplierName",
+      key: "supplierName",
     },
     {
       title: "BRANCH",
@@ -650,17 +691,17 @@ const CreditSalesAgingReport = () => {
     },
   ];
 
-  const totalReceivables = creditSalesData.reduce(
+  const totalPayables = purchaseData.reduce(
     (sum, item) => sum + (item.outstandingBalance || 0),
     0
   );
 
-  const totalUnpaid = creditSalesData.reduce(
+  const totalUnpaid = purchaseData.reduce(
     (sum, item) => sum + (item.unpaidTotal || 0),
     0
   );
 
-  const totalPartial = creditSalesData.reduce(
+  const totalPartial = purchaseData.reduce(
     (sum, item) => sum + (item.partialTotal || 0),
     0
   );
@@ -668,19 +709,19 @@ const CreditSalesAgingReport = () => {
   const collapseItems = [
     {
       key: "1",
-      label: "Credit Sales Aging Report",
+      label: "Purchase Report",
       children: (
         <>
           <Row gutter={16} className="mb-4">
-            <Col span={8} key="total-receivables">
+            <Col span={8} key="total-payables">
               <Card className="bg-green-50">
                 <div className="flex items-center">
                   <UserOutlined className="text-green-600 text-2xl mr-2" />
                   <Text strong className="text-lg mb-1">
-                    Total Receivables
+                    Total Payables
                   </Text>
                 </div>
-                <Title level={4}>KES : {formatNumber(totalReceivables)}</Title>
+                <Title level={4}>KES : {formatNumber(totalPayables)}</Title>
               </Card>
             </Col>
             <Col span={8} key="total-unpaid">
@@ -710,7 +751,7 @@ const CreditSalesAgingReport = () => {
           {/* Search Input */}
           <div className="mb-4">
             <Input
-              placeholder="Search by Customer Name or Contact Details"
+              placeholder="Search by Supplier Name or Contact Details"
               prefix={<SearchOutlined />}
               value={searchText}
               onChange={(e) => handleSearch(e.target.value)}
@@ -720,7 +761,7 @@ const CreditSalesAgingReport = () => {
 
           <Table
             dataSource={filteredData}
-            columns={creditSalesColumns}
+            columns={purchaseColumns}
             rowKey="id"
             pagination={{
               current: pagination.current,
@@ -740,15 +781,15 @@ const CreditSalesAgingReport = () => {
                     <Col span={6} key={`aging-0-30-${record.id}`}>
                       <Card
                         className="bg-blue-50 cursor-pointer"
-                        onClick={() => setSelectedCreditSalesAgeRange("0-30")}
+                        onClick={() => setSelectedPurchaseAgeRange("0-30")}
                       >
                         <Statistic
                           title="0-30 Days"
                           value={formatNumber(
-                            filterCreditSalesByAgeRange(
-                              record.creditSales,
+                            filterPurchasesByAgeRange(
+                              record.purchases,
                               "0-30"
-                            ).reduce((sum, sale) => sum + sale.amount, 0)
+                            ).reduce((sum, purchase) => sum + purchase.amount, 0)
                           )}
                         />
                       </Card>
@@ -756,15 +797,15 @@ const CreditSalesAgingReport = () => {
                     <Col span={6} key={`aging-31-60-${record.id}`}>
                       <Card
                         className="bg-green-50 cursor-pointer"
-                        onClick={() => setSelectedCreditSalesAgeRange("31-60")}
+                        onClick={() => setSelectedPurchaseAgeRange("31-60")}
                       >
                         <Statistic
                           title="31-60 Days"
                           value={formatNumber(
-                            filterCreditSalesByAgeRange(
-                              record.creditSales,
+                            filterPurchasesByAgeRange(
+                              record.purchases,
                               "31-60"
-                            ).reduce((sum, sale) => sum + sale.amount, 0)
+                            ).reduce((sum, purchase) => sum + purchase.amount, 0)
                           )}
                         />
                       </Card>
@@ -772,15 +813,15 @@ const CreditSalesAgingReport = () => {
                     <Col span={6} key={`aging-61-90-${record.id}`}>
                       <Card
                         className="bg-orange-50 cursor-pointer"
-                        onClick={() => setSelectedCreditSalesAgeRange("61-90")}
+                        onClick={() => setSelectedPurchaseAgeRange("61-90")}
                       >
                         <Statistic
                           title="61-90 Days"
                           value={formatNumber(
-                            filterCreditSalesByAgeRange(
-                              record.creditSales,
+                            filterPurchasesByAgeRange(
+                              record.purchases,
                               "61-90"
-                            ).reduce((sum, sale) => sum + sale.amount, 0)
+                            ).reduce((sum, purchase) => sum + purchase.amount, 0)
                           )}
                         />
                       </Card>
@@ -788,43 +829,43 @@ const CreditSalesAgingReport = () => {
                     <Col span={6} key={`aging-90+-${record.id}`}>
                       <Card
                         className="bg-red-50 cursor-pointer"
-                        onClick={() => setSelectedCreditSalesAgeRange("90+")}
+                        onClick={() => setSelectedPurchaseAgeRange("90+")}
                       >
                         <Statistic
                           title="90+ Days"
                           value={formatNumber(
-                            filterCreditSalesByAgeRange(
-                              record.creditSales,
+                            filterPurchasesByAgeRange(
+                              record.purchases,
                               "90+"
-                            ).reduce((sum, sale) => sum + sale.amount, 0)
+                            ).reduce((sum, purchase) => sum + purchase.amount, 0)
                           )}
                         />
                       </Card>
                     </Col>
                   </Row>
                   <Title level={4} className="mt-4">
-                    Credit Sales Details
+                    Purchase Details
                   </Title>
                   <hr />
                   <Table
                     dataSource={
-                      selectedCreditSalesAgeRange
-                        ? filterCreditSalesByAgeRange(
-                          record.creditSales,
-                          selectedCreditSalesAgeRange
+                      selectedPurchaseAgeRange
+                        ? filterPurchasesByAgeRange(
+                          record.purchases,
+                          selectedPurchaseAgeRange
                         )
-                        : record.creditSales
+                        : record.purchases
                     }
                     columns={[
                       {
-                        title: "Invoice Number",
-                        dataIndex: "saleNumber",
-                        key: "saleNumber",
+                        title: "Purchase Number",
+                        dataIndex: "purchaseNumber",
+                        key: "purchaseNumber",
                       },
                       {
-                        title: "Sale Date",
-                        dataIndex: "saleDate",
-                        key: "saleDate",
+                        title: "Purchase Date",
+                        dataIndex: "purchaseDate",
+                        key: "purchaseDate",
                       },
                       {
                         title: "Due Date",
@@ -834,8 +875,8 @@ const CreditSalesAgingReport = () => {
                       {
                         title: "Age (Days)",
                         key: "age",
-                        render: (_, sale) => {
-                          const dueDate = dayjs(sale.dueDate);
+                        render: (_, purchase) => {
+                          const dueDate = dayjs(purchase.dueDate);
                           const today = dayjs();
                           const ageInDays = today.diff(dueDate, "day");
                           return <span>{ageInDays}</span>;
@@ -849,25 +890,25 @@ const CreditSalesAgingReport = () => {
                         align: "right",
                       },
                       {
-                        title: "Payment Status",
-                        dataIndex: "paymentStatus",
-                        key: "paymentStatus",
+                        title: "Status",
+                        dataIndex: "status",
+                        key: "status",
                         align: "right",
                         render: (status) => {
                           let color =
-                            status === "Paid"
+                            status === "Received"
                               ? "green"
-                              : status === "Unpaid"
-                                ? "red"
-                                : "orange";
+                              : status === "Ordered"
+                                ? "blue"
+                                : "gray";
                           return <Tag color={color}>{status}</Tag>;
                         },
                       },
                     ]}
                     pagination={false}
-                    rowKey="saleNumber"
+                    rowKey="purchaseNumber"
                   />
-                  {/* Improved Total row for Credit Sales Details */}
+                  {/* Improved Total row for Purchase Details */}
                   <Row justify="end" className="mt-4">
                     <Col span={24}>
                       <Card
@@ -1051,13 +1092,13 @@ const CreditSalesAgingReport = () => {
                     </Link>
                   ),
                 },
-                { title: "Credit Sales Aging Report" },
+                { title: "Purchase Report" },
               ]}
             />
             <hr />
             <div className="mb-4 flex justify-between items-center">
               <Title level={4} className="text-blue-800 mt-2">
-                Credit Sales Aging Report
+                Purchase Report
               </Title>
             </div>
           </div>
@@ -1073,7 +1114,8 @@ const CreditSalesAgingReport = () => {
                 initialValues={{
                   fromDate: filters.fromDate,
                   toDate: filters.toDate,
-                  paymentStatus: filters.paymentStatus,
+                  supplierName: filters.supplierName,
+                  status: filters.status,
                 }}
               >
                 <Form.Item name="fromDate" label="From Date">
@@ -1082,24 +1124,39 @@ const CreditSalesAgingReport = () => {
                 <Form.Item name="toDate" label="To Date">
                   <DatePicker format="DD-MM-YYYY" />
                 </Form.Item>
-                <Form.Item name="paymentStatus" label="Payment Status">
-                  <Select style={{ width: 120 }} allowClear>
-                    <Option value="Paid">Paid</Option>
-                    <Option value="Unpaid">Unpaid</Option>
-                    <Option value="Partial">Partial</Option>
+                <Form.Item name="supplierName" label="Supplier Name">
+                  <Select
+                    showSearch
+                    placeholder="Select Supplier"
+                    optionFilterProp="children"
+                    filterOption={(input, option) =>
+                      option.children.toLowerCase().includes(input.toLowerCase())
+                    }
+                    style={{ width: 280 }}
+                  >
+                    {supplierNames.map((name) => (
+                      <Option key={name} value={name}>
+                        {name}
+                      </Option>
+                    ))}
                   </Select>
                 </Form.Item>
-                <Form.Item>
-                  <Button
+                <Form.Item name="status" label="Status">
+                  <Select style={{ width: 100 }} allowClear>
+                    <Option value="Received">Received</Option>
+                    <Option value="Ordered">Ordered</Option>
+                  </Select>
+                </Form.Item>
+                
+              </Form>
+              <div className="flex space-x-4">
+              <Button
                     type="primary"
                     icon={<FilterOutlined />}
                     onClick={generateReport}
                   >
                     Generate Report
                   </Button>
-                </Form.Item>
-              </Form>
-              <div className="flex space-x-4">
                 <Button
                   type="primary"
                   icon={<FilePdfOutlined />}
@@ -1133,4 +1190,4 @@ const CreditSalesAgingReport = () => {
   );
 };
 
-export default CreditSalesAgingReport;
+export default PurchaseReport;
