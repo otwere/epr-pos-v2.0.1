@@ -333,7 +333,7 @@ const PaymentModal = ({ open, onClose }) => {
             <Form.Item name="reference" label="Payment Reference">
               <Input
                 placeholder="Enter payment reference (optional)"
-                className="bg-white"
+                className="bg-white/80"
                 suffix={
                   <Tooltip title="Add any additional reference for this transaction">
                     <InfoCircleOutlined className="text-gray-400" />

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import {
   Layout,
   Breadcrumb,
@@ -10,8 +10,13 @@ import {
   Card,
   Space,
   Pagination,
+  Button,
+  Modal,
+  Form,
+  Select,
+  notification,
 } from "antd";
-import { HomeOutlined, SearchOutlined } from "@ant-design/icons";
+import { HomeOutlined, SearchOutlined, BellOutlined } from "@ant-design/icons";
 
 // Importing Components
 import Header from "../Components/HeaderComponent/Header";
@@ -20,22 +25,30 @@ import Footer from "../Components/FooterComponent/Footer";
 
 const { Content } = Layout;
 const { Title } = Typography;
+const { Option } = Select;
 
 const StockAlert = React.forwardRef((props, ref) => {
-  const [collapsed, setCollapsed] = React.useState(false);
-  const [loading, setLoading] = React.useState(false);
-  const [products, setProducts] = React.useState([]);
-  const [pagination, setPagination] = React.useState({
+  const [collapsed, setCollapsed] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [products, setProducts] = useState([]);
+  const [pagination, setPagination] = useState({
     current: 1,
     pageSize: 10,
     total: 0,
   });
-  const [searchTerm, setSearchTerm] = React.useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [alertSettings, setAlertSettings] = useState({
+    priceAlert: null,
+    volumeAlert: null,
+    percentageChangeAlert: null,
+  });
 
-  const inputRef = useRef(); // Input ref if needed
+  const inputRef = useRef();
 
   // Mock Data Initialization
-  React.useEffect(() => {
+  useEffect(() => {
     const mockProducts = [
       {
         id: "1",
@@ -82,11 +95,13 @@ const StockAlert = React.forwardRef((props, ref) => {
     setLoading(true);
     try {
       const filtered = products.filter((product) =>
-        Object.values(product).some((value) =>
-          String(value ?? "")
+        Object.values(product).some((value) => {
+          // Handle undefined or null values gracefully
+          if (value === undefined || value === null) return false;
+          return String(value)
             .toLowerCase()
-            .includes(searchTerm.toLowerCase())
-        )
+            .includes(searchTerm.toLowerCase());
+        })
       );
 
       const startIndex = (pagination.current - 1) * pagination.pageSize;
@@ -95,7 +110,7 @@ const StockAlert = React.forwardRef((props, ref) => {
       setPagination((prev) => ({ ...prev, total: filtered.length }));
       return filtered.slice(startIndex, endIndex);
     } catch (error) {
-      console.error("Failed to fetch products", error);
+      console.error("Failed to filter products", error);
       return [];
     } finally {
       setLoading(false);
@@ -109,41 +124,56 @@ const StockAlert = React.forwardRef((props, ref) => {
 
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
-    setPagination((prev) => ({ ...prev, current: 1 })); // Reset to first page on search
+    setPagination((prev) => ({ ...prev, current: 1 }));
   };
 
-  // Table Columns
+  const showModal = (product) => {
+    setSelectedProduct(product);
+    setIsModalVisible(true);
+  };
+
+  const handleOk = () => {
+    setIsModalVisible(false);
+    notification.success({
+      message: "Alert Set",
+      description: `Alerts for ${selectedProduct.itemName} have been updated.`,
+    });
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
+
+  const handleAlertSettingsChange = (key, value) => {
+    setAlertSettings((prev) => ({ ...prev, [key]: value }));
+  };
+
+  // Table Columns with Sorting Removed
   const columns = React.useMemo(
     () => [
       {
         title: "#ID",
         dataIndex: "id",
-        sorter: (a, b) => a.id.localeCompare(b.id),
       },
       {
         title: "Category Name",
         dataIndex: "categoryName",
-        sorter: (a, b) => a.categoryName.localeCompare(b.categoryName),
       },
       {
         title: "Item Name",
         dataIndex: "itemName",
-        sorter: (a, b) => a.itemName.localeCompare(b.itemName),
       },
       {
         title: "Reorder Level",
         dataIndex: "reorderLevel",
-        sorter: (a, b) => a.reorderLevel - b.reorderLevel,
-        align: "right", // Right align the column
+        align: "right",
         render: (value) => <span className="font-medium">{value}</span>,
       },
       {
         title: "Stock Available",
         dataIndex: "stockAvailable",
-        sorter: (a, b) => a.stockAvailable - b.stockAvailable,
-        align: "right", // Right align the column
+        align: "right",
         render: (value, record) => {
-          // Handle undefined or NaN values gracefully
           const stockAvailable = value ?? 0;
           const reorderLevel = record.reorderLevel ?? 0;
 
@@ -153,15 +183,25 @@ const StockAlert = React.forwardRef((props, ref) => {
           let textClass = "";
 
           if (stockPercentage < 25) {
-            textClass = "text-red-500"; // Below 25%
+            textClass = "text-red-500";
           } else if (stockPercentage >= 25 && stockPercentage < 50) {
-            textClass = "text-yellow-500"; // Between 25% and 50%
+            textClass = "text-yellow-500";
           } else if (stockPercentage >= 50) {
-            textClass = "text-green-500"; // Above 50%
+            textClass = "text-green-500";
           }
 
           return <span className={`font-medium ${textClass}`}>{stockAvailable}</span>;
         },
+      },
+      {
+        title: "Actions",
+        key: "actions",
+        align: "right",
+        render: (_, record) => (
+          <Button type="link" onClick={() => showModal(record)}>
+            <BellOutlined /> Set Alerts
+          </Button>
+        ),
       },
     ],
     []
@@ -171,7 +211,7 @@ const StockAlert = React.forwardRef((props, ref) => {
   return (
     <div className="min-h-screen flex">
       <Sidebar collapsed={collapsed} onCollapse={setCollapsed} />
-      <Layout className="flex-1 bg-gray-50">
+      <Layout className="flex-1 bg-gray-100">
         <Header collapsed={collapsed} setCollapsed={setCollapsed} />
         <Content className="p-6">
           <Breadcrumb
@@ -179,10 +219,10 @@ const StockAlert = React.forwardRef((props, ref) => {
               {
                 title: (
                   <span>
-                    <HomeOutlined /> Home
+                    <HomeOutlined  className="text-blue-500"/> Home
                   </span>
                 ),
-                href: "/",
+                href: "/Dashboard",
               },
               { title: "Stock Alert" },
             ]}
@@ -196,16 +236,18 @@ const StockAlert = React.forwardRef((props, ref) => {
             </Title>
           </div>
 
-          <Card className="rounded-lg">
+          <hr className="mb-4" />
+
+          <Card className="rounded-lg bg-gray-50">
             <div className="mb-4">
               <Space size="large" className="w-full flex justify-between">
                 <Input
-                  ref={inputRef} // Using ref here
+                  ref={inputRef}
                   prefix={<SearchOutlined />}
                   placeholder="Search by Category | Item Name"
                   value={searchTerm}
-                  onChange={handleSearch}
-                  style={{ width: 300 }}
+                  onChange={handleSearch}                  
+                  style={{ width: 1360 }}
                 />
               </Space>
             </div>
@@ -242,6 +284,50 @@ const StockAlert = React.forwardRef((props, ref) => {
         </Content>
         <Footer />
       </Layout>
+
+      {/* Alert Settings Modal */}
+      <Modal
+        title={`Set Alerts for ${selectedProduct?.itemName}`}
+        open={isModalVisible} // Updated from `visible` to `open`
+        onOk={handleOk}
+        onCancel={handleCancel}
+      >
+        <Form layout="vertical">
+          <Form.Item label="Price Alert">
+            <Input
+              type="number"
+              placeholder="Set price threshold"
+              value={alertSettings.priceAlert}
+              onChange={(e) =>
+                handleAlertSettingsChange("priceAlert", e.target.value)
+              }
+            />
+          </Form.Item>
+          <Form.Item label="Volume Alert">
+            <Input
+              type="number"
+              placeholder="Set volume threshold"
+              value={alertSettings.volumeAlert}
+              onChange={(e) =>
+                handleAlertSettingsChange("volumeAlert", e.target.value)
+              }
+            />
+          </Form.Item>
+          <Form.Item label="Percentage Change Alert">
+            <Select
+              placeholder="Select percentage change"
+              value={alertSettings.percentageChangeAlert}
+              onChange={(value) =>
+                handleAlertSettingsChange("percentageChangeAlert", value)
+              }
+            >
+              <Option value="5">5%</Option>
+              <Option value="10">10%</Option>
+              <Option value="15">15%</Option>
+            </Select>
+          </Form.Item>
+        </Form>
+      </Modal>
     </div>
   );
 });

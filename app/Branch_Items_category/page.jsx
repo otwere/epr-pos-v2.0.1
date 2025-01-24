@@ -634,12 +634,12 @@ const ItemsCategorySalesReport = () => {
 
           <Row gutter={16} className="mt-4">
             <Col span={12}>
-              <Card title="Total Sales by Branch and Category" className="shadow-sm">
+              <Card title="Total Sales by Branch and Category" className="shadow-none">
                 <Bar data={categorySalesChartData} />
               </Card>
             </Col>
             <Col span={12}>
-              <Card title="Profit Margin by Branch and Category" className="shadow-sm">
+              <Card title="Profit Margin by Branch and Category" className="shadow-none">
                 <Pie data={categoryProfitChartData} />
               </Card>
             </Col>

@@ -490,7 +490,7 @@ const SalesReturn = () => {
       width: 150,
     },
     {
-      title: "Invoices - No.",
+      title: "Invoices - Number",
       dataIndex: "invoiceNumber",
       key: "invoiceNumber",
       render: (text, record) => (
@@ -527,7 +527,7 @@ const SalesReturn = () => {
       width: 200,
     },
     {
-      title: "Item Name",
+      title: "Items Name",
       dataIndex: "itemName",
       key: "itemName",
       className: "whitespace-nowrap",
@@ -606,7 +606,7 @@ const SalesReturn = () => {
       dataIndex: "rejectReason",
       key: "rejectReason",
       render: (text) => text || "N/A", // Display "N/A" if no reason is provided
-      className: "whitespace-nowrap",
+      // className: "whitespace-nowrap",
       width: 150,
     },
   ];

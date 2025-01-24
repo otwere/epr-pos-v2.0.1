@@ -57,7 +57,7 @@ const Header = ({ collapsed, setCollapsed }) => {
         {/* Desktop Icon */}
         <div className="relative group cursor-pointer">
           <DesktopIcon className="text-gray-600 group-hover:text-blue-600 transition-all duration-300 ease-in-out" />
-          <span className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded shadow transition-all duration-300">
+          <span className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded  transition-all duration-300">
             Dashboard
           </span>
         </div>
@@ -65,7 +65,7 @@ const Header = ({ collapsed, setCollapsed }) => {
         {/* POS Icon */}
         <div className="relative group cursor-pointer">
           <PosIcon className="text-gray-600 group-hover:text-blue-600 transition-all duration-300 ease-in-out" />
-          <span className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded shadow transition-all duration-300">
+          <span className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded  transition-all duration-300">
             POS
           </span>
         </div>
@@ -73,14 +73,14 @@ const Header = ({ collapsed, setCollapsed }) => {
         {/* Notification Icon */}
         <div className="relative group cursor-pointer">
           <NotificationIcon className="text-gray-600 group-hover:text-blue-600 transition-all duration-300 ease-in-out" />
-          <span className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded shadow transition-all duration-300">
+          <span className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded  transition-all duration-300">
             Notifications
           </span>
         </div>
 
         {/* Profile Icon */}
         <div className="flex items-center">
-          <HeaderProfile className="cursor-pointer rounded-full border border-gray-300 shadow-sm hover:border-blue-500 transition-all duration-300 ease-in-out" />
+          <HeaderProfile className="cursor-pointer rounded-full border border-gray-300  hover:border-blue-500 transition-all duration-300 ease-in-out" />
         </div>
       </div>
     </div>

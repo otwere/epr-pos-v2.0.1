@@ -229,7 +229,7 @@ const Add_New_Employee = () => {
           </div>
           <hr className="mb-4" />
 
-          <Card className="shadow-none rounded-lg p-6 bg-gray-50 mb-8">
+          <Card className=" rounded-lg p-6 bg-gray-50 mb-8">
             <Steps current={currentPage - 1} className="mb-6">
               {steps.map((step) => (
                 <Steps.Step

@@ -196,7 +196,7 @@ const HappyHourComponent = () => {
   }));
 
   return (
-    <div className="p-6 bg-gray-50 shadow-md rounded-lg">
+    <div className="p-6 bg-gray-50  rounded-lg">
       <div className="bg-yellow-50 p-4 mb-6 rounded-lg">
         <h2 className="text-lg font-bold text-blue-600">Happy Hour !!</h2>
       </div>
@@ -208,14 +208,15 @@ const HappyHourComponent = () => {
               columns={columns}
               pagination={false}
               bordered
-              className="shadow-sm"
+              className="shadow-none"
             />
           </div>
         </div>
-        <div className="bg-gray-50 p-6 rounded-lg shadow-lg lg:col-span-1">
-          <h3 className="text-sm font-bold text-blue-600 mb-4">
+        <div className="bg-gray-50 p-6 rounded-lg lg:col-span-1 border border-gray-200">
+          <h3 className="text-lg font-bold text-blue-600 mb-4">
             Happy Hour Assorted Items
           </h3>
+          <hr  className="border-gray-300 mb-4"/>
           <Form
             layout="vertical"
             onFinish={handleSubmit}

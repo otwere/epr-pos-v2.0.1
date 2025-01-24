@@ -1,5 +1,6 @@
 import React, { useRef } from "react";
 import { Breadcrumb, Typography, Card } from "antd";
+import { HomeOutlined } from "@ant-design/icons";
 import Link from "next/link";
 import DateTime from "../DateTimeComponent/DateTime";
 
@@ -79,7 +80,7 @@ const CustomBreadcrumb = () => (
   <div className="mb-4 flex justify-between items-center border-b border-gray-300 pb-2">
     <Breadcrumb
       items={[
-        { title: <Link href="/Dashboard">Home</Link> },
+        { title: <HomeOutlined className="text-blue-500" /> },
         { title: "Dashboard" },
       ]}
     />

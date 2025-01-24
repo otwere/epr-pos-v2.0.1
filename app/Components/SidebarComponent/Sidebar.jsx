@@ -366,6 +366,7 @@ const Sidebar = ({ collapsed, ref }) => {
           link: "/sales_return_report",
         },
         { key: "16-11", icon: <BlockOutlined />, title: "Sales Cancel Report" , link:"/sales_cancel_report"},
+        { key: "16-12", icon: <BlockOutlined />, title: "Credit Sales Aging" , link:"/credit_sales_aging"},
       ],
     },
     {
