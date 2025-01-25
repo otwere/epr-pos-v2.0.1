@@ -378,6 +378,7 @@ const Sidebar = ({ collapsed, ref }) => {
           key: "17-2",
           icon: <FilePdfOutlined />,
           title: "Items Purchase Report",
+          link: "/items_purchase_report",
         },
         {
           key: "17-3",
