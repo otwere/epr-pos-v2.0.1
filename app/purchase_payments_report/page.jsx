@@ -102,6 +102,7 @@ const PurchasePaymentsReport = () => {
           paymentStatus: "Partial",
           paidBy: "Jane Doe", // Added Paid By field
         },
+        
       ],
     },
     {
@@ -467,6 +468,7 @@ const PurchasePaymentsReport = () => {
       title: "Paid By",
       dataIndex: "paidBy",
       key: "paidBy",
+      align: "right",
     },
   ];
 
