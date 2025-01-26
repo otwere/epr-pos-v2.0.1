@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import {
   Layout,
   Card,
@@ -11,6 +11,7 @@ import {
   Dropdown,
   Row,
   Col,
+  Tooltip,
 } from "antd";
 import {
   HomeOutlined,
@@ -25,12 +26,13 @@ import Sidebar from "../Components/SidebarComponent/Sidebar";
 import Footer from "../Components/FooterComponent/Footer";
 
 const { Content } = Layout;
-const { Title } = Typography;
+const { Title, Text } = Typography;
 
 const PurchaseAnalysisList = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [filterStatus, setFilterStatus] = useState(null);
 
+  // Sample purchase data
   const purchaseData = [
     {
       key: "1",
@@ -55,33 +57,42 @@ const PurchaseAnalysisList = () => {
     },
   ];
 
+  // Calculate price difference
   const calculatePriceDiff = (previousPrice, currentPrice) => {
     return currentPrice - previousPrice;
   };
 
+  // Determine price difference status
   const determinePriceDiffStatus = (priceDiff) => {
     if (priceDiff > 0) return { status: "Up", color: "red" };
     if (priceDiff < 0) return { status: "Down", color: "green" };
     return { status: "No Change", color: "gray" };
   };
 
-  const filteredData = filterStatus
-    ? purchaseData.filter((record) => {
+  // Filter data based on price difference status
+  const filteredData = useMemo(() => {
+    return filterStatus
+      ? purchaseData.filter((record) => {
+          const priceDiff = calculatePriceDiff(record.previousPrice, record.currentPrice);
+          return determinePriceDiffStatus(priceDiff).status === filterStatus;
+        })
+      : purchaseData;
+  }, [filterStatus, purchaseData]);
+
+  // Calculate counts for each status
+  const statusCounts = useMemo(() => {
+    return purchaseData.reduce(
+      (acc, record) => {
         const priceDiff = calculatePriceDiff(record.previousPrice, record.currentPrice);
-        return determinePriceDiffStatus(priceDiff).status === filterStatus;
-      })
-    : purchaseData;
+        const { status } = determinePriceDiffStatus(priceDiff);
+        acc[status] = (acc[status] || 0) + 1;
+        return acc;
+      },
+      { Up: 0, Down: 0, "No Change": 0 }
+    );
+  }, [purchaseData]);
 
-  const statusCounts = purchaseData.reduce(
-    (acc, record) => {
-      const priceDiff = calculatePriceDiff(record.previousPrice, record.currentPrice);
-      const { status } = determinePriceDiffStatus(priceDiff);
-      acc[status] = (acc[status] || 0) + 1;
-      return acc;
-    },
-    { Up: 0, Down: 0, "No Change": 0 }
-  );
-
+  // Table columns
   const columns = [
     {
       title: "Supplier Name",
@@ -165,7 +176,9 @@ const PurchaseAnalysisList = () => {
           trigger={["click"]}
           placement="bottomRight"
         >
-          <Button icon={<MoreOutlined />} className="border-none hover:bg-gray-100" />
+          <Tooltip title="More actions">
+            <Button icon={<MoreOutlined />} className="border-none hover:bg-gray-100" />
+          </Tooltip>
         </Dropdown>
       ),
       align: "right",
@@ -176,7 +189,7 @@ const PurchaseAnalysisList = () => {
     <div className="min-h-screen flex">
       <Sidebar collapsed={collapsed} onCollapse={() => setCollapsed(!collapsed)} />
 
-      <Layout className="flex-1 bg-gray-50">
+      <Layout className="flex-1 bg-gray-100">
         <Header collapsed={collapsed} onCollapse={() => setCollapsed(!collapsed)} />
 
         <Content className="transition-all duration-300 p-6">
@@ -188,14 +201,15 @@ const PurchaseAnalysisList = () => {
                     <HomeOutlined /> Home
                   </span>
                 ),
-                href: "/",
+                href: "/Dashboard",
               },
-              { title: "Purchase Analysis List" },
+              { title: "Purchase Analysis Report" },
             ]}
             className="mb-3"
           />
           <hr className="mb-4" />
 
+          {/* Status Cards */}
           <Row gutter={16} className="mb-4">
             {Object.entries(statusCounts).map(([status, count]) => (
               <Col span={8} key={status}>
@@ -204,25 +218,30 @@ const PurchaseAnalysisList = () => {
                   onClick={() => setFilterStatus(filterStatus === status ? null : status)}
                   className={`border ${
                     filterStatus === status
-                      ? "border-blue-500"
+                      ? "border-blue-500 shadow-lg"
                       : "border-gray-200"
-                  } transition-all duration-300 transform hover:scale-95 hover:bg-blue-50 ${
+                  } transition-all duration-300 transform hover:scale-105 hover:shadow-md ${
                     status === "Up"
                       ? "bg-red-50"
                       : status === "Down"
-                      ? "bg-green-100"
-                      : "bg-gray-200"
+                      ? "bg-green-50"
+                      : "bg-gray-100"
                   }`}
                 >
-                  <Title level={5}>{status}</Title>
-                  <p>{count} items</p>
+                  <Title level={5} className="mb-2">
+                    {status}
+                  </Title>
+                  <Text strong>{count} items</Text>
                 </Card>
               </Col>
             ))}
           </Row>
 
-          <Card className="bg-gray-50 rounded-sm mb-2">
-            <Title level={4}>Purchase Analysis List</Title>
+          {/* Purchase Analysis Table */}
+          <Card className="bg-gray-50 rounded-sm">
+            <Title level={4} className="mb-4">
+              Purchase Analysis Report
+            </Title>
             <Table
               columns={columns}
               dataSource={filteredData}
@@ -231,7 +250,7 @@ const PurchaseAnalysisList = () => {
                 showSizeChanger: true,
                 showQuickJumper: true,
               }}
-              className=""
+              className="rounded-lg"
             />
           </Card>
         </Content>
@@ -241,4 +260,4 @@ const PurchaseAnalysisList = () => {
   );
 };
 
-export default PurchaseAnalysisList;
+export default React.memo(PurchaseAnalysisList);

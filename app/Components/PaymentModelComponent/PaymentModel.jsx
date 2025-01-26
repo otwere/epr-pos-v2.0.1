@@ -363,14 +363,14 @@ const PaymentModal = ({ open, onClose }) => {
           <div className="bg-gray-100 p-4 rounded-lg">
             <div className="flex justify-between items-center">
               <Text strong className="text-lg text-gray-700">
-                Amount Due:
+                Amount Due (KES):
               </Text>
               <Text strong className="text-xl text-green-600">
                 KES : {formatAmount(totals.grandTotal)}
               </Text>
             </div>
             <div className="mt-4">
-              <Text className="text-gray-600">Amount Paid:</Text>
+              <Text className="text-gray-600">Amount Paid :</Text>
               <Text strong className="ml-2 text-blue-600">
                 KES : {formatAmount(totalPaid)}
               </Text>

@@ -115,7 +115,7 @@ const Sidebar = ({ collapsed, ref }) => {
         { key: "4-1", icon: <PlusOutlined />, title: "Add New Purchase", link: "/purchase_add_items" },
         { key: "4-2", icon: <UnorderedListOutlined />, title: "Purchase List", link: "/Purchase_List" },
         { key: "4-3", icon: <RotateLeftOutlined />, title: "Purchase Return", link: "/Purchase_Return" },
-        { key: "4-4", icon: <UnorderedListOutlined />, title: "Purchase Analysis List", link: "/Purchase_Analysis_List" },
+        // { key: "4-4", icon: <UnorderedListOutlined />, title: "Purchase Analysis List", link: "/Purchase_Analysis_List" },
       ],
     },
     {
@@ -384,11 +384,13 @@ const Sidebar = ({ collapsed, ref }) => {
           key: "17-3",
           icon: <FilePdfOutlined />,
           title: "Purchase Payments Report",
+          link: "/purchase_payments_report",
         },
         {
           key: "17-4",
           icon: <FilePdfOutlined />,
           title: "Purchase Analysis Report",
+          link: "/Purchase_Analysis_List",
         },
       ],
     },

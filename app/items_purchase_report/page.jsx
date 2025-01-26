@@ -67,6 +67,127 @@ const PurchaseReport = () => {
 
   const toggleCollapsed = () => setCollapsed(!collapsed);
 
+  // Mock Data
+  const mockPurchaseData = [
+    {
+      id: 1,
+      supplierName: "Supplier A",
+      branch: "Nairobi",
+      contactDetails: "supplierA@example.com",
+      creditLimit: 100000,
+      paymentTerms: "Net 30",
+      lateFees: 500,
+      adjustments: 200,
+      writeOffs: 100,
+      followUpNotes: "Follow up on payment",
+      followUpPerson: "John Doe",
+      followUpRole: "Account Manager",
+      purchases: [
+        {
+          purchaseNumber: "PO001",
+          purchaseDate: "01-12-2024",
+          receivedDate: "05-12-2024",
+          amount: 50000,
+          paymentStatus: "Unpaid",
+          status: "Received",
+          items: [
+            {
+              itemName: "Item 1",
+              itemCode: "ITM001",
+              itemCategory: "Category A",
+              unitOfMeasure: "Pieces",
+              quantityPurchased: 100,
+              quantityReceived: 90,
+              unitPrice: 500,
+              totalCost: 50000,
+              stockLevelBeforePurchase: 200,
+              stockLevelAfterPurchase: 300,
+              expense: 450,
+            },
+          ],
+        },
+        {
+          purchaseNumber: "PO002",
+          purchaseDate: "05-01-2025",
+          receivedDate: "10-01-2025",
+          amount: 30000,
+          paymentStatus: "Partial",
+          status: "Ordered",
+          items: [
+            {
+              itemName: "Item 2",
+              itemCode: "ITM002",
+              itemCategory: "Category B",
+              unitOfMeasure: "Pieces",
+              quantityPurchased: 50,
+              quantityReceived: 45,
+              unitPrice: 600,
+              totalCost: 30000,
+              stockLevelBeforePurchase: 150,
+              stockLevelAfterPurchase: 200,
+              expense: 270,
+            },
+          ],
+        },
+      ],
+      paymentHistory: [
+        {
+          paymentDate: "15-12-2024",
+          transactionId: "TX001",
+          modeOfPayment: "Bank Transfer",
+          amount: 20000,
+        },
+      ],
+    },
+    {
+      id: 2,
+      supplierName: "Supplier B",
+      branch: "Mombasa",
+      contactDetails: "supplierB@example.com",
+      creditLimit: 150000,
+      paymentTerms: "Net 60",
+      lateFees: 700,
+      adjustments: 300,
+      writeOffs: 150,
+      followUpNotes: "Follow up on pending items",
+      followUpPerson: "Jane Doe",
+      followUpRole: "Account Manager",
+      purchases: [
+        {
+          purchaseNumber: "PO003",
+          purchaseDate: "10-12-2024",
+          receivedDate: "15-12-2024",
+          amount: 75000,
+          paymentStatus: "Partial",
+          status: "Received",
+          items: [
+            {
+              itemName: "Item 3",
+              itemCode: "ITM003",
+              itemCategory: "Category C",
+              unitOfMeasure: "Pieces",
+              quantityPurchased: 120,
+              quantityReceived: 110,
+              unitPrice: 700,
+              totalCost: 84000,
+              stockLevelBeforePurchase: 300,
+              stockLevelAfterPurchase: 410,
+              expense: 630,
+            },
+          ],
+        },
+      ],
+      paymentHistory: [
+        {
+          paymentDate: "20-12-2024",
+          transactionId: "TX002",
+          modeOfPayment: "Cheque",
+          amount: 30000,
+        },
+      ],
+    },
+  ];
+
   useEffect(() => {
     const names = mockPurchaseData.flatMap((supplier) =>
       supplier.purchases.flatMap((purchase) =>
@@ -154,273 +275,6 @@ const PurchaseReport = () => {
 
     return { unpaidTotal, partialTotal };
   };
-
-  const mockPurchaseData = [
-    {
-      id: 1,
-      supplierName: "Supplier A",
-      branch: "Nairobi",
-      contactDetails: "supplierA@example.com",
-      creditLimit: 100000,
-      paymentTerms: "Net 30",
-      lateFees: 500,
-      adjustments: 200,
-      writeOffs: 100,
-      followUpNotes: "Follow up on payment",
-      followUpPerson: "John Doe",
-      followUpRole: "Account Manager",
-      purchases: [
-        {
-          purchaseNumber: "PO001",
-          purchaseDate: "01-12-2024",
-          dueDate: "31-12-2024",
-          amount: 50000,
-          paymentStatus: "Unpaid",
-          status: "Received",
-          items: [
-            {
-              itemName: "Item 1",
-              itemCode: "ITM001",
-              itemCategory: "Category A",
-              unitOfMeasure: "Pieces",
-              quantityPurchased: 100,
-              unitPrice: 500,
-              totalCost: 50000,
-              stockLevelBeforePurchase: 200,
-              stockLevelAfterPurchase: 300,
-            },
-          ],
-        },
-        {
-          purchaseNumber: "PO002",
-          purchaseDate: "05-12-2024",
-          dueDate: "04-01-2025",
-          amount: 30000,
-          paymentStatus: "Partial",
-          status: "Ordered",
-          items: [
-            {
-              itemName: "Item 2",
-              itemCode: "ITM002",
-              itemCategory: "Category B",
-              unitOfMeasure: "Pieces",
-              quantityPurchased: 50,
-              unitPrice: 600,
-              totalCost: 30000,
-              stockLevelBeforePurchase: 150,
-              stockLevelAfterPurchase: 200,
-            },
-          ],
-        },
-      ],
-      paymentHistory: [
-        {
-          paymentDate: "15-12-2024",
-          transactionId: "TX001",
-          modeOfPayment: "Bank Transfer",
-          amount: 20000,
-        },
-      ],
-    },
-    {
-      id: 2,
-      supplierName: "Supplier B",
-      branch: "Mombasa",
-      contactDetails: "supplierB@example.com",
-      creditLimit: 150000,
-      paymentTerms: "Net 60",
-      lateFees: 1000,
-      adjustments: 300,
-      writeOffs: 150,
-      followUpNotes: "Follow up on delivery",
-      followUpPerson: "Jane Doe",
-      followUpRole: "Logistics Manager",
-      purchases: [
-        {
-          purchaseNumber: "PO003",
-          purchaseDate: "10-12-2024",
-          dueDate: "09-01-2025",
-          amount: 75000,
-          paymentStatus: "Unpaid",
-          status: "Received",
-          items: [
-            {
-              itemName: "Item 3",
-              itemCode: "ITM003",
-              itemCategory: "Category C",
-              unitOfMeasure: "Pieces",
-              quantityPurchased: 150,
-              unitPrice: 500,
-              totalCost: 75000,
-              stockLevelBeforePurchase: 300,
-              stockLevelAfterPurchase: 450,
-            },
-          ],
-        },
-        {
-          purchaseNumber: "PO004",
-          purchaseDate: "15-12-2024",
-          dueDate: "14-01-2025",
-          amount: 45000,
-          paymentStatus: "Partial",
-          status: "Ordered",
-          items: [
-            {
-              itemName: "Item 4",
-              itemCode: "ITM004",
-              itemCategory: "Category D",
-              unitOfMeasure: "Pieces",
-              quantityPurchased: 90,
-              unitPrice: 500,
-              totalCost: 45000,
-              stockLevelBeforePurchase: 180,
-              stockLevelAfterPurchase: 270,
-            },
-          ],
-        },
-      ],
-      paymentHistory: [
-        {
-          paymentDate: "20-12-2024",
-          transactionId: "TX002",
-          modeOfPayment: "Cheque",
-          amount: 30000,
-        },
-      ],
-    },
-    {
-      id: 3,
-      supplierName: "Supplier C",
-      branch: "Kisumu",
-      contactDetails: "supplierC@example.com",
-      creditLimit: 200000,
-      paymentTerms: "Net 90",
-      lateFees: 1500,
-      adjustments: 500,
-      writeOffs: 200,
-      followUpNotes: "Follow up on overdue payments",
-      followUpPerson: "Alice Smith",
-      followUpRole: "Finance Manager",
-      purchases: [
-        {
-          purchaseNumber: "PO005",
-          purchaseDate: "20-12-2024",
-          dueDate: "19-01-2025",
-          amount: 100000,
-          paymentStatus: "Unpaid",
-          status: "Received",
-          items: [
-            {
-              itemName: "Item 5",
-              itemCode: "ITM005",
-              itemCategory: "Category E",
-              unitOfMeasure: "Pieces",
-              quantityPurchased: 200,
-              unitPrice: 500,
-              totalCost: 100000,
-              stockLevelBeforePurchase: 400,
-              stockLevelAfterPurchase: 600,
-            },
-          ],
-        },
-        {
-          purchaseNumber: "PO006",
-          purchaseDate: "25-12-2024",
-          dueDate: "24-01-2025",
-          amount: 60000,
-          paymentStatus: "Partial",
-          status: "Ordered",
-          items: [
-            {
-              itemName: "Item 6",
-              itemCode: "ITM006",
-              itemCategory: "Category F",
-              unitOfMeasure: "Pieces",
-              quantityPurchased: 120,
-              unitPrice: 500,
-              totalCost: 60000,
-              stockLevelBeforePurchase: 240,
-              stockLevelAfterPurchase: 360,
-            },
-          ],
-        },
-      ],
-      paymentHistory: [
-        {
-          paymentDate: "30-12-2024",
-          transactionId: "TX003",
-          modeOfPayment: "Bank Transfer",
-          amount: 50000,
-        },
-      ],
-    },
-    {
-      id: 4,
-      supplierName: "Supplier D",
-      branch: "Eldoret",
-      contactDetails: "supplierD@example.com",
-      creditLimit: 250000,
-      paymentTerms: "Net 120",
-      lateFees: 2000,
-      adjustments: 1000,
-      writeOffs: 500,
-      followUpNotes: "Follow up on pending orders",
-      followUpPerson: "Bob Johnson",
-      followUpRole: "Operations Manager",
-      purchases: [
-        {
-          purchaseNumber: "PO007",
-          purchaseDate: "30-12-2024",
-          dueDate: "29-01-2025",
-          amount: 150000,
-          paymentStatus: "Unpaid",
-          status: "Received",
-          items: [
-            {
-              itemName: "Item 7",
-              itemCode: "ITM007",
-              itemCategory: "Category G",
-              unitOfMeasure: "Pieces",
-              quantityPurchased: 300,
-              unitPrice: 500,
-              totalCost: 150000,
-              stockLevelBeforePurchase: 600,
-              stockLevelAfterPurchase: 900,
-            },
-          ],
-        },
-        {
-          purchaseNumber: "PO008",
-          purchaseDate: "05-01-2025",
-          dueDate: "04-02-2025",
-          amount: 90000,
-          paymentStatus: "Partial",
-          status: "Ordered",
-          items: [
-            {
-              itemName: "Item 8",
-              itemCode: "ITM008",
-              itemCategory: "Category H",
-              unitOfMeasure: "Pieces",
-              quantityPurchased: 180,
-              unitPrice: 500,
-              totalCost: 90000,
-              stockLevelBeforePurchase: 360,
-              stockLevelAfterPurchase: 540,
-            },
-          ],
-        },
-      ],
-      paymentHistory: [
-        {
-          paymentDate: "10-01-2025",
-          transactionId: "TX004",
-          modeOfPayment: "Cheque",
-          amount: 75000,
-        },
-      ],
-    },
-  ];
 
   const generateReport = () => {
     const { fromDate, toDate, itemName, status } = form.getFieldsValue();
@@ -859,324 +713,339 @@ const PurchaseReport = () => {
               pageSizeOptions: ["10", "20", "50", "100"],
             }}
             expandable={{
-              expandedRowRender: (record) => (
-                <div key={`expanded-${record.id}`}>
-                  <Title level={4}>Aging Analysis</Title>
-                  <hr className="mb-4" />
-                  <Row gutter={16}>
-                    <Col span={6} key={`aging-0-30-${record.id}`}>
-                      <Card
-                        className="bg-blue-50 cursor-pointer"
-                        onClick={() => setSelectedPurchaseAgeRange("0-30")}
-                      >
-                        <Statistic
-                          title="0-30 Days"
-                          value={formatNumber(
-                            filterPurchasesByAgeRange(record.purchases, "0-30").reduce(
-                              (sum, purchase) => sum + purchase.amount,
+              expandedRowRender: (record) => {
+                const selectedPurchases = selectedPurchaseAgeRange
+                  ? filterPurchasesByAgeRange(record.purchases, selectedPurchaseAgeRange)
+                  : record.purchases;
+
+                // Calculate totals for the selected purchases
+                const totalReceivedQty = selectedPurchases.reduce((sum, purchase) => {
+                  return sum + purchase.items.reduce((itemSum, item) => itemSum + item.quantityReceived, 0);
+                }, 0);
+
+                const totalExpense = selectedPurchases.reduce((sum, purchase) => {
+                  return sum + purchase.items.reduce((itemSum, item) => itemSum + item.expense, 0);
+                }, 0);
+
+                const subtotal = selectedPurchases.reduce((sum, purchase) => {
+                  return sum + purchase.items.reduce((itemSum, item) => itemSum + (item.quantityReceived * item.unitPrice), 0);
+                }, 0);
+
+                const grandTotal = subtotal + totalExpense;
+
+                return (
+                  <div key={`expanded-${record.id}`}>
+                    <Title level={4}> Purchase Aging Analysis</Title>
+                    <hr className="mb-4" />
+                    <Row gutter={16}>
+                      <Col span={6} key={`aging-0-30-${record.id}`}>
+                        <Card
+                          className="bg-blue-50 cursor-pointer"
+                          onClick={() => setSelectedPurchaseAgeRange("0-30")}
+                        >
+                          <Statistic
+                            title="0-30 Days"
+                            value={formatNumber(
+                              filterPurchasesByAgeRange(record.purchases, "0-30").reduce(
+                                (sum, purchase) => sum + purchase.amount,
+                                0
+                              )
+                            )}
+                          />
+                        </Card>
+                      </Col>
+                      <Col span={6} key={`aging-31-60-${record.id}`}>
+                        <Card
+                          className="bg-green-50 cursor-pointer"
+                          onClick={() => setSelectedPurchaseAgeRange("31-60")}
+                        >
+                          <Statistic
+                            title="31-60 Days"
+                            value={formatNumber(
+                              filterPurchasesByAgeRange(record.purchases, "31-60").reduce(
+                                (sum, purchase) => sum + purchase.amount,
+                                0
+                              )
+                            )}
+                          />
+                        </Card>
+                      </Col>
+                      <Col span={6} key={`aging-61-90-${record.id}`}>
+                        <Card
+                          className="bg-orange-50 cursor-pointer"
+                          onClick={() => setSelectedPurchaseAgeRange("61-90")}
+                        >
+                          <Statistic
+                            title="61-90 Days"
+                            value={formatNumber(
+                              filterPurchasesByAgeRange(record.purchases, "61-90").reduce(
+                                (sum, purchase) => sum + purchase.amount,
+                                0
+                              )
+                            )}
+                          />
+                        </Card>
+                      </Col>
+                      <Col span={6} key={`aging-90+-${record.id}`}>
+                        <Card
+                          className="bg-red-50 cursor-pointer"
+                          onClick={() => setSelectedPurchaseAgeRange("90+")}
+                        >
+                          <Statistic
+                            title="90+ Days"
+                            value={formatNumber(
+                              filterPurchasesByAgeRange(record.purchases, "90+").reduce(
+                                (sum, purchase) => sum + purchase.amount,
+                                0
+                              )
+                            )}
+                          />
+                        </Card>
+                      </Col>
+                    </Row>
+                    <Title level={4} className="mt-4">
+                      Items Purchased Details
+                    </Title>
+                    <hr />
+                    <Table
+                      dataSource={selectedPurchases}
+                      columns={[
+                        {
+                          title: "Purchase No.",
+                          dataIndex: "purchaseNumber",
+                          key: "purchaseNumber",
+                        },
+                        {
+                          title: "Purchase Date",
+                          dataIndex: "purchaseDate",
+                          key: "purchaseDate",
+                        },
+                        {
+                          title: "Received Date",
+                          dataIndex: "receivedDate",
+                          key: "receivedDate",
+                        },
+                        {
+                          title: "Age (Days)",
+                          key: "age",
+                          render: (_, purchase) => {
+                            const purchaseDate = dayjs(purchase.purchaseDate, "DD-MM-YYYY");
+                            const today = dayjs();
+                            const ageInDays = today.diff(purchaseDate, "day");
+                            return <span>{ageInDays}</span>;
+                          },
+                          align: "right",
+                        },
+                        {
+                          title: "Qty Difference",
+                          key: "qtyDifference",
+                          render: (_, purchase) => {
+                            const qtyDifference = purchase.items.reduce(
+                              (sum, item) => sum + (item.quantityPurchased - item.quantityReceived),
                               0
-                            )
-                          )}
-                        />
-                      </Card>
-                    </Col>
-                    <Col span={6} key={`aging-31-60-${record.id}`}>
-                      <Card
-                        className="bg-green-50 cursor-pointer"
-                        onClick={() => setSelectedPurchaseAgeRange("31-60")}
-                      >
-                        <Statistic
-                          title="31-60 Days"
-                          value={formatNumber(
-                            filterPurchasesByAgeRange(record.purchases, "31-60").reduce(
-                              (sum, purchase) => sum + purchase.amount,
+                            );
+                            return <span>{qtyDifference}</span>;
+                          },
+                          align: "right",
+                        },
+                        {
+                          title: "Ordered Qty",
+                          key: "orderedQty",
+                          render: (_, purchase) => {
+                            const orderedQty = purchase.items.reduce(
+                              (sum, item) => sum + item.quantityPurchased,
                               0
-                            )
-                          )}
-                        />
-                      </Card>
-                    </Col>
-                    <Col span={6} key={`aging-61-90-${record.id}`}>
-                      <Card
-                        className="bg-orange-50 cursor-pointer"
-                        onClick={() => setSelectedPurchaseAgeRange("61-90")}
-                      >
-                        <Statistic
-                          title="61-90 Days"
-                          value={formatNumber(
-                            filterPurchasesByAgeRange(record.purchases, "61-90").reduce(
-                              (sum, purchase) => sum + purchase.amount,
+                            );
+                            return <span>{orderedQty}</span>;
+                          },
+                          align: "right",
+                        },
+                        {
+                          title: "Received Qty",
+                          key: "receivedQty",
+                          render: (_, purchase) => {
+                            const receivedQty = purchase.items.reduce(
+                              (sum, item) => sum + item.quantityReceived,
                               0
-                            )
-                          )}
-                        />
-                      </Card>
-                    </Col>
-                    <Col span={6} key={`aging-90+-${record.id}`}>
-                      <Card
-                        className="bg-red-50 cursor-pointer"
-                        onClick={() => setSelectedPurchaseAgeRange("90+")}
-                      >
-                        <Statistic
-                          title="90+ Days"
-                          value={formatNumber(
-                            filterPurchasesByAgeRange(record.purchases, "90+").reduce(
-                              (sum, purchase) => sum + purchase.amount,
+                            );
+                            return <span>{receivedQty}</span>;
+                          },
+                          align: "right",
+                        },
+                        {
+                          title: "Unit Price(KES)",
+                          key: "unitPrice",
+                          render: (_, purchase) => {
+                            const unitPrice = purchase.items.reduce(
+                              (sum, item) => sum + item.unitPrice,
                               0
-                            )
-                          )}
-                        />
-                      </Card>
-                    </Col>
-                  </Row>
-                  <Title level={4} className="mt-4">
-                     Items Purchased Details
-                  </Title>
-                  <hr />
-                  <Table
-                    dataSource={
-                      selectedPurchaseAgeRange
-                        ? filterPurchasesByAgeRange(record.purchases, selectedPurchaseAgeRange)
-                        : record.purchases
-                    }
-                    columns={[
-                      {
-                        title: "Purchase Number",
-                        dataIndex: "purchaseNumber",
-                        key: "purchaseNumber",
-                      },
-                      {
-                        title: "Purchase Date",
-                        dataIndex: "purchaseDate",
-                        key: "purchaseDate",
-                      },
-                      {
-                        title: "Due Date",
-                        dataIndex: "dueDate",
-                        key: "dueDate",
-                      },
-                      {
-                        title: "Age (Days)",
-                        key: "age",
-                        render: (_, purchase) => {
-                          const dueDate = dayjs(purchase.dueDate, "DD-MM-YYYY");
-                          const today = dayjs();
-                          const ageInDays = Math.max(0, today.diff(dueDate, "day"));
-                          return <span>{ageInDays}</span>;
+                            );
+                            return <span>{formatNumber(unitPrice)}</span>;
+                          },
+                          align: "right",
                         },
-                      },
-                      {
-                        title: "Ordered Qty",
-                        key: "orderedQty",
-                        render: (_, purchase) => {
-                          const orderedQty = purchase.items.reduce(
-                            (sum, item) => sum + item.quantityPurchased,
-                            0
-                          );
-                          return <span>{orderedQty}</span>;
+                        {
+                          title: "Expense(KES)",
+                          key: "expense",
+                          render: (_, purchase) => {
+                            const expense = purchase.items.reduce(
+                              (sum, item) => sum + item.expense,
+                              0
+                            );
+                            return <span>{formatNumber(expense)}</span>;
+                          },
+                          align: "right",
                         },
-                        align: "right",
-                      },
-                      {
-                        title: "Received Qty",
-                        key: "receivedQty",
-                        render: (_, purchase) => {
-                          const receivedQty = purchase.items.reduce(
-                            (sum, item) => sum + item.quantityPurchased,
-                            0
-                          );
-                          return <span>{receivedQty}</span>;
+                        {
+                          title: "Total(KES)",
+                          key: "total",
+                          render: (_, purchase) => {
+                            const total = purchase.items.reduce(
+                              (sum, item) => sum + (item.quantityReceived * item.unitPrice),
+                              0
+                            );
+                            return <span>{formatNumber(total)}</span>;
+                          },
+                          align: "right",
                         },
-                        align: "right",
-                      },
-                      {
-                        title: "Unit Price",
-                        key: "unitPrice",
-                        render: (_, purchase) => {
-                          const unitPrice = purchase.items.reduce(
-                            (sum, item) => sum + item.unitPrice,
-                            0
-                          );
-                          return <span>{formatNumber(unitPrice)}</span>;
+                        {
+                          title: "Status",
+                          dataIndex: "status",
+                          key: "status",
+                          align: "right",
+                          render: (status) => {
+                            let color =
+                              status === "Received"
+                                ? "green"
+                                : status === "Ordered"
+                                  ? "blue"
+                                  : "gray";
+                            return <Tag color={color}>{status}</Tag>;
+                          },
                         },
-                        align: "right",
-                      },
-                      {
-                        title: "Expense",
-                        key: "expense",
-                        render: (_, purchase) => {
-                          const expense = purchase.items.reduce(
-                            (sum, item) => sum + item.totalCost,
-                            0
-                          );
-                          return <span>{formatNumber(expense)}</span>;
-                        },
-                        align: "right",
-                      },
-                      {
-                        title: "Total",
-                        key: "total",
-                        render: (_, purchase) => {
-                          const total = purchase.items.reduce(
-                            (sum, item) => sum + item.totalCost,
-                            0
-                          );
-                          return <span>{formatNumber(total)}</span>;
-                        },
-                        align: "right",
-                      },
-                      {
-                        title: "Status",
-                        dataIndex: "status",
-                        key: "status",
-                        align: "right",
-                        render: (status) => {
-                          let color =
-                            status === "Received"
-                              ? "green"
-                              : status === "Ordered"
-                                ? "blue"
-                                : "gray";
-                          return <Tag color={color}>{status}</Tag>;
-                        },
-                      },
-                    ]}
-                    pagination={false}
-                    rowKey="purchaseNumber"
-                  />
-                  <Row justify="end" className="mt-4">
-                    <Col span={24}>
-                      <Card
-                        className="bg-gray-50 border border-gray-200"
-                        styles={{ body: { padding: "16px" } }}
-                      >
-                        <Row justify="space-between" align="middle">
-                          <Col>
-                            <Text strong className="text-lg">
-                              Total Payments Amount :
-                            </Text>
-                          </Col>
-                          <Col>
-                            <Text strong className="text-lg text-green-600">
-                              {formatNumber(
-                                record.paymentHistory.reduce(
-                                  (sum, payment) => sum + payment.amount,
-                                  0
-                                )
-                              )}
-                            </Text>
-                          </Col>
-                        </Row>
-                      </Card>
-                    </Col>
-                  </Row>
-                  <Title level={4} className="mt-6">
-                   Items Purchased Payment History
-                  </Title>
-                  <hr />
-                  <Table
-                    dataSource={record.paymentHistory}
-                    columns={[
-                      {
-                        title: "Payment Date",
-                        dataIndex: "paymentDate",
-                        key: "paymentDate",
-                      },
-                      {
-                        title: "Transaction ID",
-                        dataIndex: "transactionId",
-                        key: "transactionId",
-                      },
-                      {
-                        title: "Mode of Payment",
-                        dataIndex: "modeOfPayment",
-                        key: "modeOfPayment",
-                      },
-                      {
-                        title: "Amount",
-                        dataIndex: "amount",
-                        key: "amount",
-                        render: (amount) => formatNumber(amount),
-                        align: "right",
-                      },
-                    ]}
-                    pagination={false}
-                    rowKey="transactionId"
-                  />
-                  <Row justify="end" className="mt-4">
-                    <Col span={24}>
-                      <Card
-                        className="bg-gray-50 border border-gray-200"
-                        styles={{ body: { padding: "16px" } }}
-                      >
-                        <Row justify="space-between" align="middle">
-                          <Col>
-                            <Text strong className="text-lg">
-                              Total Payments Amount :
-                            </Text>
-                          </Col>
-                          <Col>
-                            <Text strong className="text-lg text-green-600">
-                              {formatNumber(
-                                record.paymentHistory.reduce(
-                                  (sum, payment) => sum + payment.amount,
-                                  0
-                                )
-                              )}
-                            </Text>
-                          </Col>
-                        </Row>
-                      </Card>
-                    </Col>
-                  </Row>
-                  <Title level={5} className="mt-6 text-gray-400">
-                    Terms and Conditions
-                  </Title>
-                  <hr className="mb-4" />
-                  <Row gutter={[16, 16]} className="mt-2">
-                    <Col span={12} key={`payment-terms-${record.id}`}>
-                      <Card className="bg-white">
-                        <Text strong>Payment Terms:</Text>
-                        <Text className="ml-2">{record.paymentTerms}</Text>
-                      </Card>
-                    </Col>
-                    <Col span={12} key={`late-fees-${record.id}`}>
-                      <Card className="bg-white">
-                        <Text strong>Late Fees :</Text>
-                        <Text className="ml-2">{formatNumber(record.lateFees)}</Text>
-                      </Card>
-                    </Col>
-                    <Col span={12} key={`adjustments-${record.id}`}>
-                      <Card className="bg-white">
-                        <Text strong>Adjustments :</Text>
-                        <Text className="ml-2">{formatNumber(record.adjustments)}</Text>
-                      </Card>
-                    </Col>
-                    <Col span={12} key={`write-offs-${record.id}`}>
-                      <Card className="bg-white">
-                        <Text strong>Write-Offs :</Text>
-                        <Text className="ml-2">{formatNumber(record.writeOffs)}</Text>
-                      </Card>
-                    </Col>
-                    <Col span={24} key={`follow-up-notes-${record.id}`}>
-                      <Card className="bg-green-50 flex flex-col">
-                        <div className="flex justify-between items-center">
-                          <Text strong>Follow-Up Notes :</Text>
-                          <Text className="ml-1">{record.followUpNotes}</Text>
-                          <Text strong className="ml-4">
-                            Person :
-                          </Text>
-                          <Text className="ml-0">{record.followUpPerson}</Text>
-                          <Text strong className="ml-4">
-                            Role :
-                          </Text>
-                          <Text className="ml-1">{record.followUpRole}</Text>
+                      ]}
+                      pagination={false}
+                      rowKey="purchaseNumber"
+                      footer={() => (
+                        <div className="flex justify-end space-x-32">
+                          <Text strong className="text-lg text-gray-500">Total Received Qty : {totalReceivedQty}</Text>
+                          <Text strong className="text-lg text-blue-500">Subtotal : KES :  {formatNumber(subtotal)}</Text>
+                          <Text strong className="text-lg text-red-500">Total Expense : KES : {formatNumber(totalExpense)}</Text>
+                          <Text strong className="text-lg text-green-500">Grand Total : KES : {formatNumber(grandTotal)}</Text>
                         </div>
-                      </Card>
-                    </Col>
-                  </Row>
-                </div>
-              ),
+                        
+                      )}
+                    />
+                    <hr />
+                   
+                    <Title level={4} className="mt-6">
+                      Items Purchased Payment 
+                    </Title>
+                    <hr />
+                    <Table
+                      dataSource={record.paymentHistory}
+                      columns={[
+                        {
+                          title: "Payment Date",
+                          dataIndex: "paymentDate",
+                          key: "paymentDate",
+                        },
+                        {
+                          title: "Transaction ID",
+                          dataIndex: "transactionId",
+                          key: "transactionId",
+                        },
+                        {
+                          title: "Mode of Payment",
+                          dataIndex: "modeOfPayment",
+                          key: "modeOfPayment",
+                        },
+                        {
+                          title: "Amount",
+                          dataIndex: "amount",
+                          key: "amount",
+                          render: (amount) => formatNumber(amount),
+                          align: "right",
+                        },
+                      ]}
+                      pagination={false}
+                      rowKey="transactionId"
+                    />
+                    <Row justify="end" className="mt-4">
+                      <Col span={24}>
+                        <Card
+                          className="bg-gray-50 border border-gray-200"
+                          styles={{ body: { padding: "16px" } }}
+                        >
+                          <Row justify="space-between" align="middle">
+                            <Col>
+                              <Text strong className="text-lg">
+                                Total Payments Amount :
+                              </Text>
+                            </Col>
+                            <Col>
+                              <Text strong className="text-lg text-green-600">
+                                {formatNumber(
+                                  record.paymentHistory.reduce(
+                                    (sum, payment) => sum + payment.amount,
+                                    0
+                                  )
+                                )}
+                              </Text>
+                            </Col>
+                          </Row>
+                        </Card>
+                      </Col>
+                    </Row>
+                    <Title level={5} className="mt-6 text-gray-400">
+                      Terms and Conditions
+                    </Title>
+                    <hr className="mb-4" />
+                    <Row gutter={[16, 16]} className="mt-2">
+                      <Col span={12} key={`payment-terms-${record.id}`}>
+                        <Card className="bg-white">
+                          <Text strong>Payment Terms:</Text>
+                          <Text className="ml-2">{record.paymentTerms}</Text>
+                        </Card>
+                      </Col>
+                      <Col span={12} key={`late-fees-${record.id}`}>
+                        <Card className="bg-white">
+                          <Text strong>Late Fees :</Text>
+                          <Text className="ml-2">{formatNumber(record.lateFees)}</Text>
+                        </Card>
+                      </Col>
+                      <Col span={12} key={`adjustments-${record.id}`}>
+                        <Card className="bg-white">
+                          <Text strong>Adjustments :</Text>
+                          <Text className="ml-2">{formatNumber(record.adjustments)}</Text>
+                        </Card>
+                      </Col>
+                      <Col span={12} key={`write-offs-${record.id}`}>
+                        <Card className="bg-white">
+                          <Text strong>Write-Offs :</Text>
+                          <Text className="ml-2">{formatNumber(record.writeOffs)}</Text>
+                        </Card>
+                      </Col>
+                      <Col span={24} key={`follow-up-notes-${record.id}`}>
+                        <Card className="bg-green-50 flex flex-col">
+                          <div className="flex justify-between items-center">
+                            <Text strong>Follow-Up Notes :</Text>
+                            <Text className="ml-1">{record.followUpNotes}</Text>
+                            <Text strong className="ml-4">
+                              Person :
+                            </Text>
+                            <Text className="ml-0">{record.followUpPerson}</Text>
+                            <Text strong className="ml-4">
+                              Role :
+                            </Text>
+                            <Text className="ml-1">{record.followUpRole}</Text>
+                          </div>
+                        </Card>
+                      </Col>
+                    </Row>
+                  </div>
+                );
+              },
             }}
           />
           <div className="mt-4 text-gray-500 font-bold text-lg border-t pt-4" key="report-footer">
@@ -1256,7 +1125,7 @@ const PurchaseReport = () => {
                     style={{ width: 280 }}
                   >
                     <Option key="all" value="">
-                      All
+                      Select All Items Purchased
                     </Option>
                     {itemNames.map((name) => (
                       <Option key={name} value={name}>
@@ -1268,7 +1137,7 @@ const PurchaseReport = () => {
                 <Form.Item name="status" label="Status">
                   <Select style={{ width: 100 }} allowClear>
                     <Option key="all" value="">
-                      All
+                      All Status
                     </Option>
                     <Option value="Received">Received</Option>
                     <Option value="Ordered">Ordered</Option>

@@ -54,12 +54,12 @@ const SalesSummaryBoardComponent = () => {
   return (
     <div className="bg-gray-50 rounded-md shadow-none p-8 max-w-full sm:max-w-xl lg:max-w-2xl mx-auto">
       <div className="flex flex-col sm:flex-row justify-between items-center mb-4">
-        <div className="flex items-center space-x-4 border-b-2 border-gray-300 pb-2 w-full text-gray-600 text-xl">
-          <ShoppingCartOutlined />          
-          <h2 className="text-sm font-semibold text-blue-600 flex-shrink-0">
+        <div className="flex items-center space-x-8 border-b-2 border-gray-300 pb-2 w-full text-gray-600 ">
+          <ShoppingCartOutlined  className="text-blue-600 text-3xl mr-[-1rem]"/>          
+          <h2 className="text-lg font-semibold text-gray-500 flex-shrink-0 mr-1">
              Sales Summary & Payment
           </h2>
-          <div className="text-sm font-medium text-gray-600 mr-5 flex-shrink-0">
+          <div className="text-lg font-semibold text-gray-500 ml-auto flex-shrink-0">
           <DateOnlyComponent />
         </div>
         </div>       
