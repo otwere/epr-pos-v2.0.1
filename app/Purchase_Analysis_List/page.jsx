@@ -1,5 +1,5 @@
-"use client";
-import React, { useState, useEffect } from "react";
+"use client"
+import React, { useState, useEffect } from "react"
 import {
   Form,
   Button,
@@ -19,7 +19,7 @@ import {
   Statistic,
   Input,
   Select,
-} from "antd";
+} from "antd"
 import {
   FilterOutlined,
   FilePdfOutlined,
@@ -28,46 +28,45 @@ import {
   CaretUpOutlined,
   UserOutlined,
   SearchOutlined,
-} from "@ant-design/icons";
+} from "@ant-design/icons"
 
-import Header from "../Components/HeaderComponent/Header";
-import Sidebar from "../Components/SidebarComponent/Sidebar";
-import Footer from "../Components/FooterComponent/Footer";
+import Header from "../Components/HeaderComponent/Header"
+import Sidebar from "../Components/SidebarComponent/Sidebar"
+import Footer from "../Components/FooterComponent/Footer"
 
-import Link from "next/link";
-import dayjs from "dayjs";
-import { jsPDF } from "jspdf";
-import "jspdf-autotable";
+import Link from "next/link"
+import dayjs from "dayjs"
+import { jsPDF } from "jspdf"
+import "jspdf-autotable"
 
-const { Content } = Layout;
-const { Title, Text } = Typography;
-const { Panel } = Collapse;
-const { Option } = Select;
+const { Content } = Layout
+const { Title, Text } = Typography
+const { Panel } = Collapse
+const { Option } = Select
 
 const PurchaseReport = () => {
-  const [collapsed, setCollapsed] = useState(false);
-  const [form] = Form.useForm();
-  const [notificationApi, notificationContextHolder] = notification.useNotification();
-  const [loading, setLoading] = useState(false);
+  const [collapsed, setCollapsed] = useState(false)
+  const [form] = Form.useForm()
+  const [notificationApi, notificationContextHolder] = notification.useNotification()
+  const [loading, setLoading] = useState(false)
   const [filters, setFilters] = useState({
     fromDate: dayjs().startOf("month"),
     toDate: dayjs().endOf("month"),
     itemName: "",
     status: "",
-  });
-  const [purchaseData, setPurchaseData] = useState([]);
-  const [isReportVisible, setIsReportVisible] = useState(false);
-  const [reportGeneratedTime, setReportGeneratedTime] = useState(null);
-  const [generatedBy, setGeneratedBy] = useState("Admin");
-  const [searchText, setSearchText] = useState("");
-  const [pagination, setPagination] = useState({ current: 1, pageSize: 10 });
-  const [selectedAgeRange, setSelectedAgeRange] = useState(null);
-  const [selectedPurchaseAgeRange, setSelectedPurchaseAgeRange] = useState(null);
-  const [itemNames, setItemNames] = useState([]);
+  })
+  const [purchaseData, setPurchaseData] = useState([])
+  const [isReportVisible, setIsReportVisible] = useState(false)
+  const [reportGeneratedTime, setReportGeneratedTime] = useState(null)
+  const [generatedBy, setGeneratedBy] = useState("Admin")
+  const [searchText, setSearchText] = useState("")
+  const [pagination, setPagination] = useState({ current: 1, pageSize: 10 })
+  const [selectedAgeRange, setSelectedAgeRange] = useState(null)
+  const [selectedPurchaseAgeRange, setSelectedPurchaseAgeRange] = useState(null)
+  const [itemNames, setItemNames] = useState([])
 
-  const toggleCollapsed = () => setCollapsed(!collapsed);
+  const toggleCollapsed = () => setCollapsed(!collapsed)
 
-  // Mock Data
   const mockPurchaseData = [
     {
       id: 1,
@@ -76,44 +75,45 @@ const PurchaseReport = () => {
       contactDetails: "supplierA@example.com",
       creditLimit: 100000,
       paymentTerms: "Net 30",
-      lateFees: 500,
-      adjustments: 200,
-      writeOffs: 100,
-      followUpNotes: "Follow up on payment",
+      lateFees: 100,
+      adjustments: 20,
+      writeOffs: 5,
+      followUpNotes: "Check invoice discrepancies",
       followUpPerson: "John Doe",
       followUpRole: "Account Manager",
       purchases: [
         {
           purchaseNumber: "PUR_001",
-          purchaseDate: "01-12-2024",
-          receivedDate: "05-12-2024",
+          purchaseDate: "01-01-2025",
+          receivedDate: "06-01-2025",
           amount: 50000,
-          paymentStatus: "Unpaid",
+          paymentStatus: "Paid",
           status: "Received",
           items: [
             {
               itemName: "Item 1",
               itemCode: "ITM001",
-              purchaseDate: "01-12-2024",
+              category: "Office Supplies",
+              purchaseDate: "01-01-2025",
               unitOfMeasure: "Pieces",
               quantityPurchased: 100,
-              quantityReceived: 90,
+              quantityReceived: 100,
               unitPrice: 500,
-              previousUnitPrice: 450,
+              previousUnitPrice: 480,
               totalCost: 50000,
-              stockLevelBeforePurchase: 200,
-              stockLevelAfterPurchase: 300,
-              expense: 450,
+              stockLevelBeforePurchase: 50,
+              stockLevelAfterPurchase: 150,
+              expense: 500,
             },
           ],
         },
       ],
       paymentHistory: [
         {
-          paymentDate: "15-12-2024",
+          paymentDate: "06-01-2025",
           transactionId: "TX001",
           modeOfPayment: "Bank Transfer",
-          amount: 20000,
+          amount: 50000,
         },
       ],
     },
@@ -122,46 +122,47 @@ const PurchaseReport = () => {
       supplierName: "Supplier B",
       branch: "Mombasa",
       contactDetails: "supplierB@example.com",
-      creditLimit: 150000,
+      creditLimit: 80000,
       paymentTerms: "Net 60",
-      lateFees: 700,
-      adjustments: 300,
-      writeOffs: 150,
-      followUpNotes: "Follow up on pending items",
-      followUpPerson: "Jane Doe",
-      followUpRole: "Account Manager",
+      lateFees: 150,
+      adjustments: 30,
+      writeOffs: 10,
+      followUpNotes: "Confirm order details",
+      followUpPerson: "Jane Smith",
+      followUpRole: "Sales Representative",
       purchases: [
         {
-          purchaseNumber: "PUR_003",
-          purchaseDate: "10-12-2024",
-          receivedDate: "15-12-2024",
-          amount: 75000,
-          paymentStatus: "Partial",
+          purchaseNumber: "PUR_002",
+          purchaseDate: "02-01-2025",
+          receivedDate: "07-01-2025",
+          amount: 60000,
+          paymentStatus: "Paid",
           status: "Received",
           items: [
             {
-              itemName: "Item 3",
-              itemCode: "ITM003",
-              purchaseDate: "10-12-2024",
+              itemName: "Item 2",
+              itemCode: "ITM002",
+              category: "Furniture",
+              purchaseDate: "02-01-2025",
               unitOfMeasure: "Pieces",
               quantityPurchased: 120,
-              quantityReceived: 110,
-              unitPrice: 700,
-              previousUnitPrice: 650,
-              totalCost: 84000,
-              stockLevelBeforePurchase: 300,
-              stockLevelAfterPurchase: 410,
-              expense: 630,
+              quantityReceived: 120,
+              unitPrice: 500,
+              previousUnitPrice: 450,
+              totalCost: 60000,
+              stockLevelBeforePurchase: 100,
+              stockLevelAfterPurchase: 220,
+              expense: 600,
             },
           ],
         },
       ],
       paymentHistory: [
         {
-          paymentDate: "20-12-2024",
+          paymentDate: "07-01-2025",
           transactionId: "TX002",
           modeOfPayment: "Cheque",
-          amount: 30000,
+          amount: 60000,
         },
       ],
     },
@@ -170,46 +171,47 @@ const PurchaseReport = () => {
       supplierName: "Supplier C",
       branch: "Kisumu",
       contactDetails: "supplierC@example.com",
-      creditLimit: 200000,
+      creditLimit: 70000,
       paymentTerms: "Net 45",
-      lateFees: 800,
-      adjustments: 400,
-      writeOffs: 200,
-      followUpNotes: "Price negotiation pending",
-      followUpPerson: "Alice Smith",
-      followUpRole: "Procurement Manager",
+      lateFees: 120,
+      adjustments: 25,
+      writeOffs: 8,
+      followUpNotes: "Resolve delivery issues",
+      followUpPerson: "David Lee",
+      followUpRole: "Logistics Manager",
       purchases: [
         {
-          purchaseNumber: "PUR_004",
-          purchaseDate: "15-12-2024",
-          receivedDate: "20-12-2024",
-          amount: 120000,
-          paymentStatus: "Unpaid",
+          purchaseNumber: "PUR_003",
+          purchaseDate: "03-01-2025",
+          receivedDate: "08-01-2025",
+          amount: 40000,
+          paymentStatus: "Partial",
           status: "Received",
           items: [
             {
-              itemName: "Item 4",
-              itemCode: "ITM004",
-              purchaseDate: "15-12-2024",
-              unitOfMeasure: "Boxes",
-              quantityPurchased: 200,
-              quantityReceived: 195,
-              unitPrice: 600,
-              previousUnitPrice: 700,
-              totalCost: 120000,
-              stockLevelBeforePurchase: 500,
-              stockLevelAfterPurchase: 695,
-              expense: 550,
+              itemName: "Item 3",
+              itemCode: "ITM003",
+              category: "Stationery",
+              purchaseDate: "03-01-2025",
+              unitOfMeasure: "Pieces",
+              quantityPurchased: 80,
+              quantityReceived: 80,
+              unitPrice: 500,
+              previousUnitPrice: 470,
+              totalCost: 40000,
+              stockLevelBeforePurchase: 60,
+              stockLevelAfterPurchase: 140,
+              expense: 400,
             },
           ],
         },
       ],
       paymentHistory: [
         {
-          paymentDate: "25-12-2024",
+          paymentDate: "08-01-2025",
           transactionId: "TX003",
-          modeOfPayment: "Wire Transfer",
-          amount: 50000,
+          modeOfPayment: "Bank Transfer",
+          amount: 20000,
         },
       ],
     },
@@ -218,94 +220,89 @@ const PurchaseReport = () => {
       supplierName: "Supplier D",
       branch: "Nakuru",
       contactDetails: "supplierD@example.com",
-      creditLimit: 180000,
+      creditLimit: 90000,
       paymentTerms: "Net 30",
-      lateFees: 600,
-      adjustments: 250,
-      writeOffs: 120,
-      followUpNotes: "Quality check pending",
-      followUpPerson: "Bob Johnson",
-      followUpRole: "Quality Manager",
+      lateFees: 110,
+      adjustments: 35,
+      writeOffs: 12,
+      followUpNotes: "Update payment information",
+      followUpPerson: "Sarah Jones",
+      followUpRole: "Finance Officer",
       purchases: [
         {
-          purchaseNumber: "PUR_005",
-          purchaseDate: "20-12-2024",
-          receivedDate: "25-12-2024",
-          amount: 90000,
-          paymentStatus: "Partial",
+          purchaseNumber: "PUR_004",
+          purchaseDate: "04-01-2025",
+          receivedDate: "09-01-2025",
+          amount: 70000,
+          paymentStatus: "Unpaid",
           status: "Received",
           items: [
             {
-              itemName: "Item 5",
-              itemCode: "ITM005",
-              purchaseDate: "20-12-2024",
-              unitOfMeasure: "Units",
-              quantityPurchased: 150,
-              quantityReceived: 150,
-              unitPrice: 600,
-              previousUnitPrice: 600,
-              totalCost: 90000,
-              stockLevelBeforePurchase: 300,
-              stockLevelAfterPurchase: 450,
-              expense: 480,
+              itemName: "Item 4",
+              itemCode: "ITM004",
+              category: "Electronics",
+              purchaseDate: "04-01-2025",
+              unitOfMeasure: "Pieces",
+              quantityPurchased: 140,
+              quantityReceived: 140,
+              unitPrice: 500,
+              previousUnitPrice: 490,
+              totalCost: 70000,
+              stockLevelBeforePurchase: 120,
+              stockLevelAfterPurchase: 260,
+              expense: 700,
             },
           ],
         },
       ],
-      paymentHistory: [
-        {
-          paymentDate: "30-12-2024",
-          transactionId: "TX004",
-          modeOfPayment: "Bank Transfer",
-          amount: 40000,
-        },
-      ],
+      paymentHistory: [],
     },
     {
       id: 5,
       supplierName: "Supplier E",
       branch: "Eldoret",
       contactDetails: "supplierE@example.com",
-      creditLimit: 250000,
-      paymentTerms: "Net 90",
-      lateFees: 1000,
-      adjustments: 500,
-      writeOffs: 300,
-      followUpNotes: "Bulk order discussion",
-      followUpPerson: "Carol White",
-      followUpRole: "Sales Manager",
+      creditLimit: 120000,
+      paymentTerms: "Net 45",
+      lateFees: 180,
+      adjustments: 40,
+      writeOffs: 15,
+      followUpNotes: "Verify order status",
+      followUpPerson: "Michael Brown",
+      followUpRole: "Operations Manager",
       purchases: [
         {
-          purchaseNumber: "PUR_006",
-          purchaseDate: "25-12-2024",
-          receivedDate: "30-12-2024",
-          amount: 180000,
-          paymentStatus: "Unpaid",
-          status: "Ordered",
+          purchaseNumber: "PUR_005",
+          purchaseDate: "05-01-2025",
+          receivedDate: "10-01-2025",
+          amount: 80000,
+          paymentStatus: "Paid",
+          status: "Received",
           items: [
             {
-              itemName: "Item 6",
-              itemCode: "ITM006",
-              purchaseDate: "25-12-2024",
-              unitOfMeasure: "Cartons",
-              quantityPurchased: 300,
-              quantityReceived: 290,
-              unitPrice: 550,
-              previousUnitPrice: 650,
-              totalCost: 180000,
-              stockLevelBeforePurchase: 800,
-              stockLevelAfterPurchase: 1090,
-              expense: 520,
+              itemName: "Item 5",
+              itemCode: "ITM005",
+              category: "Office Supplies",
+              purchaseDate: "05-01-2025",
+              unitOfMeasure: "Pieces",
+              quantityPurchased: 160,
+              quantityReceived: 160,
+              unitPrice: 500,
+              previousUnitPrice: 460,
+              totalCost: 80000,
+              stockLevelBeforePurchase: 150,
+              stockLevelAfterPurchase: 310,
+              expense: 800,
             },
           ],
         },
       ],
       paymentHistory: [
         {
-          paymentDate: "05-01-2025",
+          paymentDate: "10-01-2025",
           transactionId: "TX005",
-          modeOfPayment: "Cheque",
-          amount: 60000,
+          modeOfPayment: "Cash",
+          amount: 80000,
         },
       ],
     },
@@ -314,123 +311,553 @@ const PurchaseReport = () => {
       supplierName: "Supplier F",
       branch: "Thika",
       contactDetails: "supplierF@example.com",
-      creditLimit: 300000,
-      paymentTerms: "Net 15",
-      lateFees: 1200,
-      adjustments: 600,
-      writeOffs: 400,
-      followUpNotes: "Early payment discount pending",
-      followUpPerson: "David Brown",
-      followUpRole: "Finance Manager",
+      creditLimit: 110000,
+      paymentTerms: "Net 60",
+      lateFees: 160,
+      adjustments: 50,
+      writeOffs: 20,
+      followUpNotes: "Check for damages",
+      followUpPerson: "Emily Wilson",
+      followUpRole: "Quality Control Manager",
       purchases: [
         {
-          purchaseNumber: "PUR_007",
-          purchaseDate: "01-01-2025",
-          receivedDate: "05-01-2025",
-          amount: 220000,
-          paymentStatus: "Unpaid",
-          status: "Ordered",
+          purchaseNumber: "PUR_006",
+          purchaseDate: "06-01-2025",
+          receivedDate: "11-01-2025",
+          amount: 90000,
+          paymentStatus: "Partial",
+          status: "Received",
           items: [
             {
-              itemName: "Item 7",
-              itemCode: "ITM007",
-              purchaseDate: "01-01-2025",
-              unitOfMeasure: "Pallets",
-              quantityPurchased: 400,
-              quantityReceived: 395,
-              unitPrice: 800,
-              previousUnitPrice: 750,
-              totalCost: 220000,
-              stockLevelBeforePurchase: 1000,
-              stockLevelAfterPurchase: 1395,
-              expense: 750,
+              itemName: "Item 6",
+              itemCode: "ITM006",
+              category: "Cleaning Supplies",
+              purchaseDate: "06-01-2025",
+              unitOfMeasure: "Liters",
+              quantityPurchased: 180,
+              quantityReceived: 180,
+              unitPrice: 500,
+              previousUnitPrice: 490,
+              totalCost: 90000,
+              stockLevelBeforePurchase: 180,
+              stockLevelAfterPurchase: 360,
+              expense: 900,
             },
           ],
         },
       ],
       paymentHistory: [
         {
-          paymentDate: "10-01-2025",
+          paymentDate: "11-01-2025",
           transactionId: "TX006",
-          modeOfPayment: "Wire Transfer",
-          amount: 80000,
+          modeOfPayment: "Bank Transfer",
+          amount: 45000,
         },
       ],
-    }
-  ];
-  
+    },
+    {
+      id: 7,
+      supplierName: "Supplier G",
+      branch: "Nyeri",
+      contactDetails: "supplierG@example.com",
+      creditLimit: 130000,
+      paymentTerms: "Net 30",
+      lateFees: 200,
+      adjustments: 60,
+      writeOffs: 25,
+      followUpNotes: "Confirm stock availability",
+      followUpPerson: "Jessica Garcia",
+      followUpRole: "Inventory Manager",
+      purchases: [
+        {
+          purchaseNumber: "PUR_007",
+          purchaseDate: "07-01-2025",
+          receivedDate: "12-01-2025",
+          amount: 100000,
+          paymentStatus: "Unpaid",
+          status: "Received",
+          items: [
+            {
+              itemName: "Item 7",
+              itemCode: "ITM007",
+              category: "Electronics",
+              purchaseDate: "07-01-2025",
+              unitOfMeasure: "Pieces",
+              quantityPurchased: 200,
+              quantityReceived: 200,
+              unitPrice: 500,
+              previousUnitPrice: 475,
+              totalCost: 100000,
+              stockLevelBeforePurchase: 200,
+              stockLevelAfterPurchase: 400,
+              expense: 1000,
+            },
+          ],
+        },
+      ],
+      paymentHistory: [],
+    },
+    {
+      id: 8,
+      supplierName: "Supplier H",
+      branch: "Kisii",
+      contactDetails: "supplierH@example.com",
+      creditLimit: 150000,
+      paymentTerms: "Net 45",
+      lateFees: 220,
+      adjustments: 70,
+      writeOffs: 30,
+      followUpNotes: "Review contract terms",
+      followUpPerson: "Robert Rodriguez",
+      followUpRole: "Legal Counsel",
+      purchases: [
+        {
+          purchaseNumber: "PUR_008",
+          purchaseDate: "08-01-2025",
+          receivedDate: "13-01-2025",
+          amount: 110000,
+          paymentStatus: "Paid",
+          status: "Received",
+          items: [
+            {
+              itemName: "Item 8",
+              itemCode: "ITM008",
+              category: "Furniture",
+              purchaseDate: "08-01-2025",
+              unitOfMeasure: "Pieces",
+              quantityPurchased: 220,
+              quantityReceived: 220,
+              unitPrice: 500,
+              previousUnitPrice: 520,
+              totalCost: 110000,
+              stockLevelBeforePurchase: 220,
+              stockLevelAfterPurchase: 440,
+              expense: 1100,
+            },
+          ],
+        },
+      ],
+      paymentHistory: [
+        {
+          paymentDate: "13-01-2025",
+          transactionId: "TX008",
+          modeOfPayment: "Cheque",
+          amount: 110000,
+        },
+      ],
+    },
+    {
+      id: 9,
+      supplierName: "Supplier I",
+      branch: "Kakamega",
+      contactDetails: "supplierI@example.com",
+      creditLimit: 140000,
+      paymentTerms: "Net 60",
+      lateFees: 190,
+      adjustments: 80,
+      writeOffs: 35,
+      followUpNotes: "Address quality concerns",
+      followUpPerson: "Ashley Williams",
+      followUpRole: "Quality Assurance Manager",
+      purchases: [
+        {
+          purchaseNumber: "PUR_009",
+          purchaseDate: "09-01-2025",
+          receivedDate: "14-01-2025",
+          amount: 120000,
+          paymentStatus: "Partial",
+          status: "Received",
+          items: [
+            {
+              itemName: "Item 9",
+              itemCode: "ITM009",
+              category: "Stationery",
+              purchaseDate: "09-01-2025",
+              unitOfMeasure: "Pieces",
+              quantityPurchased: 240,
+              quantityReceived: 240,
+              unitPrice: 500,
+              previousUnitPrice: 485,
+              totalCost: 120000,
+              stockLevelBeforePurchase: 240,
+              stockLevelAfterPurchase: 480,
+              expense: 1200,
+            },
+          ],
+        },
+      ],
+      paymentHistory: [
+        {
+          paymentDate: "14-01-2025",
+          transactionId: "TX009",
+          modeOfPayment: "Cash",
+          amount: 60000,
+        },
+      ],
+    },
+    {
+      id: 10,
+      supplierName: "Supplier J",
+      branch: "Bungoma",
+      contactDetails: "supplierJ@example.com",
+      creditLimit: 160000,
+      paymentTerms: "Net 30",
+      lateFees: 210,
+      adjustments: 90,
+      writeOffs: 40,
+      followUpNotes: "Expedite shipment",
+      followUpPerson: "Brian Taylor",
+      followUpRole: "Shipping Coordinator",
+      purchases: [
+        {
+          purchaseNumber: "PUR_010",
+          purchaseDate: "10-01-2025",
+          receivedDate: "15-01-2025",
+          amount: 130000,
+          paymentStatus: "Unpaid",
+          status: "Ordered",
+          items: [
+            {
+              itemName: "Item 10",
+              itemCode: "ITM010",
+              category: "Cleaning Supplies",
+              purchaseDate: "10-01-2025",
+              unitOfMeasure: "Liters",
+              quantityPurchased: 260,
+              quantityReceived: 0,
+              unitPrice: 500,
+              previousUnitPrice: 495,
+              totalCost: 130000,
+              stockLevelBeforePurchase: 260,
+              stockLevelAfterPurchase: 260,
+              expense: 1300,
+            },
+          ],
+        },
+      ],
+      paymentHistory: [],
+    },
+    {
+      id: 11,
+      supplierName: "Supplier K",
+      branch: "Embu",
+      contactDetails: "supplierK@example.com",
+      creditLimit: 75000,
+      paymentTerms: "Net 60",
+      lateFees: 120,
+      adjustments: 50,
+      writeOffs: 10,
+      followUpNotes: "Confirm order dispatch",
+      followUpPerson: "Grace Adams",
+      followUpRole: "Operations Manager",
+      purchases: [
+        {
+          purchaseNumber: "PUR_011",
+          purchaseDate: "04-01-2025",
+          receivedDate: "09-01-2025",
+          amount: 30000,
+          paymentStatus: "Paid",
+          status: "Received",
+          items: [
+            {
+              itemName: "Item 11",
+              itemCode: "ITM011",
+              category: "Furniture",
+              purchaseDate: "04-01-2025",
+              unitOfMeasure: "Pieces",
+              quantityPurchased: 30,
+              quantityReceived: 30,
+              unitPrice: 1000,
+              previousUnitPrice: 950,
+              totalCost: 30000,
+              stockLevelBeforePurchase: 20,
+              stockLevelAfterPurchase: 50,
+              expense: 1000,
+            },
+          ],
+        },
+      ],
+      paymentHistory: [
+        {
+          paymentDate: "09-01-2025",
+          transactionId: "TX011",
+          modeOfPayment: "Bank Transfer",
+          amount: 30000,
+        },
+      ],
+    },
+    {
+      id: 12,
+      supplierName: "Supplier L",
+      branch: "Kericho",
+      contactDetails: "supplierL@example.com",
+      creditLimit: 50000,
+      paymentTerms: "Net 30",
+      lateFees: 90,
+      adjustments: 40,
+      writeOffs: 15,
+      followUpNotes: "Verify stock levels",
+      followUpPerson: "Anna Reed",
+      followUpRole: "Inventory Manager",
+      purchases: [
+        {
+          purchaseNumber: "PUR_012",
+          purchaseDate: "06-01-2025",
+          receivedDate: "12-01-2025",
+          amount: 25000,
+          paymentStatus: "Partial",
+          status: "Received",
+          items: [
+            {
+              itemName: "Item 12",
+              itemCode: "ITM012",
+              category: "Stationery",
+              purchaseDate: "06-01-2025",
+              unitOfMeasure: "Pieces",
+              quantityPurchased: 50,
+              quantityReceived: 45,
+              unitPrice: 500,
+              previousUnitPrice: 480,
+              totalCost: 25000,
+              stockLevelBeforePurchase: 70,
+              stockLevelAfterPurchase: 115,
+              expense: 500,
+            },
+          ],
+        },
+      ],
+      paymentHistory: [
+        {
+          paymentDate: "12-01-2025",
+          transactionId: "TX012",
+          modeOfPayment: "Cheque",
+          amount: 10000,
+        },
+      ],
+    },
+    {
+      id: 13,
+      supplierName: "Supplier M",
+      branch: "Voi",
+      contactDetails: "supplierM@example.com",
+      creditLimit: 60000,
+      paymentTerms: "Net 15",
+      lateFees: 150,
+      adjustments: 60,
+      writeOffs: 10,
+      followUpNotes: "Update invoice details",
+      followUpPerson: "Mark Nelson",
+      followUpRole: "Finance Officer",
+      purchases: [
+        {
+          purchaseNumber: "PUR_013",
+          purchaseDate: "08-01-2025",
+          receivedDate: "13-01-2025",
+          amount: 40000,
+          paymentStatus: "Unpaid",
+          status: "Ordered",
+          items: [
+            {
+              itemName: "Item 13",
+              itemCode: "ITM013",
+              category: "Office Supplies",
+              purchaseDate: "08-01-2025",
+              unitOfMeasure: "Pieces",
+              quantityPurchased: 80,
+              quantityReceived: 0,
+              unitPrice: 500,
+              previousUnitPrice: 480,
+              totalCost: 40000,
+              stockLevelBeforePurchase: 100,
+              stockLevelAfterPurchase: 100,
+              expense: 500,
+            },
+          ],
+        },
+      ],
+      paymentHistory: [],
+    },
+    {
+      id: 14,
+      supplierName: "Supplier N",
+      branch: "Meru",
+      contactDetails: "supplierN@example.com",
+      creditLimit: 55000,
+      paymentTerms: "Net 45",
+      lateFees: 140,
+      adjustments: 70,
+      writeOffs: 20,
+      followUpNotes: "Check payment discrepancies",
+      followUpPerson: "Peter White",
+      followUpRole: "Accountant",
+      purchases: [
+        {
+          purchaseNumber: "PUR_014",
+          purchaseDate: "10-01-2025",
+          receivedDate: "15-01-2025",
+          amount: 35000,
+          paymentStatus: "Partial",
+          status: "Received",
+          items: [
+            {
+              itemName: "Item 14",
+              itemCode: "ITM014",
+              category: "Cleaning Supplies",
+              purchaseDate: "10-01-2025",
+              unitOfMeasure: "Liters",
+              quantityPurchased: 100,
+              quantityReceived: 90,
+              unitPrice: 350,
+              previousUnitPrice: 340,
+              totalCost: 31500,
+              stockLevelBeforePurchase: 50,
+              stockLevelAfterPurchase: 140,
+              expense: 350,
+            },
+          ],
+        },
+      ],
+      paymentHistory: [
+        {
+          paymentDate: "15-01-2025",
+          transactionId: "TX014",
+          modeOfPayment: "Bank Transfer",
+          amount: 20000,
+        },
+      ],
+    },
+    {
+      id: 15,
+      supplierName: "Supplier O",
+      branch: "Nanyuki",
+      contactDetails: "supplierO@example.com",
+      creditLimit: 65000,
+      paymentTerms: "Net 30",
+      lateFees: 180,
+      adjustments: 90,
+      writeOffs: 30,
+      followUpNotes: "Request delivery confirmation",
+      followUpPerson: "Sophia Green",
+      followUpRole: "Supply Chain Manager",
+      purchases: [
+        {
+          purchaseNumber: "PUR_015",
+          purchaseDate: "12-01-2025",
+          receivedDate: "18-01-2025",
+          amount: 45000,
+          paymentStatus: "Paid",
+          status: "Received",
+          items: [
+            {
+              itemName: "Item 15",
+              itemCode: "ITM015",
+              category: "Electronics",
+              purchaseDate: "12-01-2025",
+              unitOfMeasure: "Pieces",
+              quantityPurchased: 90,
+              quantityReceived: 90,
+              unitPrice: 500,
+              previousUnitPrice: 480,
+              totalCost: 45000,
+              stockLevelBeforePurchase: 200,
+              stockLevelAfterPurchase: 290,
+              expense: 500,
+            },
+          ],
+        },
+      ],
+      paymentHistory: [
+        {
+          paymentDate: "18-01-2025",
+          transactionId: "TX015",
+          modeOfPayment: "Cash",
+          amount: 45000,
+        },
+      ],
+    },
+  ]
+
   useEffect(() => {
     const names = mockPurchaseData.flatMap((supplier) =>
-      supplier.purchases.flatMap((purchase) =>
-        purchase.items.map((item) => item.itemName)
-      )
-    );
-    setItemNames([...new Set(names)]);
-  }, []);
+      supplier.purchases.flatMap((purchase) => purchase.items.map((item) => item.itemName)),
+    )
+    setItemNames([...new Set(names)])
+  }, [])
 
-  const handleFilterChange = (changedValues, allValues) => {
-    const { fromDate, toDate, itemName, status } = allValues;
+  const handleFilterChange = (_changedValues, allValues) => {
+    const { fromDate, toDate, itemName, status } = allValues
     setFilters({
       fromDate: fromDate ? dayjs(fromDate) : dayjs().startOf("month"),
       toDate: toDate ? dayjs(toDate) : dayjs().endOf("month"),
       itemName,
       status,
-    });
-  };
+    })
+  }
 
   const formatNumber = (value) => {
-    if (value === null || value === undefined || isNaN(value)) return "0.00";
+    if (value === null || value === undefined || isNaN(value)) return "0.00"
     return value.toLocaleString("en-US", {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
-    });
-  };
+    })
+  }
 
   const calculateAgingAnalysis = (purchases) => {
-    const today = dayjs();
-    const agingAnalysis = { "0-30": 0, "31-60": 0, "61-90": 0, "90+": 0 };
+    const today = dayjs()
+    const agingAnalysis = { "0-30": 0, "31-60": 0, "61-90": 0, "90+": 0 }
 
     purchases.forEach((purchase) => {
-      const purchaseDate = dayjs(purchase.purchaseDate, "DD-MM-YYYY");
-      const daysDiff = today.diff(purchaseDate, "day");
+      const purchaseDate = dayjs(purchase.purchaseDate, "DD-MM-YYYY")
+      const daysDiff = today.diff(purchaseDate, "day")
 
       if (daysDiff >= 0 && daysDiff <= 30) {
-        agingAnalysis["0-30"] += purchase.amount;
+        agingAnalysis["0-30"] += purchase.amount
       } else if (daysDiff > 30 && daysDiff <= 60) {
-        agingAnalysis["31-60"] += purchase.amount;
+        agingAnalysis["31-60"] += purchase.amount
       } else if (daysDiff > 60 && daysDiff <= 90) {
-        agingAnalysis["61-90"] += purchase.amount;
+        agingAnalysis["61-90"] += purchase.amount
       } else if (daysDiff > 90) {
-        agingAnalysis["90+"] += purchase.amount;
+        agingAnalysis["90+"] += purchase.amount
       }
-    });
+    })
 
-    return agingAnalysis;
-  };
+    return agingAnalysis
+  }
 
   const calculateOutstandingBalance = (purchases, paymentHistory) => {
-    const totalPurchases = purchases.reduce((sum, purchase) => sum + purchase.amount, 0);
-    const totalPayments = paymentHistory.reduce((sum, payment) => sum + payment.amount, 0);
-    return totalPurchases - totalPayments;
-  };
+    const totalPurchases = purchases.reduce((sum, purchase) => {
+      const purchaseTotal = purchase.items.reduce((itemSum, item) => {
+        return itemSum + item.quantityPurchased * item.unitPrice
+      }, 0)
+      return sum + purchaseTotal
+    }, 0)
+
+    const totalPayments = paymentHistory.reduce((sum, payment) => sum + payment.amount, 0)
+
+    return totalPurchases - totalPayments
+  }
 
   const calculateUnpaidAndPartialTotals = (purchases) => {
-    let unpaidTotal = 0;
-    let partialTotal = 0;
+    let unpaidTotal = 0
+    let partialTotal = 0
 
     purchases.forEach((purchase) => {
-      if (purchase.paymentStatus === "Unpaid") {
-        unpaidTotal += purchase.amount;
-      } else if (purchase.paymentStatus === "Partial") {
-        partialTotal += purchase.amount;
-      }
-    });
+      const purchaseTotal = purchase.items.reduce((itemSum, item) => {
+        return itemSum + item.quantityPurchased * item.unitPrice
+      }, 0)
 
-    return { unpaidTotal, partialTotal };
-  };
+      if (purchase.paymentStatus === "Unpaid") {
+        unpaidTotal += purchaseTotal
+      } else if (purchase.paymentStatus === "Partial") {
+        partialTotal += purchaseTotal
+      }
+    })
+
+    return { unpaidTotal, partialTotal }
+  }
 
   const generateReport = () => {
-    const { fromDate, toDate, itemName, status } = form.getFieldsValue();
+    const { fromDate, toDate, itemName, status } = form.getFieldsValue()
 
     if (!fromDate || !toDate) {
       notificationApi.error({
@@ -438,18 +865,18 @@ const PurchaseReport = () => {
         description: "Please select both 'From Date' and 'To Date' to generate the report.",
         placement: "topRight",
         className: "bg-red-50",
-      });
-      return;
+      })
+      return
     }
 
-    setLoading(true);
+    setLoading(true)
     setTimeout(() => {
       const filteredByDate = mockPurchaseData.filter((supplier) => {
         return supplier.purchases.some((purchase) => {
-          const purchaseDate = dayjs(purchase.purchaseDate, "DD-MM-YYYY");
-          return purchaseDate.isAfter(fromDate) && purchaseDate.isBefore(toDate);
-        });
-      });
+          const purchaseDate = dayjs(purchase.purchaseDate, "DD-MM-YYYY")
+          return purchaseDate.isAfter(fromDate) && purchaseDate.isBefore(toDate)
+        })
+      })
 
       if (filteredByDate.length === 0) {
         notificationApi.warning({
@@ -457,14 +884,14 @@ const PurchaseReport = () => {
           description: "No data found within the selected date range.",
           placement: "topRight",
           className: "bg-yellow-50",
-        });
-        setLoading(false);
-        return;
+        })
+        setLoading(false)
+        return
       }
 
       const updatedPurchaseData = filteredByDate.map((supplier) => {
-        const outstandingBalance = calculateOutstandingBalance(supplier.purchases, supplier.paymentHistory);
-        const { unpaidTotal, partialTotal } = calculateUnpaidAndPartialTotals(supplier.purchases);
+        const outstandingBalance = calculateOutstandingBalance(supplier.purchases, supplier.paymentHistory)
+        const { unpaidTotal, partialTotal } = calculateUnpaidAndPartialTotals(supplier.purchases)
 
         return {
           ...supplier,
@@ -472,24 +899,24 @@ const PurchaseReport = () => {
           outstandingBalance,
           unpaidTotal,
           partialTotal,
-        };
-      });
+        }
+      })
 
-      setPurchaseData(updatedPurchaseData);
-      setLoading(false);
-      setIsReportVisible(true);
-      setReportGeneratedTime(dayjs().format("DD-MM-YYYY HH:mm:ss"));
+      setPurchaseData(updatedPurchaseData)
+      setLoading(false)
+      setIsReportVisible(true)
+      setReportGeneratedTime(dayjs().format("DD-MM-YYYY HH:mm:ss"))
       notificationApi.success({
         message: "Report Generated",
         description: "Purchase Analysis Report generated successfully.",
         placement: "topRight",
         className: "bg-green-50",
-      });
-    }, 1000);
-  };
+      })
+    }, 1000)
+  }
 
   const exportToPDF = () => {
-    const doc = new jsPDF({ format: "a4" });
+    const doc = new jsPDF({ format: "a4" })
 
     const brandColors = {
       primary: "#1a237e",
@@ -497,47 +924,63 @@ const PurchaseReport = () => {
       accent: "#3949ab",
       gray: "#757575",
       lightGray: "#f5f5f5",
-    };
+    }
 
-    const margin = { top: 20, left: 20, right: 20 };
+    const margin = { top: 20, left: 20, right: 20 }
 
-    doc.setFillColor(brandColors.primary);
-    doc.rect(0, 0, doc.internal.pageSize.width, 40, "F");
+    doc.setFillColor(brandColors.primary)
+    doc.rect(0, 0, doc.internal.pageSize.width, 40, "F")
 
-    doc.setTextColor("#FFFFFF");
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(18);
-    doc.text("Snave Webhub Africa", 70, 20);
-    doc.setFontSize(16);
-    doc.setFont("helvetica", "normal");
-    doc.text("Purchase Analysis Report", 70, 30);
+    doc.setTextColor("#FFFFFF")
+    doc.setFont("helvetica", "bold")
+    doc.setFontSize(18)
+    doc.text("Snave Webhub Africa", 70, 20)
+    doc.setFontSize(16)
+    doc.setFont("helvetica", "normal")
+    doc.text("Purchase Analysis Report", 70, 30)
 
-    doc.setTextColor(brandColors.primary);
-    doc.setFontSize(12);
-    doc.roundedRect(margin.left, 50, doc.internal.pageSize.width - 40, 35, 3, 3, "S");
+    doc.setTextColor(brandColors.primary)
+    doc.setFontSize(12)
+    doc.roundedRect(margin.left, 50, doc.internal.pageSize.width - 40, 35, 3, 3, "S")
 
-    doc.setFont("helvetica", "bold");
-    doc.text(" Purchase Analysis Report Information", margin.left + 5, 60);
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(10);
-    doc.setTextColor(brandColors.gray);
-    doc.text(`From: ${filters.fromDate.format("DD-MM-YYYY")} To: ${filters.toDate.format("DD-MM-YYYY")}`, margin.left + 5, 70);
-    doc.text(`Generated : ${reportGeneratedTime}`, margin.left + 5, 80);
-    doc.text(`Generated by : ${generatedBy}`, doc.internal.pageSize.width - 80, 80);
+    doc.setFont("helvetica", "bold")
+    doc.text(" Purchase Analysis Report Information", margin.left + 5, 60)
+    doc.setFont("helvetica", "normal")
+    doc.setFontSize(10)
+    doc.setTextColor(brandColors.gray)
+    doc.text(
+      `From: ${filters.fromDate.format("DD-MM-YYYY")} To: ${filters.toDate.format("DD-MM-YYYY")}`,
+      margin.left + 5,
+      70,
+    )
+    doc.text(`Generated : ${reportGeneratedTime}`, margin.left + 5, 80)
+    doc.text(`Generated by : ${generatedBy}`, doc.internal.pageSize.width - 80, 80)
 
     doc.autoTable({
       startY: 100,
-      head: [["SUPPLIER NAME", "BRANCH", "OUTSTANDING BALANCE (KES)", "PRICE DIFFERENCE (KES)", "CREDIT LIMIT", "UTILIZATION"]],
+      head: [
+        [
+          "SUPPLIER NAME",
+          "BRANCH",
+          "OUTSTANDING BALANCE (KES)",
+          "PRICE DIFFERENCE (KES)",
+          "CREDIT LIMIT",
+          "UTILIZATION",
+        ],
+      ],
       body: purchaseData.map((item) => [
         item.supplierName,
         item.branch,
         formatNumber(item.outstandingBalance),
         formatNumber(
           item.purchases.reduce((sum, purchase) => {
-            return sum + purchase.items.reduce((itemSum, item) => {
-              return itemSum + (item.quantityPurchased * item.unitPrice - item.quantityReceived * item.unitPrice);
-            }, 0);
-          }, 0)
+            return (
+              sum +
+              purchase.items.reduce((itemSum, item) => {
+                return itemSum + (item.quantityPurchased * item.unitPrice - item.quantityReceived * item.unitPrice)
+              }, 0)
+            )
+          }, 0),
         ),
         formatNumber(item.creditLimit),
         `${((item.outstandingBalance / item.creditLimit) * 100).toFixed(2)}%`,
@@ -564,25 +1007,41 @@ const PurchaseReport = () => {
         fillColor: brandColors.lightGray,
       },
       margin: margin,
-    });
+    })
 
     doc.autoTable({
       startY: doc.lastAutoTable.finalY + 20,
-      head: [["Item Name", "Item Code", "Category", "Unit of Measure", "Quantity", "Unit Price", "Total Cost", "Stock Before", "Stock After"]],
+      head: [
+        [
+          "Item Name",
+          "Item Code",
+          "Category",
+          "Unit of Measure",
+          "Quantity",
+          "Unit Price",
+          "Total Cost",
+          "Stock Before",
+          "Stock After",
+          "Price History",
+        ],
+      ],
       body: purchaseData.flatMap((supplier) =>
         supplier.purchases.flatMap((purchase) =>
           purchase.items.map((item) => [
             item.itemName,
             item.itemCode,
-            item.itemCategory,
+            item.category,
             item.unitOfMeasure,
             item.quantityPurchased,
             formatNumber(item.unitPrice),
             formatNumber(item.totalCost),
             item.stockLevelBeforePurchase,
             item.stockLevelAfterPurchase,
-          ])
-        )
+            item.purchases
+              .map((purchase) => `${purchase.purchaseDate}: ${formatNumber(purchase.unitPrice)}`)
+              .join("\n"),
+          ]),
+        ),
       ),
       headStyles: {
         fillColor: brandColors.secondary,
@@ -604,75 +1063,76 @@ const PurchaseReport = () => {
         6: { halign: "right", cellWidth: 30 },
         7: { halign: "right", cellWidth: 30 },
         8: { halign: "right", cellWidth: 30 },
+        9: { cellWidth: 50 },
       },
       alternateRowStyles: {
         fillColor: brandColors.lightGray,
       },
       margin: margin,
-    });
+    })
 
     const addFooter = () => {
-      const pageCount = doc.internal.getNumberOfPages();
+      const pageCount = doc.internal.getNumberOfPages()
       for (let i = 1; i <= pageCount; i++) {
-        doc.setPage(i);
-        doc.setFillColor(brandColors.primary);
-        doc.rect(0, doc.internal.pageSize.height - 20, doc.internal.pageSize.width, 20, "F");
-        doc.setTextColor("#FFFFFF");
-        doc.setFontSize(8);
-        doc.text("© 2025 Snave Webhub Africa. All rights reserved.", margin.left, doc.internal.pageSize.height - 10);
-        doc.text(`Page ${i} of ${pageCount}`, doc.internal.pageSize.width - 40, doc.internal.pageSize.height - 10);
+        doc.setPage(i)
+        doc.setFillColor(brandColors.primary)
+        doc.rect(0, doc.internal.pageSize.height - 20, doc.internal.pageSize.width, 20, "F")
+        doc.setTextColor("#FFFFFF")
+        doc.setFontSize(8)
+        doc.text("© 2025 Snave Webhub Africa. All rights reserved.", margin.left, doc.internal.pageSize.height - 10)
+        doc.text(`Page ${i} of ${pageCount}`, doc.internal.pageSize.width - 40, doc.internal.pageSize.height - 10)
       }
-    };
+    }
 
-    addFooter();
-    doc.save(`purchase_report_${dayjs().format("DD-MM-YYYY")}.pdf`);
+    addFooter()
+    doc.save(`purchase_report_${dayjs().format("DD-MM-YYYY")}.pdf`)
 
     notificationApi.success({
       message: "PDF Export Complete",
       description: "Your report has been successfully exported.",
       placement: "topRight",
       className: "bg-green-50",
-    });
-  };
+    })
+  }
 
   const handleSearch = (value) => {
-    setSearchText(value);
-    setPagination({ ...pagination, current: 1 });
-  };
+    setSearchText(value)
+    setPagination({ ...pagination, current: 1 })
+  }
 
   const filteredData = purchaseData.filter((item) => {
     const matchesSearchText =
       item.supplierName.toLowerCase().includes(searchText.toLowerCase()) ||
-      item.contactDetails.toLowerCase().includes(searchText.toLowerCase());
+      item.contactDetails.toLowerCase().includes(searchText.toLowerCase())
 
-    const matchesAgeRange = !selectedAgeRange || item.agingAnalysis[selectedAgeRange] > 0;
+    const matchesAgeRange = !selectedAgeRange || item.agingAnalysis[selectedAgeRange] > 0
 
-    const matchesItemName = !filters.itemName || item.purchases.some((purchase) =>
-      purchase.items.some((item) => item.itemName === filters.itemName)
-    );
+    const matchesItemName =
+      !filters.itemName ||
+      item.purchases.some((purchase) => purchase.items.some((item) => item.itemName === filters.itemName))
 
-    const matchesStatus = !filters.status || item.purchases.some((purchase) => purchase.status === filters.status);
+    const matchesStatus = !filters.status || item.purchases.some((purchase) => purchase.status === filters.status)
 
-    return matchesSearchText && matchesAgeRange && matchesItemName && matchesStatus;
-  });
+    return matchesSearchText && matchesAgeRange && matchesItemName && matchesStatus
+  })
 
   const filterPurchasesByAgeRange = (purchases, ageRange) => {
-    const today = dayjs();
+    const today = dayjs()
     return purchases.filter((purchase) => {
-      const purchaseDate = dayjs(purchase.purchaseDate, "DD-MM-YYYY");
-      const daysDiff = today.diff(purchaseDate, "day");
+      const purchaseDate = dayjs(purchase.purchaseDate, "DD-MM-YYYY")
+      const daysDiff = today.diff(purchaseDate, "day")
 
       const matchesAgeRange =
         (ageRange === "0-30" && daysDiff >= 0 && daysDiff <= 30) ||
         (ageRange === "31-60" && daysDiff > 30 && daysDiff <= 60) ||
         (ageRange === "61-90" && daysDiff > 60 && daysDiff <= 90) ||
-        (ageRange === "90+" && daysDiff > 90);
+        (ageRange === "90+" && daysDiff > 90)
 
-      const matchesStatus = !filters.status || purchase.status === filters.status;
+      const matchesStatus = !filters.status || purchase.status === filters.status
 
-      return matchesAgeRange && matchesStatus;
-    });
-  };
+      return matchesAgeRange && matchesStatus
+    })
+  }
 
   const purchaseColumns = [
     {
@@ -694,25 +1154,24 @@ const PurchaseReport = () => {
       title: "ITEM NAME",
       key: "itemName",
       render: (_, record) => {
-        const firstPurchase = record.purchases[0];
+        const firstPurchase = record.purchases[0]
         if (firstPurchase && firstPurchase.items && firstPurchase.items.length > 0) {
-          return firstPurchase.items[0].itemName;
+          return firstPurchase.items[0].itemName
         }
-        return "N/A";
+        return "N/A"
       },
     },
     {
       title: "CATEGORY",
       key: "category",
       render: (_, record) => {
-        const firstPurchase = record.purchases[0];
+        const firstPurchase = record.purchases[0]
         if (firstPurchase && firstPurchase.items && firstPurchase.items.length > 0) {
-          return firstPurchase.items[0].itemCategory;
+          return firstPurchase.items[0].category
         }
-        return "N/A";
+        return "N/A"
       },
     },
-    
     {
       title: "BALANCE (KES)",
       dataIndex: "outstandingBalance",
@@ -726,21 +1185,23 @@ const PurchaseReport = () => {
       align: "right",
       render: (_, record) => {
         const priceDifference = record.purchases.reduce((sum, purchase) => {
-          return sum + purchase.items.reduce((itemSum, item) => {
-            // Calculate difference between current and previous unit price
-            const unitPriceDifference = item.unitPrice - item.previousUnitPrice;
-            return itemSum + unitPriceDifference;
-          }, 0);
-        }, 0);
+          return (
+            sum +
+            purchase.items.reduce((itemSum, item) => {
+              const unitPriceDifference = item.unitPrice - item.previousUnitPrice
+              return itemSum + unitPriceDifference
+            }, 0)
+          )
+        }, 0)
 
-        let color = "gray";
+        let color = "gray"
         if (priceDifference > 0) {
-          color = "red";
+          color = "red"
         } else if (priceDifference < 0) {
-          color = "green";
+          color = "green"
         }
 
-        return <Tag color={color}>{formatNumber(priceDifference)}</Tag>;
+        return <Tag color={color}>{formatNumber(priceDifference)}</Tag>
       },
     },
     {
@@ -748,22 +1209,16 @@ const PurchaseReport = () => {
       dataIndex: "creditLimit",
       key: "creditLimit",
       render: (creditLimit) => <span>{formatNumber(creditLimit)}</span>,
-    
     },
     {
       title: "UTILIZATION",
       key: "utilization",
       render: (_, record) => {
-        const utilization = (record.outstandingBalance / record.creditLimit) * 100;
-        return (
-          <Progress
-            percent={utilization.toFixed(2)}
-            status={utilization > 100 ? "exception" : "normal"}
-          />
-        );
+        const utilization = (record.outstandingBalance / record.creditLimit) * 100
+        return <Progress percent={utilization.toFixed(2)} status={utilization > 100 ? "exception" : "normal"} />
       },
     },
-  ];
+  ]
 
   const itemColumns = [
     {
@@ -782,7 +1237,7 @@ const PurchaseReport = () => {
       key: "purchaseDate",
     },
     {
-      title: "Unit of Measure",
+      title: "UoM",
       dataIndex: "unitOfMeasure",
       key: "unitOfMeasure",
     },
@@ -790,73 +1245,69 @@ const PurchaseReport = () => {
       title: "Qty Purchased",
       dataIndex: "quantityPurchased",
       key: "quantityPurchased",
-     
     },
     {
-      title: "Unit Price (KES)",
+      title: "Unit Price ",
       dataIndex: "unitPrice",
       key: "unitPrice",
       render: (unitPrice) => formatNumber(unitPrice),
-     
     },
     {
-      title: "Total Cost (KES)",
+      title: "Total Cost ",
       dataIndex: "totalCost",
       key: "totalCost",
       render: (totalCost) => formatNumber(totalCost),
-      
     },
     {
       title: "Stock Before",
       dataIndex: "stockLevelBeforePurchase",
       key: "stockLevelBeforePurchase",
-     
     },
     {
       title: "Stock After",
-      dataIndex: "stockLevelAfterPurchase",
       key: "stockLevelAfterPurchase",
- 
+      render: (_, record) => {
+        const stockAfter = record.stockLevelBeforePurchase + record.quantityPurchased
+        return stockAfter
+      },
     },
     {
-      title: "Previous Price(KES)",
+      title: "Previous Price",
       dataIndex: "previousUnitPrice",
       key: "previousUnitPrice",
       render: (previousUnitPrice) => formatNumber(previousUnitPrice),
-      
     },
     {
-      title: "Current Price(KES)",
+      title: "Current Price",
       dataIndex: "unitPrice",
       key: "unitPrice",
       render: (unitPrice) => formatNumber(unitPrice),
-     
     },
     {
-      title: "Price Change Status",
+      title: "Price diff Status",
       key: "priceChangeStatus",
       align: "right",
       render: (_, record) => {
-        const priceDifference = record.unitPrice - record.previousUnitPrice;
-        let status = "No Change in Price";
-        let color = "gray";
+        const priceDifference = record.unitPrice - record.previousUnitPrice
+        let status = "No Change in Price"
+        let color = "gray"
 
         if (priceDifference > 0) {
-          status = `Price Up (${formatNumber(priceDifference)})`;
-          color = "red";
+          status = `Price Up (${formatNumber(priceDifference)})`
+          color = "red"
         } else if (priceDifference < 0) {
-          status = `Price Down (${formatNumber(Math.abs(priceDifference))})`;
-          color = "green";
+          status = `Price Down (${formatNumber(Math.abs(priceDifference))})`
+          color = "green"
         }
 
-        return <Tag color={color}>{status}</Tag>;
+        return <Tag color={color}>{status}</Tag>
       },
     },
-  ];
+  ]
 
-  const totalPayables = purchaseData.reduce((sum, item) => sum + (item.outstandingBalance || 0), 0);
-  const totalUnpaid = purchaseData.reduce((sum, item) => sum + (item.unpaidTotal || 0), 0);
-  const totalPartial = purchaseData.reduce((sum, item) => sum + (item.partialTotal || 0), 0);
+  const totalPayables = purchaseData.reduce((sum, item) => sum + (item.outstandingBalance || 0), 0)
+  const totalUnpaid = purchaseData.reduce((sum, item) => sum + (item.unpaidTotal || 0), 0)
+  const totalPartial = purchaseData.reduce((sum, item) => sum + (item.partialTotal || 0), 0)
 
   const collapseItems = [
     {
@@ -909,11 +1360,10 @@ const PurchaseReport = () => {
               allowClear
             />
           </div>
-
           <Table
             dataSource={filteredData}
             columns={purchaseColumns}
-            rowKey="id"
+            rowKey={(record) => `${record.id}-${record.supplierName}`}
             pagination={{
               current: pagination.current,
               pageSize: pagination.pageSize,
@@ -926,22 +1376,24 @@ const PurchaseReport = () => {
               expandedRowRender: (record) => {
                 const selectedPurchases = selectedPurchaseAgeRange
                   ? filterPurchasesByAgeRange(record.purchases, selectedPurchaseAgeRange)
-                  : record.purchases;
+                  : record.purchases
 
                 // Calculate totals for the selected purchases
                 const totalReceivedQty = selectedPurchases.reduce((sum, purchase) => {
-                  return sum + purchase.items.reduce((itemSum, item) => itemSum + item.quantityReceived, 0);
-                }, 0);
+                  return sum + purchase.items.reduce((itemSum, item) => itemSum + item.quantityReceived, 0)
+                }, 0)
 
                 const totalExpense = selectedPurchases.reduce((sum, purchase) => {
-                  return sum + purchase.items.reduce((itemSum, item) => itemSum + item.expense, 0);
-                }, 0);
+                  return sum + purchase.items.reduce((itemSum, item) => itemSum + item.expense, 0)
+                }, 0)
 
                 const subtotal = selectedPurchases.reduce((sum, purchase) => {
-                  return sum + purchase.items.reduce((itemSum, item) => itemSum + (item.quantityReceived * item.unitPrice), 0);
-                }, 0);
+                  return (
+                    sum + purchase.items.reduce((itemSum, item) => itemSum + item.quantityReceived * item.unitPrice, 0)
+                  )
+                }, 0)
 
-                const grandTotal = subtotal + totalExpense;
+                const grandTotal = subtotal + totalExpense
 
                 return (
                   <div key={`expanded-${record.id}`}>
@@ -949,17 +1401,14 @@ const PurchaseReport = () => {
                     <hr className="mb-4" />
                     <Row gutter={16}>
                       <Col span={6} key={`aging-0-30-${record.id}`}>
-                        <Card
-                          className="bg-blue-50 cursor-pointer"
-                          onClick={() => setSelectedPurchaseAgeRange("0-30")}
-                        >
+                        <Card className="bg-blue-50 cursor-pointer" onClick={() => setSelectedPurchaseAgeRange("0-30")}>
                           <Statistic
                             title="0-30 Days"
                             value={formatNumber(
                               filterPurchasesByAgeRange(record.purchases, "0-30").reduce(
                                 (sum, purchase) => sum + purchase.amount,
-                                0
-                              )
+                                0,
+                              ),
                             )}
                           />
                         </Card>
@@ -974,8 +1423,8 @@ const PurchaseReport = () => {
                             value={formatNumber(
                               filterPurchasesByAgeRange(record.purchases, "31-60").reduce(
                                 (sum, purchase) => sum + purchase.amount,
-                                0
-                              )
+                                0,
+                              ),
                             )}
                           />
                         </Card>
@@ -990,24 +1439,21 @@ const PurchaseReport = () => {
                             value={formatNumber(
                               filterPurchasesByAgeRange(record.purchases, "61-90").reduce(
                                 (sum, purchase) => sum + purchase.amount,
-                                0
-                              )
+                                0,
+                              ),
                             )}
                           />
                         </Card>
                       </Col>
                       <Col span={6} key={`aging-90+-${record.id}`}>
-                        <Card
-                          className="bg-red-50 cursor-pointer"
-                          onClick={() => setSelectedPurchaseAgeRange("90+")}
-                        >
+                        <Card className="bg-red-50 cursor-pointer" onClick={() => setSelectedPurchaseAgeRange("90+")}>
                           <Statistic
                             title="90+ Days"
                             value={formatNumber(
                               filterPurchasesByAgeRange(record.purchases, "90+").reduce(
                                 (sum, purchase) => sum + purchase.amount,
-                                0
-                              )
+                                0,
+                              ),
                             )}
                           />
                         </Card>
@@ -1021,19 +1467,27 @@ const PurchaseReport = () => {
                       dataSource={selectedPurchases.flatMap((purchase) => purchase.items)}
                       columns={itemColumns}
                       pagination={false}
-                      rowKey="itemCode"
+                      rowKey={(record) => `${record.itemCode}-${record.purchaseDate}`}
                       footer={() => (
                         <div className="flex justify-end space-x-40">
-                          <Text strong className="text-[16px] text-gray-500">Total Received Qty : {totalReceivedQty}</Text>
-                          <Text strong className="text-[16px] text-blue-500">Subtotal : KES :  {formatNumber(subtotal)}</Text>
-                          <Text strong className="text-[16px] text-red-500">Total Expense : KES : {formatNumber(totalExpense)}</Text>
-                          <Text strong className="text-[16px] text-green-500">Grand Total : KES : {formatNumber(grandTotal)}</Text>
+                          <Text strong className="text-[16px] text-gray-500">
+                            Total Received Qty : {totalReceivedQty}
+                          </Text>
+                          <Text strong className="text-[16px] text-blue-500">
+                            Subtotal : KES : {formatNumber(subtotal)}
+                          </Text>
+                          <Text strong className="text-[16px] text-red-500">
+                            Total Expense : KES : {formatNumber(totalExpense)}
+                          </Text>
+                          <Text strong className="text-[16px] text-green-500">
+                            Grand Total : KES : {formatNumber(grandTotal)}
+                          </Text>
                         </div>
                       )}
                     />
                     <hr />
                     <Title level={4} className="mt-6">
-                      Items Purchased Payment 
+                      Items Purchased Payment
                     </Title>
                     <hr />
                     <Table
@@ -1067,10 +1521,7 @@ const PurchaseReport = () => {
                     />
                     <Row justify="end" className="mt-4">
                       <Col span={24}>
-                        <Card
-                          className="bg-gray-50 border border-gray-200"
-                          styles={{ body: { padding: "16px" } }}
-                        >
+                        <Card className="bg-gray-50 border border-gray-200" styles={{ body: { padding: "16px" } }}>
                           <Row justify="space-between" align="middle">
                             <Col>
                               <Text strong className="text-lg">
@@ -1079,12 +1530,7 @@ const PurchaseReport = () => {
                             </Col>
                             <Col>
                               <Text strong className="text-lg text-green-600">
-                                {formatNumber(
-                                  record.paymentHistory.reduce(
-                                    (sum, payment) => sum + payment.amount,
-                                    0
-                                  )
-                                )}
+                                {formatNumber(record.paymentHistory.reduce((sum, payment) => sum + payment.amount, 0))}
                               </Text>
                             </Col>
                           </Row>
@@ -1138,7 +1584,7 @@ const PurchaseReport = () => {
                       </Col>
                     </Row>
                   </div>
-                );
+                )
               },
             }}
           />
@@ -1154,7 +1600,7 @@ const PurchaseReport = () => {
         </>
       ),
     },
-  ];
+  ]
 
   return (
     <div className="min-h-screen flex">
@@ -1182,7 +1628,7 @@ const PurchaseReport = () => {
             <hr />
             <div className="mb-4 flex justify-between items-center">
               <Title level={4} className="text-blue-800 mt-2">
-              Purchase Analysis Report
+                Purchase Analysis Report
               </Title>
             </div>
           </div>
@@ -1213,9 +1659,7 @@ const PurchaseReport = () => {
                     showSearch
                     placeholder="Select Item"
                     optionFilterProp="children"
-                    filterOption={(input, option) =>
-                      option.children.toLowerCase().includes(input.toLowerCase())
-                    }
+                    filterOption={(input, option) => option.children.toLowerCase().includes(input.toLowerCase())}
                     style={{ width: 280 }}
                   >
                     <Option key="all" value="">
@@ -1254,9 +1698,7 @@ const PurchaseReport = () => {
               {isReportVisible && (
                 <Collapse
                   defaultActiveKey={["1"]}
-                  expandIcon={({ isActive }) =>
-                    isActive ? <CaretUpOutlined /> : <CaretDownOutlined />
-                  }
+                  expandIcon={({ isActive }) => (isActive ? <CaretUpOutlined /> : <CaretDownOutlined />)}
                   className="mt-4"
                   items={collapseItems}
                 />
@@ -1268,7 +1710,8 @@ const PurchaseReport = () => {
         <Footer />
       </Layout>
     </div>
-  );
-};
+  )
+}
 
-export default PurchaseReport;
+export default PurchaseReport
+
