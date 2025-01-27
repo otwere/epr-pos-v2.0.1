@@ -397,6 +397,17 @@ const PurchasePaymentsReport = () => {
       key: "purchaseDate",
     },
     {
+      title: "INVOICE NUMBER",
+      dataIndex: "invoiceNumber",
+      key: "invoiceNumber",
+      // align: "right",
+      render: (invoiceNumber) => (
+        <Link href={`/purchase-details/${invoiceNumber}`} className="text-blue-500 hover:underline">
+          {invoiceNumber}
+        </Link>
+      ),
+    },
+    {
       title: "SUPPLIER ID",
       dataIndex: "supplierId",
       key: "supplierId",
@@ -408,21 +419,12 @@ const PurchasePaymentsReport = () => {
       render: (outstandingBalance) => <span>{formatNumber(outstandingBalance)}</span>,
       align: "right",
     },
-    {
-      title: "INVOICE NUMBER",
-      dataIndex: "invoiceNumber",
-      key: "invoiceNumber",
-      align: "right",
-      render: (invoiceNumber) => (
-        <Link href={`/purchase-details/${invoiceNumber}`} className="text-blue-500 hover:underline">
-          {invoiceNumber}
-        </Link>
-      ),
-    },
+   
     {
       title: "PAYMENT NOTE",
       dataIndex: "paymentNote",
       key: "paymentNote",
+      align : "right",
     },
   ];
 

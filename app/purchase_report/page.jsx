@@ -935,7 +935,7 @@ const PurchaseReport = () => {
                     </Col>
                   </Row>
                   <Title level={4} className="mt-6">
-                    Payment History
+                    Payment Details
                   </Title>
                   <hr />
                   <Table
@@ -967,7 +967,7 @@ const PurchaseReport = () => {
                     pagination={false}
                     rowKey="transactionId"
                   />
-                  {/* Improved Total row for Payment History */}
+                  {/* Improved Total row for Payment Details */}
                   <Row justify="end" className="mt-4">
                     <Col span={24}>
                       <Card
@@ -1132,7 +1132,7 @@ const PurchaseReport = () => {
                     filterOption={(input, option) =>
                       option.children.toLowerCase().includes(input.toLowerCase())
                     }
-                    style={{ width: 280 }}
+                    style={{ width: 250 }}
                   >
                     {supplierNames.map((name) => (
                       <Option key={name} value={name}>
