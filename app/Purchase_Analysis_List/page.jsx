@@ -84,7 +84,7 @@ const PurchaseReport = () => {
       followUpRole: "Account Manager",
       purchases: [
         {
-          purchaseNumber: "PO001",
+          purchaseNumber: "PUR_001",
           purchaseDate: "01-12-2024",
           receivedDate: "05-12-2024",
           amount: 50000,
@@ -94,7 +94,7 @@ const PurchaseReport = () => {
             {
               itemName: "Item 1",
               itemCode: "ITM001",
-              itemCategory: "Category A",
+              purchaseDate: "01-12-2024",
               unitOfMeasure: "Pieces",
               quantityPurchased: 100,
               quantityReceived: 90,
@@ -132,7 +132,7 @@ const PurchaseReport = () => {
       followUpRole: "Account Manager",
       purchases: [
         {
-          purchaseNumber: "PO003",
+          purchaseNumber: "PUR_003",
           purchaseDate: "10-12-2024",
           receivedDate: "15-12-2024",
           amount: 75000,
@@ -142,7 +142,7 @@ const PurchaseReport = () => {
             {
               itemName: "Item 3",
               itemCode: "ITM003",
-              itemCategory: "Category C",
+              purchaseDate: "10-12-2024",
               unitOfMeasure: "Pieces",
               quantityPurchased: 120,
               quantityReceived: 110,
@@ -180,7 +180,7 @@ const PurchaseReport = () => {
       followUpRole: "Procurement Manager",
       purchases: [
         {
-          purchaseNumber: "PO004",
+          purchaseNumber: "PUR_004",
           purchaseDate: "15-12-2024",
           receivedDate: "20-12-2024",
           amount: 120000,
@@ -190,7 +190,7 @@ const PurchaseReport = () => {
             {
               itemName: "Item 4",
               itemCode: "ITM004",
-              itemCategory: "Category D",
+              purchaseDate: "15-12-2024",
               unitOfMeasure: "Boxes",
               quantityPurchased: 200,
               quantityReceived: 195,
@@ -228,7 +228,7 @@ const PurchaseReport = () => {
       followUpRole: "Quality Manager",
       purchases: [
         {
-          purchaseNumber: "PO005",
+          purchaseNumber: "PUR_005",
           purchaseDate: "20-12-2024",
           receivedDate: "25-12-2024",
           amount: 90000,
@@ -238,7 +238,7 @@ const PurchaseReport = () => {
             {
               itemName: "Item 5",
               itemCode: "ITM005",
-              itemCategory: "Category E",
+              purchaseDate: "20-12-2024",
               unitOfMeasure: "Units",
               quantityPurchased: 150,
               quantityReceived: 150,
@@ -276,7 +276,7 @@ const PurchaseReport = () => {
       followUpRole: "Sales Manager",
       purchases: [
         {
-          purchaseNumber: "PO006",
+          purchaseNumber: "PUR_006",
           purchaseDate: "25-12-2024",
           receivedDate: "30-12-2024",
           amount: 180000,
@@ -286,7 +286,7 @@ const PurchaseReport = () => {
             {
               itemName: "Item 6",
               itemCode: "ITM006",
-              itemCategory: "Category F",
+              purchaseDate: "25-12-2024",
               unitOfMeasure: "Cartons",
               quantityPurchased: 300,
               quantityReceived: 290,
@@ -324,7 +324,7 @@ const PurchaseReport = () => {
       followUpRole: "Finance Manager",
       purchases: [
         {
-          purchaseNumber: "PO007",
+          purchaseNumber: "PUR_007",
           purchaseDate: "01-01-2025",
           receivedDate: "05-01-2025",
           amount: 220000,
@@ -334,7 +334,7 @@ const PurchaseReport = () => {
             {
               itemName: "Item 7",
               itemCode: "ITM007",
-              itemCategory: "Category G",
+              purchaseDate: "01-01-2025",
               unitOfMeasure: "Pallets",
               quantityPurchased: 400,
               quantityReceived: 395,
@@ -691,7 +691,7 @@ const PurchaseReport = () => {
       key: "contactDetails",
     },
     {
-      title: "Item Name",
+      title: "ITEM NAME",
       key: "itemName",
       render: (_, record) => {
         const firstPurchase = record.purchases[0];
@@ -702,14 +702,26 @@ const PurchaseReport = () => {
       },
     },
     {
-      title: "OUTSTANDING BALANCE (KES)",
+      title: "CATEGORY",
+      key: "category",
+      render: (_, record) => {
+        const firstPurchase = record.purchases[0];
+        if (firstPurchase && firstPurchase.items && firstPurchase.items.length > 0) {
+          return firstPurchase.items[0].itemCategory;
+        }
+        return "N/A";
+      },
+    },
+    
+    {
+      title: "BALANCE (KES)",
       dataIndex: "outstandingBalance",
       key: "outstandingBalance",
       render: (outstandingBalance) => <span>{formatNumber(outstandingBalance)}</span>,
       align: "right",
     },
     {
-      title: "Price Difference (KES)",
+      title: "PRICE DIFF (KES)",
       key: "priceDifference",
       align: "right",
       render: (_, record) => {
@@ -732,11 +744,11 @@ const PurchaseReport = () => {
       },
     },
     {
-      title: "Deposited Amt (KES)",
+      title: "DEPOSITED AMT",
       dataIndex: "creditLimit",
       key: "creditLimit",
       render: (creditLimit) => <span>{formatNumber(creditLimit)}</span>,
-      align: "right",
+    
     },
     {
       title: "UTILIZATION",
@@ -765,9 +777,9 @@ const PurchaseReport = () => {
       key: "itemCode",
     },
     {
-      title: "Category",
-      dataIndex: "itemCategory",
-      key: "itemCategory",
+      title: "Purchase Date",
+      dataIndex: "purchaseDate",
+      key: "purchaseDate",
     },
     {
       title: "Unit of Measure",
@@ -826,7 +838,7 @@ const PurchaseReport = () => {
       align: "right",
       render: (_, record) => {
         const priceDifference = record.unitPrice - record.previousUnitPrice;
-        let status = "No Change";
+        let status = "No Change in Price";
         let color = "gray";
 
         if (priceDifference > 0) {
@@ -1011,11 +1023,11 @@ const PurchaseReport = () => {
                       pagination={false}
                       rowKey="itemCode"
                       footer={() => (
-                        <div className="flex justify-end space-x-32">
-                          <Text strong className="text-lg text-gray-500">Total Received Qty : {totalReceivedQty}</Text>
-                          <Text strong className="text-lg text-blue-500">Subtotal : KES :  {formatNumber(subtotal)}</Text>
-                          <Text strong className="text-lg text-red-500">Total Expense : KES : {formatNumber(totalExpense)}</Text>
-                          <Text strong className="text-lg text-green-500">Grand Total : KES : {formatNumber(grandTotal)}</Text>
+                        <div className="flex justify-end space-x-40">
+                          <Text strong className="text-[16px] text-gray-500">Total Received Qty : {totalReceivedQty}</Text>
+                          <Text strong className="text-[16px] text-blue-500">Subtotal : KES :  {formatNumber(subtotal)}</Text>
+                          <Text strong className="text-[16px] text-red-500">Total Expense : KES : {formatNumber(totalExpense)}</Text>
+                          <Text strong className="text-[16px] text-green-500">Grand Total : KES : {formatNumber(grandTotal)}</Text>
                         </div>
                       )}
                     />
