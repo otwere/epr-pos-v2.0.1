@@ -1247,13 +1247,13 @@ const PurchaseReport = () => {
       key: "quantityPurchased",
     },
     {
-      title: "Unit Price",
+      title: "Unit Price ",
       dataIndex: "unitPrice",
       key: "unitPrice",
       render: (unitPrice) => formatNumber(unitPrice),
     },
     {
-      title: "Total Cost",
+      title: "Total Cost ",
       dataIndex: "totalCost",
       key: "totalCost",
       render: (totalCost) => formatNumber(totalCost),
@@ -1264,7 +1264,7 @@ const PurchaseReport = () => {
       key: "stockLevelBeforePurchase",
     },
     {
-      title: "Stock Aval",
+      title: "Stock After",
       key: "stockLevelAfterPurchase",
       render: (_, record) => {
         const stockAfter = record.stockLevelBeforePurchase + record.quantityPurchased
@@ -1272,21 +1272,19 @@ const PurchaseReport = () => {
       },
     },
     {
-      title: "Prev Price",
+      title: "Previous Price",
       dataIndex: "previousUnitPrice",
       key: "previousUnitPrice",
-      align: "right",
       render: (previousUnitPrice) => formatNumber(previousUnitPrice),
     },
     {
-      title: "Curr Price",
+      title: "Current Price",
       dataIndex: "unitPrice",
       key: "unitPrice",
-      align : "right",
       render: (unitPrice) => formatNumber(unitPrice),
     },
     {
-      title: "Price Status",
+      title: "Price diff Status",
       key: "priceChangeStatus",
       align: "right",
       render: (_, record) => {
@@ -1472,7 +1470,7 @@ const PurchaseReport = () => {
                       rowKey={(record) => `${record.itemCode}-${record.purchaseDate}`}
                       footer={() => (
                         <div className="flex justify-end space-x-40">
-                          <Text strong className="text-[16px] text-gray-600">
+                          <Text strong className="text-[16px] text-gray-500">
                             Total Received Qty : {totalReceivedQty}
                           </Text>
                           <Text strong className="text-[16px] text-blue-500">
@@ -1526,12 +1524,12 @@ const PurchaseReport = () => {
                         <Card className="bg-gray-50 border border-gray-200" styles={{ body: { padding: "16px" } }}>
                           <Row justify="space-between" align="middle">
                             <Col>
-                              <Text strong className="text-[16px]">
+                              <Text strong className="text-[17px]">
                                 Total Payments Amount :
                               </Text>
                             </Col>
                             <Col>
-                              <Text strong className="text-[16px] text-green-600">
+                              <Text strong className="text-[17px] text-green-600">
                               <span className="text-gray-600">KES :  </span>
                                 {formatNumber(record.paymentHistory.reduce((sum, payment) => sum + payment.amount, 0))}
                               </Text>
@@ -1663,7 +1661,7 @@ const PurchaseReport = () => {
                     placeholder="Select Item"
                     optionFilterProp="children"
                     filterOption={(input, option) => option.children.toLowerCase().includes(input.toLowerCase())}
-                    style={{ width: 240 }}
+                    style={{ width: 280 }}
                   >
                     <Option key="all" value="">
                       Select All Items Purchased
@@ -1675,15 +1673,15 @@ const PurchaseReport = () => {
                     ))}
                   </Select>
                 </Form.Item>
-                {/* <Form.Item name="status" label="Status">
-                  <Select style={{ width: 100}} allowClear>
+                <Form.Item name="status" label="Status">
+                  <Select style={{ width: 100 }} allowClear>
                     <Option key="all" value="">
                       All Status
                     </Option>
                     <Option value="Received">Received</Option>
                     <Option value="Ordered">Ordered</Option>
                   </Select>
-                </Form.Item> */}
+                </Form.Item>
               </Form>
               <div className="flex space-x-4">
                 <Button type="primary" icon={<FilterOutlined />} onClick={generateReport}>

@@ -10,4 +10,5 @@ body {
   scroll-behavior: smooth;
   background: hsl(231, 26%, 95%);
   font-family: theme('fontFamily.inter'); /* Use Tailwind's theme value */
+  zoom: 97%;
 }

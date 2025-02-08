@@ -399,7 +399,7 @@ const Sidebar = ({ collapsed, ref }) => {
       icon: <ReconciliationOutlined />,
       title: "Stock | Inventory Reports",
       subItems: [
-        { key: "18-1", icon: <TagsOutlined />, title: "Price List" },
+        { key: "18-1", icon: <TagsOutlined />, title: "Price List"  , link: "/price_list" },
         {
           key: "18-2",
           icon: <FilePdfOutlined />,
