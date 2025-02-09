@@ -146,7 +146,7 @@ const POSContent = () => {
                     <HomeOutlined /> Home
                   </span>
                 ),
-                href: "/",
+                href: "/Dashboard",
               },
               { title: "Point of Sale (POS)" },
             ]}
