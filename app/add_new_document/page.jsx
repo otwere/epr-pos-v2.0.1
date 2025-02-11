@@ -150,6 +150,7 @@ const AddNewDocuments = () => {
         message: "File Added",
         description: "New file added successfully.",
         placement: "topRight",
+        className: "bg-green-50",
       });
       setIsFormOpen(false);
       form.resetFields();
@@ -169,6 +170,7 @@ const AddNewDocuments = () => {
         message: "Status Updated",
         description: "Status updated successfully.",
         placement: "topRight",
+        className: "bg-green-50",
       });
       setLoading(false);
     }, 1000);
@@ -185,6 +187,7 @@ const AddNewDocuments = () => {
       message: "Category Added",
       description: `Category "${newCategory}" added successfully.`,
       placement: "topRight",
+      className: "bg-green-50",
     });
   };
 
@@ -290,14 +293,14 @@ const AddNewDocuments = () => {
             <Breadcrumb
               className="mb-4"
               items={[
-                { title: <Link href="/"><HomeOutlined /> Home</Link> },
+                { title: <Link href="/Dashboard"><HomeOutlined /> Home</Link> },
                 { title: "Add New Document" },
               ]}
             />
             <hr />
             <div className="mb-4 flex justify-between items-center">
               <Title level={4} className="text-blue-800 mt-2">
-                Documentation List
+                Documents List
               </Title>
               <Text type="secondary">Manage and View your Documents</Text>
             </div>

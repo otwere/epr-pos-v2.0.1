@@ -5,7 +5,7 @@
   overflow-y: auto;
   transition: width 0.3s ease-in-out, background-color 0.3s ease-in-out; 
   scroll-behavior: smooth;
-  width: 340px;
+  width: 315px;
 }
 
 .sidebar.collapsed {

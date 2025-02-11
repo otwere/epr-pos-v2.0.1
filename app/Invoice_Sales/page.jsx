@@ -496,7 +496,7 @@ const SalesInvoiceList = () => {
               items={[
                 {
                   title: (
-                    <Link href="/">
+                    <Link href="/Dashboard">
                       <HomeOutlined /> Home
                     </Link>
                   ),
