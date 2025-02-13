@@ -55,8 +55,8 @@ const AddNewDocuments = () => {
       title: "Test Document",
       createdBy: "Admin",
       status: "Active",
-      createDate: "2023-10-01",
-      expiryDate: "2023-12-31",
+      createDate: "01-02-2025",
+      expiryDate: "01-02-2026",
       file: "document.pdf",
       description: "This is a sample document.",
     },
@@ -67,8 +67,8 @@ const AddNewDocuments = () => {
       title: "Test Image",
       createdBy: "User",
       status: "Inactive",
-      createDate: "2023-10-02",
-      expiryDate: "2024-01-15",
+      createDate: "20-12-2025",
+      expiryDate: "20-12-2026",
       file: "image.png",
       description: "This is a sample image.",
     },
@@ -298,6 +298,7 @@ const AddNewDocuments = () => {
               ]}
             />
             <hr />
+            
             <div className="mb-4 flex justify-between items-center">
               <Title level={4} className="text-blue-800 mt-2">
                 Documents List
