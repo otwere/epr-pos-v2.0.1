@@ -929,9 +929,9 @@ const PurchaseReport = () => {
                       footer={() => (
                         <div className="flex justify-end space-x-36">
                           <Text strong className="text-lg text-gray-500">Received Qty : {totalReceivedQty}</Text>
-                          <Text strong className="text-lg text-blue-500">Subtotal : KES :  {formatNumber(subtotal)}</Text>
-                          <Text strong className="text-lg text-red-500">Expense : KES : {formatNumber(totalExpense)}</Text>
-                          <Text strong className="text-lg text-green-500">Grand Total : KES : {formatNumber(grandTotal)}</Text>
+                          <Text strong className="text-lg text-blue-500">Subtotal : KES {formatNumber(subtotal)}</Text>
+                          <Text strong className="text-lg text-red-500">Expense : KES {formatNumber(totalExpense)}</Text>
+                          <Text strong className="text-lg text-green-500">Grand Total : KES {formatNumber(grandTotal)}</Text>
                         </div>
                         
                       )}
