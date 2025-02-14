@@ -71,22 +71,31 @@ const PriceList = () => {
           purchaseDate: "01-01-2023",
           items: [
             {
-              itemName: "Item 1",
-              itemCode: "ITM001",
+              itemName: "LED TV 55-inch",
+              itemCode: "ELE001",
               category: "Electronics",
               quantityPurchased: 10,
-              unitPrice: 100,
-              previousUnitPrice: 90,
-              salesPrice: 120,
+              unitPrice: 45000,
+              previousUnitPrice: 42000,
+              salesPrice: 55000,
             },
             {
-              itemName: "Item 2",
-              itemCode: "ITM002",
-              category: "Furniture",
-              quantityPurchased: 5,
-              unitPrice: 200,
-              previousUnitPrice: 180,
-              salesPrice: 240,
+              itemName: "Smartphone X12",
+              itemCode: "ELE002",
+              category: "Electronics",
+              quantityPurchased: 15,
+              unitPrice: 25000,
+              previousUnitPrice: 23000,
+              salesPrice: 30000,
+            },
+            {
+              itemName: "Wireless Earbuds Pro",
+              itemCode: "ELE003",
+              category: "Electronics",
+              quantityPurchased: 30,
+              unitPrice: 8000,
+              previousUnitPrice: 7500,
+              salesPrice: 12000,
             },
           ],
         },
@@ -96,12 +105,107 @@ const PriceList = () => {
           paymentDate: "05-01-2023",
           transactionId: "TXN001",
           modeOfPayment: "Bank Transfer",
-          amount: 500,
+          amount: 500000,
+        },
+      ],
+    },
+    {
+      id: 2,
+      supplierName: "Supplier B",
+      branch: "Mombasa",
+      contactDetails: "supplierB@example.com",
+      purchases: [
+        {
+          purchaseDate: "02-01-2023",
+          items: [
+            {
+              itemName: "Executive Desk",
+              itemCode: "FUR001",
+              category: "Furniture",
+              quantityPurchased: 5,
+              unitPrice: 35000,
+              previousUnitPrice: 32000,
+              salesPrice: 45000,
+            },
+            {
+              itemName: "Ergonomic Chair",
+              itemCode: "FUR002",
+              category: "Furniture",
+              quantityPurchased: 10,
+              unitPrice: 15000,
+              previousUnitPrice: 14000,
+              salesPrice: 20000,
+            },
+            {
+              itemName: "Filing Cabinet",
+              itemCode: "FUR003",
+              category: "Furniture",
+              quantityPurchased: 8,
+              unitPrice: 12000,
+              previousUnitPrice: 11000,
+              salesPrice: 16000,
+            },
+          ],
+        },
+      ],
+      paymentHistory: [
+        {
+          paymentDate: "06-01-2023",
+          transactionId: "TXN002",
+          modeOfPayment: "Bank Transfer",
+          amount: 300000,
+        },
+      ],
+    },
+    {
+      id: 3,
+      supplierName: "Supplier C",
+      branch: "Kisumu",
+      contactDetails: "supplierC@example.com",
+      purchases: [
+        {
+          purchaseDate: "03-01-2023",
+          items: [
+            {
+              itemName: "Desktop Computer",
+              itemCode: "ELE004",
+              category: "Electronics",
+              quantityPurchased: 8,
+              unitPrice: 55000,
+              previousUnitPrice: 52000,
+              salesPrice: 65000,
+            },
+            {
+              itemName: "Printer All-in-One",
+              itemCode: "ELE005",
+              category: "Electronics",
+              quantityPurchased: 6,
+              unitPrice: 28000,
+              previousUnitPrice: 26000,
+              salesPrice: 35000,
+            },
+            {
+              itemName: "Security Camera Set",
+              itemCode: "ELE006",
+              category: "Electronics",
+              quantityPurchased: 12,
+              unitPrice: 18000,
+              previousUnitPrice: 16500,
+              salesPrice: 25000,
+            },
+          ],
+        },
+      ],
+      paymentHistory: [
+        {
+          paymentDate: "07-01-2023",
+          transactionId: "TXN003",
+          modeOfPayment: "Bank Transfer",
+          amount: 400000,
         },
       ],
     },
   ];
-
   useEffect(() => {
     const categories = mockPurchaseData.flatMap((supplier) =>
       supplier.purchases.flatMap((purchase) => purchase.items.map((item) => item.category)),
@@ -384,6 +488,13 @@ const PriceList = () => {
 
   const priceListColumns = [
     {
+      title: "#",
+      key: "index",
+      width: 70,
+      render: (_, __, index) => (pagination.current - 1) * pagination.pageSize + index + 1,
+      align: "center",
+    },
+    {
       title: "Supplier Name",
       dataIndex: "supplierName",
       key: "supplierName",
@@ -433,7 +544,6 @@ const PriceList = () => {
       },
     },
   ];
-
   const collapseItems = [
     {
       key: "2",
@@ -516,19 +626,17 @@ const PriceList = () => {
                     onChange={handleCategoryChange}
                   >
                     <Option key="all" value="">
-                      Select All Items Purchased
+                      Select All Category Price List
                     </Option>
                     {itemCategories.map((category) => (
-                      <Option key={category} value={category}>
-                        {category}
-                      </Option>
+                      <Option key={category} value={category}>{category}</Option>
                     ))}
                   </Select>
                 </Form.Item>
               </Form>
               <div className="flex space-x-4">
                 <Button type="primary" icon={<FilterOutlined />} onClick={generateReport}>
-                  Generate Report
+                  Generate Price List
                 </Button>
                 <Button type="primary" icon={<FilePdfOutlined />} onClick={exportToPDF}>
                   Export to PDF
